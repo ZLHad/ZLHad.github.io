@@ -1,0 +1,970 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>前端应用开发架构 | ZLH's Blog</title><meta name="keywords" content="SAST,Web前端"><meta name="author" content="Zhang ling hao"><meta name="copyright" content="Zhang ling hao"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="前端应用开发架构    项目创建  脚手架   IDE脚手架 IDE或社区提供的脚手架   业务型脚手架 根据业务特点通过Node写的工具，用于降低高频手写操作    通用组件   Element UI   Echart   IView   项目分层组件   错误数据采集   业务代码与运行时框架隔离  安全性兼容: setData API访问缓冲: setData    网络访问封装与管理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="前端应用开发架构">
+<meta property="og:url" content="https://zlhad.top/2021/03/24/%E5%89%8D%E7%AB%AF%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%9E%B6%E6%9E%84/index.html">
+<meta property="og:site_name" content="ZLH&#39;s Blog">
+<meta property="og:description" content="前端应用开发架构    项目创建  脚手架   IDE脚手架 IDE或社区提供的脚手架   业务型脚手架 根据业务特点通过Node写的工具，用于降低高频手写操作    通用组件   Element UI   Echart   IView   项目分层组件   错误数据采集   业务代码与运行时框架隔离  安全性兼容: setData API访问缓冲: setData    网络访问封装与管理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png">
+<meta property="article:published_time" content="2021-03-24T11:55:22.000Z">
+<meta property="article:modified_time" content="2021-03-24T12:35:26.626Z">
+<meta property="article:author" content="Zhang ling hao">
+<meta property="article:tag" content="SAST">
+<meta property="article:tag" content="Web前端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png"><link rel="shortcut icon" href="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201124235459.png"><link rel="canonical" href="https://zlhad.top/2021/03/24/%E5%89%8D%E7%AB%AF%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%9E%B6%E6%9E%84/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-right"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-03-24 20:35:26'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201125000839.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">14</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/smalltalk/"><i class="fa-fw far fa-comments"></i><span> SmallTalk</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">ZLH's Blog</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/smalltalk/"><i class="fa-fw far fa-comments"></i><span> SmallTalk</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">前端应用开发架构</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-03-24T11:55:22.000Z" title="发表于 2021-03-24 19:55:22">2021-03-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-03-24T12:35:26.626Z" title="更新于 2021-03-24 20:35:26">2021-03-24</time></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="前端应用开发架构"><a class="markdownIt-Anchor" href="#前端应用开发架构"></a> 前端应用开发架构</h1>
+<!--内容尚待补全-->
+<!--参考自sahadev-->
+<h2 id="项目创建"><a class="markdownIt-Anchor" href="#项目创建"></a> 项目创建</h2>
+<h3 id="脚手架"><a class="markdownIt-Anchor" href="#脚手架"></a> 脚手架</h3>
+<ul>
+<li>
+<p>IDE脚手架</p>
+<p>IDE或社区提供的脚手架</p>
+</li>
+<li>
+<p>业务型脚手架</p>
+<p>根据业务特点通过Node写的工具，用于降低高频手写操作</p>
+</li>
+</ul>
+<h3 id="通用组件"><a class="markdownIt-Anchor" href="#通用组件"></a> 通用组件</h3>
+<ul>
+<li>
+<p>Element UI</p>
+</li>
+<li>
+<p>Echart</p>
+</li>
+<li>
+<p>IView</p>
+</li>
+<li>
+<p>项目分层组件</p>
+<ul>
+<li>
+<p>错误数据采集</p>
+</li>
+<li>
+<p>业务代码与运行时框架隔离</p>
+<ul>
+<li>安全性兼容: setData</li>
+<li>API访问缓冲: setData</li>
+</ul>
+</li>
+<li>
+<p>网络访问封装与管理</p>
+<ul>
+<li>访问主机运行时变更</li>
+</ul>
+</li>
+<li>
+<p>数据存储封装与管理</p>
+</li>
+<li>
+<p>日志统一收集</p>
+</li>
+</ul>
+</li>
+<li>
+<p>社区推荐组件</p>
+<p><a target="_blank" rel="noopener" href="https://ice.work/docs/guide/resource/npms">https://ice.work/docs/guide/resource/npms</a></p>
+</li>
+</ul>
+<h3 id="极速构建"><a class="markdownIt-Anchor" href="#极速构建"></a> 极速构建</h3>
+<ul>
+<li>
+<p>飞冰</p>
+<p>极速构建企业级中后台前端应用<br>
+<a target="_blank" rel="noopener" href="https://ice.work/">https://ice.work/</a><br>
+海量物料</p>
+<p>优势在于拥有强大的物料：<br>
+涵盖：模板、区块、业务组件、基础组件<br>
+可以通过拖拽快速组合各种页面。</p>
+<p>使用React开发，拥有特定的IDE，裁剪自VSCODE，这些组件目前还不能预览</p>
+<p>iceworks 内置了 ICE 官方模板帮助您快速创建一个中后台应用，并提供了 SCM 的支持（强大的 Git 集成）以加速发布操作。iceworks 还支持对接应用发布平台</p>
+<ul>
+<li>
+<p>后台管理系统</p>
+<p>快速预览：<a target="_blank" rel="noopener" href="https://unpkg.com/@icedesign/pro-scaffold@3.0.15/build/index.html#/dashboard/monitor">https://unpkg.com/@icedesign/pro-scaffold@3.0.15/build/index.html#/dashboard/monitor</a></p>
+<p>当项目庞大，单页面冗长，需要多团队开发时，可以考虑：icestark</p>
+</li>
+</ul>
+</li>
+<li>
+<p>imgcook：阿里可视化智能设计图转代码平台，也嵌入在了飞冰中。</p>
+</li>
+</ul>
+<h2 id="编码"><a class="markdownIt-Anchor" href="#编码"></a> 编码</h2>
+<h3 id="多人协作"><a class="markdownIt-Anchor" href="#多人协作"></a> 多人协作</h3>
+<ul>
+<li>
+<p>编码规范</p>
+<ul>
+<li>
+<p>Airbnb JavaScript Style Guide</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/airbnb/javascript">https://github.com/airbnb/javascript</a></p>
+</li>
+<li>
+<p>规范检查</p>
+<p>配合ESLint执行</p>
+<ul>
+<li>eslint</li>
+<li>tslint</li>
+<li>stylint</li>
+<li>commitlint</li>
+</ul>
+</li>
+<li>
+<p>自动格式化</p>
+<p>提交代码仓库时根据规范自动进行调整<br>
+按照团队统一的相关格式进行格式化，使提交到仓库的代码风格都是一致的</p>
+<ul>
+<li>
+<p>husky</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/typicode/husky#supported-hooks">https://github.com/typicode/husky#supported-hooks</a><br>
+<a target="_blank" rel="noopener" href="https://git-scm.com/docs/githooks">https://git-scm.com/docs/githooks</a></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>分支管理</p>
+<p>Git Flow</p>
+<ul>
+<li>
+<p>线上分支</p>
+<p>该分支的最后一次commit总是目前生产环境所运行的稳定版本</p>
+</li>
+<li>
+<p>开发分支</p>
+<p>所有的子分支都是从该分支检出<br>
+该分支的状态永远不落后于线上分支</p>
+</li>
+<li>
+<p>功能性开发分支</p>
+<p>根据人员与功能所划分的功能版本开发分支<br>
+命名方式可以为：<br>
+分支类型/日期-姓名-功能<br>
+例如：<br>
+feature/20200202-Jim-performance-improve</p>
+</li>
+<li>
+<p>统一测试分支</p>
+<p>有效利用小程序体验版只有一个的缺点<br>
+与测试分支相配合的还需要支持一个版本可以随时切换环境<br>
+这种特点在并行开发时效果尤为明显</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="脚手架-2"><a class="markdownIt-Anchor" href="#脚手架-2"></a> 脚手架</h3>
+<p>根据业务特性编写的脚手架<br>
+可以通过CLI的方式生成常用的小程序页面，并直接提供固定的页面模板与常用的页面模板，减少重复量，加速开发</p>
+<ul>
+<li>create-react-app</li>
+<li>umijs</li>
+<li>ant design pro</li>
+<li></li>
+</ul>
+<h3 id="组件化"><a class="markdownIt-Anchor" href="#组件化"></a> 组件化</h3>
+<ul>
+<li>业务组件</li>
+<li>UI组件</li>
+<li>基础组件</li>
+</ul>
+<h3 id="自动编码工具"><a class="markdownIt-Anchor" href="#自动编码工具"></a> 自动编码工具</h3>
+<ul>
+<li>
+<p>代码一键生成</p>
+<p>较为通用的前端解决方案，例如：HtmlFindClass</p>
+<ul>
+<li>HtmlFindClass</li>
+</ul>
+</li>
+<li>
+<p>业务组件一键生成</p>
+<p>与业务有强相关性，需要结合业务特点专门建造此类工具</p>
+</li>
+</ul>
+<h3 id="编译"><a class="markdownIt-Anchor" href="#编译"></a> 编译</h3>
+<ul>
+<li>
+<p>目标环境代码转换（Babel）</p>
+</li>
+<li>
+<p>文件变更监控</p>
+</li>
+<li>
+<p>编译结果缓存</p>
+<p>缩短单次编译时间，避免不必要的资源浪费，提升开发效率</p>
+</li>
+<li>
+<p>编译/打包工具</p>
+<ul>
+<li>Webpack</li>
+<li>Rollup</li>
+<li>Gulp</li>
+<li>Grunt</li>
+</ul>
+</li>
+</ul>
+<h3 id="mock"><a class="markdownIt-Anchor" href="#mock"></a> Mock</h3>
+<ul>
+<li>
+<p>开发数据自动生成</p>
+<p>根据接口的数据接口自动生成测试数据</p>
+<ul>
+<li>
+<p>Mock.js</p>
+<p><a target="_blank" rel="noopener" href="http://mockjs.com/">http://mockjs.com/</a></p>
+</li>
+<li>
+<p>随机数生成</p>
+<ul>
+<li>
+<p>Chance</p>
+<p><a target="_blank" rel="noopener" href="https://chancejs.com/">https://chancejs.com/</a></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Mock平台</p>
+<ul>
+<li>
+<p>RAP2</p>
+<p><a target="_blank" rel="noopener" href="http://rap2.taobao.org/">http://rap2.taobao.org/</a><br>
+<a target="_blank" rel="noopener" href="https://github.com/thx/rap2-delos">https://github.com/thx/rap2-delos</a></p>
+</li>
+<li>
+<p>easy-mock</p>
+</li>
+<li>
+<p>Api-mocker</p>
+</li>
+<li>
+<p>eoLinker</p>
+</li>
+<li>
+<p>fastmock</p>
+<p><a target="_blank" rel="noopener" href="https://www.fastmock.site/#/">https://www.fastmock.site/#/</a></p>
+</li>
+<li>
+<p>Mock.js</p>
+<p><a target="_blank" rel="noopener" href="http://mockjs.com/">http://mockjs.com/</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="调试"><a class="markdownIt-Anchor" href="#调试"></a> 调试</h3>
+<ul>
+<li>控制台</li>
+<li>网络</li>
+<li>存储</li>
+<li>DOM</li>
+</ul>
+<h3 id="ide"><a class="markdownIt-Anchor" href="#ide"></a> IDE</h3>
+<ul>
+<li>VS Code</li>
+<li>WebStorm</li>
+</ul>
+<h3 id="语言"><a class="markdownIt-Anchor" href="#语言"></a> 语言</h3>
+<ul>
+<li>
+<p>Html</p>
+</li>
+<li>
+<p>CSS</p>
+<ul>
+<li>
+<p>SASS/SCSS</p>
+</li>
+<li>
+<p>LESS</p>
+</li>
+<li>
+<p>POSTCSS</p>
+<p><a target="_blank" rel="noopener" href="https://postcss.org/">https://postcss.org/</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p>JS/TS</p>
+</li>
+</ul>
+<h3 id="包管理"><a class="markdownIt-Anchor" href="#包管理"></a> 包管理</h3>
+<ul>
+<li>
+<p>打包工具</p>
+<ul>
+<li>
+<p>NPM</p>
+</li>
+<li>
+<p>YARN</p>
+</li>
+<li>
+<p>CNPM</p>
+<p>淘宝出品的npm镜像，很快</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="运行时框架"><a class="markdownIt-Anchor" href="#运行时框架"></a> 运行时框架</h3>
+<ul>
+<li>Vue</li>
+<li>React</li>
+</ul>
+<h2 id="版本发布"><a class="markdownIt-Anchor" href="#版本发布"></a> 版本发布</h2>
+<h3 id="代码压缩"><a class="markdownIt-Anchor" href="#代码压缩"></a> 代码压缩</h3>
+<ul>
+<li>
+<p>TreeShaking</p>
+<p>Tree-shaking, 也被称为 “live code inclusion,” 它是清除实际上并没有在给定项目中使用的代码的过程，但是它可以更加高效。词汇来源查看https://medium.com/@Rich_Harris/tree-shaking-versus-dead-code-elimination-d3765df85c80#.jnypozs9n</p>
+</li>
+</ul>
+<h3 id="混淆"><a class="markdownIt-Anchor" href="#混淆"></a> 混淆</h3>
+<h3 id="分包"><a class="markdownIt-Anchor" href="#分包"></a> 分包</h3>
+<h3 id="最小可执行单元"><a class="markdownIt-Anchor" href="#最小可执行单元"></a> 最小可执行单元</h3>
+<ul>
+<li>首屏公共库</li>
+<li>必要业务代码</li>
+</ul>
+<h3 id="发布"><a class="markdownIt-Anchor" href="#发布"></a> 发布</h3>
+<ul>
+<li>平滑发布</li>
+<li>增量发布</li>
+<li>部署工具/系统</li>
+</ul>
+<h3 id="国际化"><a class="markdownIt-Anchor" href="#国际化"></a> 国际化</h3>
+<ul>
+<li>语言管理</li>
+<li>内容管理</li>
+</ul>
+<h3 id="运行时环境分发"><a class="markdownIt-Anchor" href="#运行时环境分发"></a> 运行时环境分发</h3>
+<p>根据服务的用户环境预先生成各种运行时版本，依据环境获取对应的版本代码，例如通过Pollfill</p>
+<h3 id="html托管服务"><a class="markdownIt-Anchor" href="#html托管服务"></a> Html托管服务</h3>
+<p>极大缩短部署步骤与时间</p>
+<ul>
+<li>
+<p>surge</p>
+<p><a target="_blank" rel="noopener" href="http://surge.sh/">http://surge.sh/</a></p>
+<p>参考本架构部署示例：<a target="_blank" rel="noopener" href="http://wooden-process.surge.sh/">http://wooden-process.surge.sh/</a></p>
+</li>
+<li>
+<p>github pages</p>
+<p><a target="_blank" rel="noopener" href="https://pages.github.com/">https://pages.github.com/</a></p>
+</li>
+<li>
+<p>netlify</p>
+<p><a target="_blank" rel="noopener" href="https://www.netlify.com/">https://www.netlify.com/</a></p>
+<p>几部就可以完成代码部署<br>
+支持与Github，Gitlab强关联，可以读取仓库的分支，自定义配置编译脚本，非常方便，支持环境变量配置</p>
+</li>
+</ul>
+<h3 id="云服务器"><a class="markdownIt-Anchor" href="#云服务器"></a> 云服务器</h3>
+<ul>
+<li>
+<p>DigitalOcean</p>
+<p><a target="_blank" rel="noopener" href="https://www.digitalocean.com/">https://www.digitalocean.com/</a></p>
+</li>
+</ul>
+<h2 id="测试回归"><a class="markdownIt-Anchor" href="#测试回归"></a> 测试回归</h2>
+<h3 id="自动化测试"><a class="markdownIt-Anchor" href="#自动化测试"></a> 自动化测试</h3>
+<ul>
+<li>
+<p>主链路测试（针对高频使用/功能复杂的模块）</p>
+</li>
+<li>
+<p>接口自动化测试</p>
+<ul>
+<li>
+<p>可以对各类环境进行配置性测试</p>
+</li>
+<li>
+<p>接口串行测试</p>
+</li>
+<li>
+<p>接口性能测试</p>
+<ul>
+<li>并发测试</li>
+<li>单接口访问时长</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>⾃动化测试沙盒</p>
+<p>通过模拟微信⼩程序运⾏环境和基础库 API，将⼩程序的运⾏和测试脱离微信环境，从⽽⽅便地对其进⾏⾃动化测试。最后通过拦截setData 接⼝及判断当前⻚⾯路由，对⼩程序运⾏结果进⾏校验</p>
+</li>
+<li>
+<p>单元测试框架</p>
+<ul>
+<li>
+<p>Chai Assertion Library</p>
+<p>用于JS测试的测试框架：<a target="_blank" rel="noopener" href="https://www.chaijs.com/">https://www.chaijs.com/</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="手工测试"><a class="markdownIt-Anchor" href="#手工测试"></a> 手工测试</h3>
+<h3 id="代码质量测试"><a class="markdownIt-Anchor" href="#代码质量测试"></a> 代码质量测试</h3>
+<p>lint类工具</p>
+<h2 id="版本控制"><a class="markdownIt-Anchor" href="#版本控制"></a> 版本控制</h2>
+<h3 id="全量发布"><a class="markdownIt-Anchor" href="#全量发布"></a> 全量发布</h3>
+<p>包含版本回退能力</p>
+<h3 id="灰度发布"><a class="markdownIt-Anchor" href="#灰度发布"></a> 灰度发布</h3>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/IT65m3VwlAhXusipB6wa2g">https://mp.weixin.qq.com/s/IT65m3VwlAhXusipB6wa2g</a></p>
+<ul>
+<li>按百分比发布</li>
+<li>按地域或特定人群发布</li>
+</ul>
+<h3 id="版本定义"><a class="markdownIt-Anchor" href="#版本定义"></a> 版本定义</h3>
+<ul>
+<li>代码版本管理</li>
+<li>线上运行版本</li>
+</ul>
+<h3 id="运行时版本识别"><a class="markdownIt-Anchor" href="#运行时版本识别"></a> 运行时版本识别</h3>
+<ul>
+<li>肉眼随时可识别</li>
+</ul>
+<h2 id="质量监控及告警"><a class="markdownIt-Anchor" href="#质量监控及告警"></a> 质量监控及告警</h2>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/HtxkwEVm8f1Ur1Il6JmEYQ">https://mp.weixin.qq.com/s/HtxkwEVm8f1Ur1Il6JmEYQ</a></p>
+<h3 id="执行日志控制台"><a class="markdownIt-Anchor" href="#执行日志控制台"></a> 执行日志控制台</h3>
+<h3 id="运行时性能数据采集与分析"><a class="markdownIt-Anchor" href="#运行时性能数据采集与分析"></a> 运行时性能数据采集与分析</h3>
+<h3 id="业务日志采集"><a class="markdownIt-Anchor" href="#业务日志采集"></a> 业务日志采集</h3>
+<h3 id="网络请求采集"><a class="markdownIt-Anchor" href="#网络请求采集"></a> 网络请求采集</h3>
+<ul>
+<li>接口响应率</li>
+<li>接口响应速度</li>
+<li>请求响应参数</li>
+</ul>
+<h3 id="脚本错误采集"><a class="markdownIt-Anchor" href="#脚本错误采集"></a> 脚本错误采集</h3>
+<p>分函数级与业务级</p>
+<h3 id="白屏化日志"><a class="markdownIt-Anchor" href="#白屏化日志"></a> 白屏化日志</h3>
+<h3 id="业务异常采集"><a class="markdownIt-Anchor" href="#业务异常采集"></a> 业务异常采集</h3>
+<ul>
+<li>页面访问稳定率</li>
+<li>页面测速</li>
+<li>健康检查/存活监测</li>
+</ul>
+<h3 id="诊断能力"><a class="markdownIt-Anchor" href="#诊断能力"></a> 诊断能力</h3>
+<ul>
+<li>链路分析</li>
+<li>错误聚类</li>
+<li>函数流量回放</li>
+</ul>
+<h2 id="性能"><a class="markdownIt-Anchor" href="#性能"></a> 性能</h2>
+<h3 id="监控"><a class="markdownIt-Anchor" href="#监控"></a> 监控</h3>
+<ul>
+<li>
+<p>运行时性能数据采集</p>
+</li>
+<li>
+<p>代码编译时长数据采集</p>
+</li>
+<li>
+<p>小程序包体积数据采集</p>
+<ul>
+<li>分包情况下子包体积数据</li>
+</ul>
+</li>
+<li>
+<p>接口响应时长数据采集</p>
+</li>
+<li>
+<p>页面打开速度数据采集</p>
+<p>应用实时监控服务 ARMS</p>
+<p><a target="_blank" rel="noopener" href="https://www.aliyun.com/product/arms">https://www.aliyun.com/product/arms</a></p>
+</li>
+</ul>
+<h3 id="faas网关"><a class="markdownIt-Anchor" href="#faas网关"></a> Faas网关</h3>
+<p>流量感知、HSF/HTTP触发器、限流</p>
+<h3 id="语言执行加速"><a class="markdownIt-Anchor" href="#语言执行加速"></a> 语言执行加速</h3>
+<ul>
+<li>WebAssembly</li>
+</ul>
+<h3 id="性能监控与测试"><a class="markdownIt-Anchor" href="#性能监控与测试"></a> 性能监控与测试</h3>
+<ul>
+<li>
+<p><a target="_blank" rel="noopener" href="http://Sitespeed.io">Sitespeed.io</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.sitespeed.io/">https://www.sitespeed.io/</a></p>
+<ul>
+<li>
+<p>性能测试</p>
+<ul>
+<li>
+<p>Browsertime</p>
+<p><a target="_blank" rel="noopener" href="https://www.sitespeed.io/documentation/browsertime/introduction/">https://www.sitespeed.io/documentation/browsertime/introduction/</a></p>
+<p>What is Browsertime good for?</p>
+<p>It is usually used for two different things:</p>
+<p>You run it as a standalone tool to collect performance timing metrics of your web site.<br>
+You integrate it in your tool as a JavaScript runner that collects whatever JavaScript metrics/information you want.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>性能数据比较</p>
+</li>
+<li>
+<p>网站监控</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="优化手段"><a class="markdownIt-Anchor" href="#优化手段"></a> 优化手段</h3>
+<ul>
+<li>
+<p>首屏渲染时长</p>
+<ul>
+<li>骨架屏</li>
+<li>按需加载</li>
+<li>图片资源压缩</li>
+</ul>
+</li>
+<li>
+<p>首屏响应时长</p>
+<ul>
+<li>
+<p>资源缓存</p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/laixiangran/p/8971119.html">https://www.cnblogs.com/laixiangran/p/8971119.html</a></p>
+<ul>
+<li>expires</li>
+<li>cache-control</li>
+<li>Etag</li>
+<li>Last-Modified</li>
+</ul>
+</li>
+<li>
+<p>资源压缩</p>
+<p>单文件最小可运行单元，缩减空格与分号等</p>
+<ul>
+<li>
+<p>文本压缩</p>
+<ul>
+<li>Gzip</li>
+</ul>
+</li>
+<li>
+<p>图像压缩</p>
+<ul>
+<li>矢量图</li>
+<li>光栅化</li>
+<li>有损/无损压缩</li>
+<li>Tinypng</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>资源合并</p>
+<p>多类资源合并为单个的Html/Css/Js，降低http链接次数与时间</p>
+</li>
+<li>
+<p>资源裁剪</p>
+<p>缩减为首屏所需最小代码量</p>
+</li>
+<li>
+<p>CDN静态资源加速</p>
+<ul>
+<li>
+<p>HTTP2</p>
+<ul>
+<li>
+<p>权重</p>
+</li>
+<li>
+<p>多路复用</p>
+<p>减少TCP握手时间</p>
+</li>
+<li>
+<p>HTTPS安全加密</p>
+</li>
+<li>
+<p>无需等待</p>
+<p>必要情况下，可以直接发送数据包，不需要等待缓存队列满的条件</p>
+</li>
+<li>
+<p>服务器推送</p>
+</li>
+<li>
+<p>头部压缩</p>
+<p><a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=https%3A%2F%2Fimququ.com%2Fpost%2Fheader-compression-in-http2.html">https://link.jianshu.com/?t=https%3A%2F%2Fimququ.com%2Fpost%2Fheader-compression-in-http2.html</a></p>
+</li>
+</ul>
+</li>
+<li>
+<p>缓存及版本管理</p>
+</li>
+<li>
+<p>最近访问节点</p>
+</li>
+<li>
+<p>负载均衡</p>
+</li>
+<li>
+<p>预热</p>
+</li>
+<li>
+<p>容灾</p>
+</li>
+</ul>
+</li>
+<li>
+<p>SSR</p>
+<p>Server Side Render 服务侧渲染，有效降低网络传输时间，并且可以对渲染结果实施缓存策略，加速客户端呈现时间</p>
+<ul>
+<li>
+<p>Rax SSR</p>
+<p><a target="_blank" rel="noopener" href="https://rax.js.org/ssr">https://rax.js.org/ssr</a></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据统计"><a class="markdownIt-Anchor" href="#数据统计"></a> 数据统计</h2>
+<h3 id="手工埋点"><a class="markdownIt-Anchor" href="#手工埋点"></a> 手工埋点</h3>
+<h3 id="无痕埋点"><a class="markdownIt-Anchor" href="#无痕埋点"></a> 无痕埋点</h3>
+<h3 id="业务数据指标"><a class="markdownIt-Anchor" href="#业务数据指标"></a> 业务数据指标</h3>
+<ul>
+<li>PV/UV</li>
+<li>漏斗数据</li>
+<li>渠道转化</li>
+</ul>
+<h3 id="用户行为数据"><a class="markdownIt-Anchor" href="#用户行为数据"></a> 用户行为数据</h3>
+<ul>
+<li>
+<p>流量分析</p>
+<p>查看全站流量状况，与历史进行比较，是涨是跌，哪个时段出了问题？出了问题需要排查。</p>
+<p>关注实时流量，如直播网站，趋势分析无法满足需要看当前在线。</p>
+</li>
+<li>
+<p>来源分析</p>
+<p>来源分哪几类，分别带来多少流量？</p>
+<p>搜索引擎、外链的引入流量具体状况如何？</p>
+</li>
+<li>
+<p>受访分析</p>
+<p>网站哪些内容受欢迎？？</p>
+<p>页面设计是否合理？</p>
+</li>
+<li>
+<p>访客分析</p>
+<p>访客都是谁？</p>
+<p>访客的浏览行为是怎样的？</p>
+</li>
+<li>
+<p>转化路径分析</p>
+<p>路径分析：根据您设置的特定路线，监测某一流程的完成转化情况，算出每步的转换率和流失率数据，如注册流程，购买流程等。</p>
+</li>
+</ul>
+<h3 id="社区解决方案"><a class="markdownIt-Anchor" href="#社区解决方案"></a> 社区解决方案</h3>
+<ul>
+<li>友盟</li>
+<li>阿里云</li>
+</ul>
+<h2 id="devops"><a class="markdownIt-Anchor" href="#devops"></a> DevOps</h2>
+<p>Auto DevOps provides pre-defined CI/CD configuration which allows you to automatically detect, build, test,<br>
+deploy, and monitor your applications.</p>
+<h3 id="cicd"><a class="markdownIt-Anchor" href="#cicd"></a> CI/CD</h3>
+<p>持续集成（Continuous Integration）<br>
+持续交付（Continuous Delivery）<br>
+持续部署（Continuous Deployment）</p>
+<p><a target="_blank" rel="noopener" href="https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/">https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/k16SjTN7__iRB_7q78hldg">https://mp.weixin.qq.com/s/k16SjTN7__iRB_7q78hldg</a></p>
+<ul>
+<li>
+<p>Gitlab</p>
+<ul>
+<li>
+<p>自动构建</p>
+</li>
+<li>
+<p>自动测试</p>
+<p>代码质量分析：<br>
+<a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html">https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html</a></p>
+</li>
+<li>
+<p>自动部署</p>
+</li>
+<li>
+<p>自动性能测试</p>
+</li>
+<li>
+<p>自主监控</p>
+</li>
+<li>
+<p>Code Review</p>
+<p><a target="_blank" rel="noopener" href="https://about.gitlab.com/stages-devops-lifecycle/code-review/">https://about.gitlab.com/stages-devops-lifecycle/code-review/</a></p>
+</li>
+<li>
+<p>Review Apps</p>
+<p><a target="_blank" rel="noopener" href="https://docs.gitlab.com/ee/ci/review_apps/index.html">https://docs.gitlab.com/ee/ci/review_apps/index.html</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="node中间件"><a class="markdownIt-Anchor" href="#node中间件"></a> Node中间件</h2>
+<p>通过Node.js实现的网关层，可以整合各服务网关数据，实现按需配置请求，减少网络等待时间，加快网络请求时长，降低开发成本，在大型复杂的应用中效果尤为明显</p>
+<p>按需获取数据常见的两种方案：<br>
+1.中台化服务<br>
+2.GraphQL</p>
+<p>应该多关注稳定性，容灾容错，弹性，监控告警等</p>
+<h2 id="逆向分析"><a class="markdownIt-Anchor" href="#逆向分析"></a> 逆向分析</h2>
+<h3 id="js"><a class="markdownIt-Anchor" href="#js"></a> JS</h3>
+<ul>
+<li>
+<p>js-beautify</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/beautify-web/js-beautify">https://github.com/beautify-web/js-beautify</a></p>
+</li>
+</ul>
+<h2 id="安全"><a class="markdownIt-Anchor" href="#安全"></a> 安全</h2>
+<h3 id="数据安全"><a class="markdownIt-Anchor" href="#数据安全"></a> 数据安全</h3>
+<h3 id="代码安全"><a class="markdownIt-Anchor" href="#代码安全"></a> 代码安全</h3>
+<h3 id="通信安全"><a class="markdownIt-Anchor" href="#通信安全"></a> 通信安全</h3>
+<ul>
+<li>
+<p>SSL</p>
+<p>SSL, or Secure Sockets Layer, is the industry-standard technology for establishing an encrypted link between a web server and a browser.</p>
+</li>
+</ul>
+<h2 id="跨平台开发"><a class="markdownIt-Anchor" href="#跨平台开发"></a> 跨平台开发</h2>
+<h3 id="rax"><a class="markdownIt-Anchor" href="#rax"></a> Rax</h3>
+<p><a target="_blank" rel="noopener" href="https://rax.js.org/">https://rax.js.org/</a></p>
+<ul>
+<li>
+<p>H5</p>
+</li>
+<li>
+<p>Weex</p>
+<ul>
+<li>Android</li>
+<li>iOS</li>
+</ul>
+</li>
+<li>
+<p>阿里小程序</p>
+</li>
+<li>
+<p>微信小程序</p>
+</li>
+</ul>
+<h3 id="electron"><a class="markdownIt-Anchor" href="#electron"></a> Electron</h3>
+<h2 id="跨域"><a class="markdownIt-Anchor" href="#跨域"></a> 跨域</h2>
+<p><a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2016/04/cors.html">http://www.ruanyifeng.com/blog/2016/04/cors.html</a></p>
+<h3 id="简单请求"><a class="markdownIt-Anchor" href="#简单请求"></a> 简单请求</h3>
+<ul>
+<li>HEAD</li>
+<li>GET</li>
+<li>POST</li>
+</ul>
+<h3 id="非简单请求"><a class="markdownIt-Anchor" href="#非简单请求"></a> 非简单请求</h3>
+<p>非简单请求在发起请求前会发起预检，执行Opions的请求，如果预检通过，则本次生命周期内不会再进行预检</p>
+<ul>
+<li>PUT</li>
+<li>DELETE</li>
+</ul>
+<h2 id="常用工具推荐"><a class="markdownIt-Anchor" href="#常用工具推荐"></a> 常用工具推荐</h2>
+<p><a target="_blank" rel="noopener" href="https://ice.work/docs/guide/resource/tools">https://ice.work/docs/guide/resource/tools</a></p>
+<h3 id="fusioncool"><a class="markdownIt-Anchor" href="#fusioncool"></a> FusionCool</h3>
+<p>Sketch设计辅助工具</p>
+<h3 id="react-developer-tools"><a class="markdownIt-Anchor" href="#react-developer-tools"></a> React Developer Tools</h3>
+<h3 id="charles"><a class="markdownIt-Anchor" href="#charles"></a> Charles</h3>
+<h3 id="postman"><a class="markdownIt-Anchor" href="#postman"></a> Postman</h3>
+<h3 id="octotre"><a class="markdownIt-Anchor" href="#octotre"></a> Octotre</h3>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Zhang ling hao</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://zlhad.top/2021/03/24/%E5%89%8D%E7%AB%AF%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%9E%B6%E6%9E%84/">https://zlhad.top/2021/03/24/前端应用开发架构/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://zlhad.top" target="_blank">ZLH's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/SAST/">SAST</a><a class="post-meta__tags" href="/tags/Web%E5%89%8D%E7%AB%AF/">Web前端</a></div><div class="post_share"><div class="social-share" data-image="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/03/22/SAST2020.WOC%E4%BC%98%E7%A7%80%E4%BD%9C%E5%93%81%E5%B1%95%E7%A4%BA/"><img class="next-cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210322215853.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">SAST2020.WOC优秀作品展示</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/11/27/JavaScript基础教程（1）——语言介绍与定义/" title="JavaScript基础教程（1）——语言介绍与定义"><img class="cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210322215551.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-11-27</div><div class="title">JavaScript基础教程（1）——语言介绍与定义</div></div></a></div><div><a href="/2020/11/27/JavaScript基础教程（2）——变量作用域与var和let/" title="JavaScript基础教程（2）——变量作用域与var和let"><img class="cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210322215551.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-11-27</div><div class="title">JavaScript基础教程（2）——变量作用域与var和let</div></div></a></div><div><a href="/2020/11/28/JavaScript基础教程（3）——常见流程控制/" title="JavaScript基础教程（3）——常见流程控制"><img class="cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210322215551.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-11-28</div><div class="title">JavaScript基础教程（3）——常见流程控制</div></div></a></div><div><a href="/2020/12/06/JavaScript知识点——Event Loop/" title="JavaScript知识点——JavaScript中的EventLoop机制"><img class="cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210322215551.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-06</div><div class="title">JavaScript知识点——JavaScript中的EventLoop机制</div></div></a></div><div><a href="/2020/12/13/前端DOM发展史、性能与产能双赢背后的思考/" title="前端DOM发展史、性能与产能双赢背后的思考"><img class="cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201213181408.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-13</div><div class="title">前端DOM发展史、性能与产能双赢背后的思考</div></div></a></div><div><a href="/2021/03/19/Web前端开发概述/" title="Web前端开发概述"><img class="cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-19</div><div class="title">Web前端开发概述</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201125000839.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Zhang ling hao</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">14</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">10</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ZLHad"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ZLHad" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="/zhangczssx@hotmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%9E%B6%E6%9E%84"><span class="toc-text"> 前端应用开发架构</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%88%9B%E5%BB%BA"><span class="toc-text"> 项目创建</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%84%9A%E6%89%8B%E6%9E%B6"><span class="toc-text"> 脚手架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E7%94%A8%E7%BB%84%E4%BB%B6"><span class="toc-text"> 通用组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%81%E9%80%9F%E6%9E%84%E5%BB%BA"><span class="toc-text"> 极速构建</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E7%A0%81"><span class="toc-text"> 编码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C"><span class="toc-text"> 多人协作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%84%9A%E6%89%8B%E6%9E%B6-2"><span class="toc-text"> 脚手架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6%E5%8C%96"><span class="toc-text"> 组件化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E7%BC%96%E7%A0%81%E5%B7%A5%E5%85%B7"><span class="toc-text"> 自动编码工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91"><span class="toc-text"> 编译</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mock"><span class="toc-text"> Mock</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E8%AF%95"><span class="toc-text"> 调试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ide"><span class="toc-text"> IDE</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E8%A8%80"><span class="toc-text"> 语言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%85%E7%AE%A1%E7%90%86"><span class="toc-text"> 包管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E6%A1%86%E6%9E%B6"><span class="toc-text"> 运行时框架</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%E5%8F%91%E5%B8%83"><span class="toc-text"> 版本发布</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%8E%8B%E7%BC%A9"><span class="toc-text"> 代码压缩</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B7%E6%B7%86"><span class="toc-text"> 混淆</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%8C%85"><span class="toc-text"> 分包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%B0%8F%E5%8F%AF%E6%89%A7%E8%A1%8C%E5%8D%95%E5%85%83"><span class="toc-text"> 最小可执行单元</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E5%B8%83"><span class="toc-text"> 发布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BD%E9%99%85%E5%8C%96"><span class="toc-text"> 国际化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E7%8E%AF%E5%A2%83%E5%88%86%E5%8F%91"><span class="toc-text"> 运行时环境分发</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#html%E6%89%98%E7%AE%A1%E6%9C%8D%E5%8A%A1"><span class="toc-text"> Html托管服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text"> 云服务器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E5%9B%9E%E5%BD%92"><span class="toc-text"> 测试回归</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95"><span class="toc-text"> 自动化测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%8B%E5%B7%A5%E6%B5%8B%E8%AF%95"><span class="toc-text"> 手工测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E8%B4%A8%E9%87%8F%E6%B5%8B%E8%AF%95"><span class="toc-text"> 代码质量测试</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6"><span class="toc-text"> 版本控制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A8%E9%87%8F%E5%8F%91%E5%B8%83"><span class="toc-text"> 全量发布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%81%B0%E5%BA%A6%E5%8F%91%E5%B8%83"><span class="toc-text"> 灰度发布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%E5%AE%9A%E4%B9%89"><span class="toc-text"> 版本定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E7%89%88%E6%9C%AC%E8%AF%86%E5%88%AB"><span class="toc-text"> 运行时版本识别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%A8%E9%87%8F%E7%9B%91%E6%8E%A7%E5%8F%8A%E5%91%8A%E8%AD%A6"><span class="toc-text"> 质量监控及告警</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E6%97%A5%E5%BF%97%E6%8E%A7%E5%88%B6%E5%8F%B0"><span class="toc-text"> 执行日志控制台</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E6%80%A7%E8%83%BD%E6%95%B0%E6%8D%AE%E9%87%87%E9%9B%86%E4%B8%8E%E5%88%86%E6%9E%90"><span class="toc-text"> 运行时性能数据采集与分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%9A%E5%8A%A1%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86"><span class="toc-text"> 业务日志采集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E9%87%87%E9%9B%86"><span class="toc-text"> 网络请求采集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%84%9A%E6%9C%AC%E9%94%99%E8%AF%AF%E9%87%87%E9%9B%86"><span class="toc-text"> 脚本错误采集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%99%BD%E5%B1%8F%E5%8C%96%E6%97%A5%E5%BF%97"><span class="toc-text"> 白屏化日志</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%9A%E5%8A%A1%E5%BC%82%E5%B8%B8%E9%87%87%E9%9B%86"><span class="toc-text"> 业务异常采集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%8A%E6%96%AD%E8%83%BD%E5%8A%9B"><span class="toc-text"> 诊断能力</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%83%BD"><span class="toc-text"> 性能</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%91%E6%8E%A7"><span class="toc-text"> 监控</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#faas%E7%BD%91%E5%85%B3"><span class="toc-text"> Faas网关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E8%A8%80%E6%89%A7%E8%A1%8C%E5%8A%A0%E9%80%9F"><span class="toc-text"> 语言执行加速</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E4%B8%8E%E6%B5%8B%E8%AF%95"><span class="toc-text"> 性能监控与测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E6%89%8B%E6%AE%B5"><span class="toc-text"> 优化手段</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%9F%E8%AE%A1"><span class="toc-text"> 数据统计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%8B%E5%B7%A5%E5%9F%8B%E7%82%B9"><span class="toc-text"> 手工埋点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E7%97%95%E5%9F%8B%E7%82%B9"><span class="toc-text"> 无痕埋点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%9A%E5%8A%A1%E6%95%B0%E6%8D%AE%E6%8C%87%E6%A0%87"><span class="toc-text"> 业务数据指标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E8%A1%8C%E4%B8%BA%E6%95%B0%E6%8D%AE"><span class="toc-text"> 用户行为数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BE%E5%8C%BA%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-text"> 社区解决方案</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#devops"><span class="toc-text"> DevOps</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#cicd"><span class="toc-text"> CI&#x2F;CD</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#node%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="toc-text"> Node中间件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%86%E5%90%91%E5%88%86%E6%9E%90"><span class="toc-text"> 逆向分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#js"><span class="toc-text"> JS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%85%A8"><span class="toc-text"> 安全</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8"><span class="toc-text"> 数据安全</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%89%E5%85%A8"><span class="toc-text"> 代码安全</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E4%BF%A1%E5%AE%89%E5%85%A8"><span class="toc-text"> 通信安全</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%BC%80%E5%8F%91"><span class="toc-text"> 跨平台开发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#rax"><span class="toc-text"> Rax</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#electron"><span class="toc-text"> Electron</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B7%A8%E5%9F%9F"><span class="toc-text"> 跨域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E8%AF%B7%E6%B1%82"><span class="toc-text"> 简单请求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E%E7%AE%80%E5%8D%95%E8%AF%B7%E6%B1%82"><span class="toc-text"> 非简单请求</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90"><span class="toc-text"> 常用工具推荐</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#fusioncool"><span class="toc-text"> FusionCool</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#react-developer-tools"><span class="toc-text"> React Developer Tools</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#charles"><span class="toc-text"> Charles</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#postman"><span class="toc-text"> Postman</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#octotre"><span class="toc-text"> Octotre</span></a></li></ol></li></ol></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/03/24/%E5%89%8D%E7%AB%AF%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%9E%B6%E6%9E%84/" title="前端应用开发架构"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端应用开发架构"/></a><div class="content"><a class="title" href="/2021/03/24/%E5%89%8D%E7%AB%AF%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%9E%B6%E6%9E%84/" title="前端应用开发架构">前端应用开发架构</a><time datetime="2021-03-24T11:55:22.000Z" title="发表于 2021-03-24 19:55:22">2021-03-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/22/SAST2020.WOC%E4%BC%98%E7%A7%80%E4%BD%9C%E5%93%81%E5%B1%95%E7%A4%BA/" title="SAST2020.WOC优秀作品展示"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210322215853.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SAST2020.WOC优秀作品展示"/></a><div class="content"><a class="title" href="/2021/03/22/SAST2020.WOC%E4%BC%98%E7%A7%80%E4%BD%9C%E5%93%81%E5%B1%95%E7%A4%BA/" title="SAST2020.WOC优秀作品展示">SAST2020.WOC优秀作品展示</a><time datetime="2021-03-22T04:11:00.000Z" title="发表于 2021-03-22 12:11:00">2021-03-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/19/Web%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/" title="Web前端路由"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319143004.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web前端路由"/></a><div class="content"><a class="title" href="/2021/03/19/Web%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/" title="Web前端路由">Web前端路由</a><time datetime="2021-03-19T08:33:03.000Z" title="发表于 2021-03-19 16:33:03">2021-03-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/19/Web%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%A6%82%E8%BF%B0/" title="Web前端开发概述"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web前端开发概述"/></a><div class="content"><a class="title" href="/2021/03/19/Web%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%A6%82%E8%BF%B0/" title="Web前端开发概述">Web前端开发概述</a><time datetime="2021-03-19T05:11:12.000Z" title="发表于 2021-03-19 13:11:12">2021-03-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2020/12/27/%E7%94%B5%E5%B7%A5%E7%94%B5%E5%AD%90%E5%AE%9E%E9%AA%8C%E5%A4%8D%E4%B9%A0/" title="电工电子实验复习"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201224164045.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="电工电子实验复习"/></a><div class="content"><a class="title" href="/2020/12/27/%E7%94%B5%E5%B7%A5%E7%94%B5%E5%AD%90%E5%AE%9E%E9%AA%8C%E5%A4%8D%E4%B9%A0/" title="电工电子实验复习">电工电子实验复习</a><time datetime="2020-12-27T11:33:00.000Z" title="发表于 2020-12-27 19:33:00">2020-12-27</time></div></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png)"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2021 By Zhang ling hao</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">To be best, to be helpful!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script>$(function () {
+  $('span.katex-display').wrap('<div class="katex-wrap"></div>')
+})</script><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'Sr2EUsxrC5MGqfWfdzRr90Ig-MdYXbMMI',
+      appKey: 'cGMTNkFCjQCx6CvF1meFmUkE',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script id="canvas_nest" defer="defer" color="255,140,0" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script></div></body></html>
