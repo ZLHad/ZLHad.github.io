@@ -1,0 +1,345 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>漫谈WebSocket | ZLH's Blog</title><meta name="keywords" content="SAST,Web前端,计算机网络"><meta name="author" content="Zhang ling hao"><meta name="copyright" content="Zhang ling hao"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="漫谈WebSocket  写在前面 想到重新再去了解下WebSocket这个概念，其实是出于对某脚手架进行Network分析时偶然留意到的。  于是乎就突然想到了去年新柚杯的考试系统在生产使用中遇到的一个问题，就想再回过头来吧WebSocket重新深入理解一下。  Server&amp;client 众所周知，在校科协每年的招新题中，几乎每年都会出一个计网方向的题目，去年（大概是前年？）我记得就">
+<meta property="og:type" content="article">
+<meta property="og:title" content="漫谈WebSocket">
+<meta property="og:url" content="https://zlhad.top/2021/04/02/%E6%BC%AB%E8%B0%88WebSocket/index.html">
+<meta property="og:site_name" content="ZLH&#39;s Blog">
+<meta property="og:description" content="漫谈WebSocket  写在前面 想到重新再去了解下WebSocket这个概念，其实是出于对某脚手架进行Network分析时偶然留意到的。  于是乎就突然想到了去年新柚杯的考试系统在生产使用中遇到的一个问题，就想再回过头来吧WebSocket重新深入理解一下。  Server&amp;client 众所周知，在校科协每年的招新题中，几乎每年都会出一个计网方向的题目，去年（大概是前年？）我记得就">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210403172539.png">
+<meta property="article:published_time" content="2021-04-02T15:33:21.000Z">
+<meta property="article:modified_time" content="2021-04-03T16:13:11.518Z">
+<meta property="article:author" content="Zhang ling hao">
+<meta property="article:tag" content="SAST">
+<meta property="article:tag" content="Web前端">
+<meta property="article:tag" content="计算机网络">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210403172539.png"><link rel="shortcut icon" href="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201124235459.png"><link rel="canonical" href="https://zlhad.top/2021/04/02/%E6%BC%AB%E8%B0%88WebSocket/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-right"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-04-04 00:13:11'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201125000839.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">15</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/smalltalk/"><i class="fa-fw far fa-comments"></i><span> SmallTalk</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">ZLH's Blog</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/smalltalk/"><i class="fa-fw far fa-comments"></i><span> SmallTalk</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">漫谈WebSocket</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-04-02T15:33:21.000Z" title="发表于 2021-04-02 23:33:21">2021-04-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-03T16:13:11.518Z" title="更新于 2021-04-04 00:13:11">2021-04-04</time></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="漫谈websocket"><a class="markdownIt-Anchor" href="#漫谈websocket"></a> 漫谈WebSocket</h1>
+<h2 id="写在前面"><a class="markdownIt-Anchor" href="#写在前面"></a> 写在前面</h2>
+<p>想到重新再去了解下WebSocket这个概念，其实是出于对某脚手架进行Network分析时偶然留意到的。</p>
+<p><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210403173025.png" alt="image-20210403173025232"></p>
+<p>于是乎就突然想到了去年新柚杯的考试系统在生产使用中遇到的一个问题，就想再回过头来吧WebSocket重新深入理解一下。</p>
+<h2 id="serverclient"><a class="markdownIt-Anchor" href="#serverclient"></a> Server&amp;client</h2>
+<p>众所周知，在校科协每年的招新题中，几乎每年都会出一个计网方向的题目，去年（<u>大概是前年？</u>）我记得就是解释TCP/IP的三次握手和四次挥手的具体过程。而去年的话，似乎硬硬的Web基础部分洛天依还是我也出了道问WebSocket协议的题目。</p>
+<p>在说WebSocket之前，简单说一下HTTP通信的基本原理吧~（学过计网的人都懂吧）</p>
+<p>目前的web应用的通讯过程，其实还是基于HTTP1.0的基础协议，<strong>一个Request 一个Response</strong>。也就是客户端通过浏览器向服务器发送一个http请求，其中会包括Http Header和具体的传递内容，具体的传递方式这里就不展开了，大家自己去了解。</p>
+<p>这种一次请求一次回复的机制，在面对实时性要求高、高并发、以及需要用户实时响应的Web应用时候，会占用大量的带宽，同时伴随巨量的无效请求，甚至导致服务器瘫痪！（这是去年新柚杯考试系统在实际使用中出现的问题，尽管是因为CPU降频的原因，但是这确实不是一个高效的做法）</p>
+<p>而WebSocket呢，它是HTML5下一种新的协议。</p>
+<blockquote>
+<p>也有人说WWebSocket 根本不是 HTML5 的东西。</p>
+<p>WebSocket 是一个协议，归属于 IETF。</p>
+<p><strong>WebSocket API</strong> 是一个 Web API，归属于 W3C。</p>
+<p>两个规范是独立发布的。</p>
+<p>广义上的 HTML5 里面包含的是 WebSocket API，并不是 WebSocket。简单的说，可以把 WebSocket 当成 HTTP，WebSocket API 当成 Ajax。</p>
+<p>不过这里就简单都直接称WebSocket了.</p>
+</blockquote>
+<p>WebSocket实现了浏览器与服务器全双工通信，能更好的节省服务器资源和带宽并达到实时通讯的目的。</p>
+<p>它最大的作用就是解决了HTTP长连接的问题。</p>
+<h2 id="websocket的特点"><a class="markdownIt-Anchor" href="#websocket的特点"></a> WebSocket的特点</h2>
+<p>首先HTTP有1.1和1.0之说，也就是所谓的keep-alive，把多个HTTP请求合并为一个，但是归根到底本质上还是<strong>一个Request一个Response</strong>。</p>
+<p>Request = Response ， 在HTTP中永远是这样，也就是说一个request只能有一个response。而且这个response也是<strong>被动</strong>的（<u>注意啦！这是考点！圈起来QWQ</u>），不能主动发起。这是HTTP的一个生命周期。</p>
+<p>这和WebSocket还是有本质的区别。</p>
+<p>Websocket是一个<strong>持久化</strong>的协议，相对于HTTP这种<strong>非持久</strong>的协议来说。</p>
+<h3 id="过程实例"><a class="markdownIt-Anchor" href="#过程实例"></a> 过程实例</h3>
+<p>我们拿一个最典型的Websocket握手的建立过程为例（借用Ovear的例子）：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/chat</span> HTTP/1.1</span><br><span class="line"><span class="attribute">Host</span>: server.example.com</span><br><span class="line"><span class="attribute">Upgrade</span>: websocket</span><br><span class="line"><span class="attribute">Connection</span>: Upgrade</span><br><span class="line"><span class="attribute">Sec-WebSocket-Key</span>: x3JJHMbDL1EzLkh9GBhXDw==</span><br><span class="line"><span class="attribute">Sec-WebSocket-Protocol</span>: chat, superchat</span><br><span class="line"><span class="attribute">Sec-WebSocket-Version</span>: 13</span><br><span class="line"><span class="attribute">Origin</span>: http://example.com</span><br></pre></td></tr></table></figure>
+<p>熟悉HTTP的童鞋可能发现了，这段类似HTTP协议的握手请求中，多了几个东西。<br>
+我会顺便讲解下作用。</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Upgrade</span>: websocket</span><br><span class="line"><span class="attribute">Connection</span>: Upgrade</span><br></pre></td></tr></table></figure>
+<p>这个就是Websocket的核心了，告诉Apache、Nginx等服务器：<strong>注意啦，窝发起的是Websocket协议，快点帮我找到对应的助理处理~不是那个老土的HTTP。</strong></p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Sec-WebSocket-Key</span>: x3JJHMbDL1EzLkh9GBhXDw==</span><br><span class="line"><span class="attribute">Sec-WebSocket-Protocol</span>: chat, superchat</span><br><span class="line"><span class="attribute">Sec-WebSocket-Version</span>: 13</span><br></pre></td></tr></table></figure>
+<p>首先，Sec-WebSocket-Key 是一个Base64 encode的值，这个是浏览器随机生成的，告诉服务器：<strong>泥煤，不要忽悠窝，我要验证尼是不是真的是Websocket助理。</strong><br>
+然后，Sec_WebSocket-Protocol 是一个用户定义的字符串，用来区分同URL下，不同的服务所需要的协议。简单理解：<strong>今晚我要服务A，别搞错啦~</strong><br>
+最后，Sec-WebSocket-Version 是告诉服务器所使用的Websocket Draft（协议版本），在最初的时候，Websocket协议还在 Draft 阶段，各种奇奇怪怪的协议都有，而且还有很多期奇奇怪怪不同的东西，什么Firefox和Chrome用的不是一个版本之类的，当初Websocket协议太多可是一个大难题。不过现在还好，已经定下来啦：<strong>服务员，我要的是13 sui的噢→_→</strong></p>
+<p>然后服务器会返回下列东西，表示已经接受到请求， 成功建立Websocket啦！</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 <span class="number">101</span> Switching Protocols</span><br><span class="line"><span class="attribute">Upgrade</span>: websocket</span><br><span class="line"><span class="attribute">Connection</span>: Upgrade</span><br><span class="line"><span class="attribute">Sec-WebSocket-Accept</span>: HSmrc0sMlYUkAGmm5OPpG2HaGWk=</span><br><span class="line"><span class="attribute">Sec-WebSocket-Protocol</span>: chat</span><br></pre></td></tr></table></figure>
+<p>这里开始就是HTTP最后负责的区域了，告诉客户，我已经成功切换协议啦~</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">Upgrade</span>: websocket</span><br><span class="line"><span class="attribute">Connection</span>: Upgrade</span><br></pre></td></tr></table></figure>
+<p>这一块依然是固定的，告诉客户端即将升级的是Websocket协议，而不是mozillasocket，lurnarsocket或者shitsocket。</p>
+<p>然后，Sec-WebSocket-Accept 这个则是经过服务器确认，并且加密过后的 Sec-WebSocket-Key。服务器：<strong>好啦好啦，知道啦，给你看我的ID CARD来证明行了吧。。</strong><br>
+后面的，Sec-WebSocket-Protocol 则是表示最终使用的协议。</p>
+<p>至此，HTTP已经完成它所有工作了，接下来就是完全按照Websocket协议进行了。<br>
+具体的协议就不在这阐述了。</p>
+<p>整体来看，建立一次WebSocket协议的过程最后的Headers内容如下：</p>
+<p>拿**[写在前面]**中那个脚手架中的例子来看</p>
+<p><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210403175608.png" alt="image-20210403175608564"></p>
+<p>好吧……这上面一大堆bb其实就是解释了一下建立WebSocket链接时，它的Http Header的内容。</p>
+<p>下面就谈下重点，WebSocket到底有个什么鬼用？说它是长连接，到底是个怎么长连接法？</p>
+<p>为什么不用ajax轮询机制来实现？或者http long pull？</p>
+<h3 id="作用解析"><a class="markdownIt-Anchor" href="#作用解析"></a> 作用解析</h3>
+<p>曾几何时（这个词或许不能这么用），我们实现频繁的服务器-客户端通讯有ajax轮询机制，或者是http long pull机制。</p>
+<p>首先是 ajax轮询 ，ajax轮询 的原理非常简单，让浏览器隔个几秒就发送一次请求，询问服务器是否有新信息。</p>
+<p>场景复现：</p>
+<blockquote>
+<p>客户端：啦啦啦，小服，有没有新的信息啊？<strong>（Request）</strong></p>
+<p>服务器：（高冷╭(╯^╰)╮）无。<strong>（Response）</strong></p>
+<p>客户端：啦啦啦，小服，有没有新的信息啊？<strong>（Request）</strong></p>
+<p>服务器：（傲娇(￣_,￣ )）无。<strong>（Response）</strong></p>
+<p>客户端：啦啦啦，小服，有没有新的信息啊？<strong>（Request）</strong></p>
+<p>服务器：（不屑( ￣ー￣)）无。<strong>（Response）</strong></p>
+<p>客户端：啦啦啦，小服，有没有新的信息啊？<strong>（Request）</strong></p>
+<p>服务器：（无奈ㄟ( ▔, ▔ )ㄏ）没有。<strong>（Response）</strong></p>
+<p>客户端：啦啦啦，小服，有没有新的信息啊？<strong>（Request）</strong></p>
+<p>服务器：（人设崩塌-_-|||）你好烦啊，说了没有！！！<strong>（Response）</strong></p>
+<p>客户端：啦啦啦，小服，有没有新的信息啊？<strong>（Request）</strong></p>
+<p>服务器：（ &lt;(－︿－)&gt;）。。。没有。。。<strong>（Response）</strong></p>
+<p>……Loop……</p>
+</blockquote>
+<p>而http long pull，原理和ajax轮询类似，不过采取的是阻塞模型，也就是说，客户端发起连接后，如果没消息，就一直不返回Response给客户端。直到有消息才返回，返回完之后，客户端再次建立连接，周而复始。</p>
+<p>大概的场景是：</p>
+<blockquote>
+<p>客户端：（默默拨打小F的电话），滴，滴，滴……对不起，您所拨打的电话暂时无法接通，请稍后再拨……<strong>（Request）</strong></p>
+<p>客户端：（默默拨打小F的电话），滴，滴，滴……对不起，您所拨打的电话暂时无法接通，请稍后再拨……<strong>（Request）</strong></p>
+<p>客户端：（默默拨打小F的电话），滴，滴，滴……对不起，您所拨打的电话暂时无法接通，请稍后再拨……<strong>（Request）</strong></p>
+<p>客户端：（默默拨打小F的电话），滴，滴，滴……对不起，您所拨打的电话暂时无法接通，请稍后再拨……<strong>（Request）</strong></p>
+<p>……经历了N次疯狂的电话轰炸后，终于打通了……</p>
+<p>服务端：( εっ<em>´`)=ε=′￣(&lt;︶)↗[GO)ノ))☆.。ε￣)￣▽/(o(≦)Ｏ；)(๑°°‼(o°；)</em><strong>（Response）</strong></p>
+</blockquote>
+<p>通过以上两个机制，其实都体现了，http协议最大的一个特点：<strong>被动性</strong>（<u>这是考点！</u>）</p>
+<p>何为被动性呢，其实就是，服务端不能主动联系客户端，只能有客户端发起。</p>
+<p>说完这个，我们再来说一说上面的缺陷。</p>
+<p>从上面很容易看出来，不管怎么样，上面这两种都是非常消耗资源的。</p>
+<p>ajax轮询 需要服务器有很快的处理速度和资源。（速度）</p>
+<p>long poll 需要有很高的并发，也就是说同时接待客户的能力。（场地大小）</p>
+<p>所以ajax轮询 和long poll 都有可能发生这种情况：</p>
+<blockquote>
+<p>客户端：啦啦啦啦，有人接电话吗？<strong>（Request）</strong><br>
+服务端：对不起，您所拨打的电话暂时无法接通，请稍后再试**（503 Server Unavailable）**<br>
+客户端：。。。。啦啦啦，有人接电话吗么？<strong>（Request）</strong><br>
+服务端：对不起，您所拨打的电话暂时无法接通，请稍后再试**（503 Server Unavailable）**</p>
+</blockquote>
+<hr>
+<p><strong>言归正传</strong>，我们说一下WebSocket的机制吧。</p>
+<p>通过上面的例子，我们发现那两种长连接的方式都很消耗资源，归根到底是因为http协议的核心就是每一个Request对应一个Response，也就是说，服务器是一个渣👦，ta每天需要接待太多的客户，你和ta一次（那啥）之后，ta就把你忘了，下一次又要重新连接。</p>
+<p>哦，尤其是重新建立连接的时候又要重新发送一遍HTTP Header头，每次都要互换一下个人信息重新认识（你说渣不渣？）</p>
+<p>所以在这种情况下，Websocket出现了，作为一个良心的好人他出现了。</p>
+<p>首先，<strong>被动性</strong>（<u>考点，这里是第三遍了吧……</u>），当服务器完成协议升级后（HTTP-&gt;Websocket），服务端就可以主动推送信息给客户端啦。</p>
+<p>所以上面的场景可以变成这样：</p>
+<blockquote>
+<p>客户端：啦啦啦，我要建立Websocket协议，需要的服务：chat，Websocket协议版本：13**（HTTP Request）**<br>
+服务端：ok，确认，已升级为Websocket协议**（HTTP Protocols Switched）**<br>
+客户端：麻烦你有信息的时候推送给我噢。。<br>
+服务端：ok，有的时候会告诉你的。<br>
+服务端：balabalabalabala<br>
+服务端：balabalabalabala<br>
+服务端：哈哈哈哈哈啊哈哈哈哈<br>
+服务端：笑死我了哈哈哈哈哈哈哈<br>
+客户端：……</p>
+</blockquote>
+<p>恭喜你，在WebSocket协议下，只需要一次HTTP请求，就可以做到源源不断的信息传送了。</p>
+<p>这和JavaScript里面的回调函数的机制类似，所为回调机制，举个例子：</p>
+<blockquote>
+<p>小Z和他新认识👧说：“回到家后记得打个电话给我。”</p>
+<p>这里“打电话给我”就是一个回调函数，“回家后”是主函数。当主函数的达到了执行回调函数的时候才会去调用。</p>
+</blockquote>
+<p>这样的协议解决了上面同步有延迟，而且还非常消耗资源的这种情况。<br>
+那么为什么他会解决服务器上消耗资源的问题呢？<br>
+其实我们所用的程序是要经过两层代理的，即<strong>HTTP协议在Nginx、Apache等服务器的解析后</strong>，然后再传送给相应的<strong>Handler（PHP、Java、Nodejs等）<strong>来处理。<br>
+简单地说，我们有一个非常快速的</strong>接线员</strong>（Nginx、Apache），他负责把问题转交给相应的<strong>客服</strong>（Handler）。</p>
+<p>其实接线员往往性能和速度是足够的，但是由于HTTP是非状态性的，每次都要<strong>重新传输identity info（鉴别信息）</strong>，来告诉<strong>接线员</strong>（服务端）你是谁，接线员还要一一发给后面的<strong>客服</strong>（服务端应用），一时间就无法有足够的客服来处理请求，这就导致诸如503错误之类的情况。</p>
+<p>而WebSocket就解决了传统HTTP1.0和HTTP1.1中每次都要发送请求的弊端，直接跟接线员建立一个持久的链接，有信息的时候<strong>客服</strong>（服务器）想办法通知<strong>接线员</strong>，然后<strong>接线员</strong>在统一转交给客户。Websocket只需要<strong>一次HTTP握手</strong>，所以说整个通讯过程是建立在一<strong>次连接/状态</strong>中，也就避免了HTTP的非状态性，服务端会一直知道你的信息，直到你关闭请求。</p>
+<h3 id="缺点兼容性"><a class="markdownIt-Anchor" href="#缺点兼容性"></a> 缺点？兼容性？</h3>
+<p>当然，虽然前文将HTTP协议称作渣男，但是，WebSocket也只是基于Http的一种优化罢了，这种优化同时也带来一些缺陷。</p>
+<p>例如最重要的<strong>兼容性</strong>问题。</p>
+<p>很多传统的老的<strong>非现代</strong>浏览器，IE7，IE8，IE9，或者很久的Android系统，对于WebSocket并不兼容。（当然咯，我相信你不会还在用XP系统吧，不会吧不会吧  -_-! ）</p>
+<p>另外，维系这种长连接，需要服务端进行一些兼容性配置，比如在Nginx下，如果你用<strong><a target="_blank" rel="noopener" href="http://Socket.io">Socket.io</a></strong>的话，在服务端推送这块有一个redis的adaptor，一行代码即可搭建服务端到客户端的推送集群。<br>
+如果是client连接服务端的负载的话可以在Nginx通过sticky session来实现。</p>
+<h3 id="具体的实现"><a class="markdownIt-Anchor" href="#具体的实现"></a> 具体的实现</h3>
+<p>至于WebSocket在Web开发中具体的实现，目前主流的脚手架都已经封装好了，除非你去手搓原生三剑客。如果是这样的话，那也许得好好吧计网的知识巩固巩固，什么数据帧的解析啊，连接的控制啊等等，这里就不展开了。</p>
+<blockquote>
+<p>这里有一篇Blog细说了手搓WebSocket的具体流程，可以参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/lmhuanying1012/article/details/79492054">细说WebSocket</a></p>
+</blockquote>
+<hr>
+<p>好叭，今天就写到这里了，写完睡觉。。。（这是一个<u>回调函数</u> O(∩_∩)O~~）</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Zhang ling hao</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://zlhad.top/2021/04/02/%E6%BC%AB%E8%B0%88WebSocket/">https://zlhad.top/2021/04/02/漫谈WebSocket/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://zlhad.top" target="_blank">ZLH's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/SAST/">SAST</a><a class="post-meta__tags" href="/tags/Web%E5%89%8D%E7%AB%AF/">Web前端</a><a class="post-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a></div><div class="post_share"><div class="social-share" data-image="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210403172539.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/03/24/%E5%89%8D%E7%AB%AF%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%9E%B6%E6%9E%84/"><img class="next-cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">前端应用开发架构</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2020/11/27/JavaScript基础教程（1）——语言介绍与定义/" title="JavaScript基础教程（1）——语言介绍与定义"><img class="cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210322215551.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-11-27</div><div class="title">JavaScript基础教程（1）——语言介绍与定义</div></div></a></div><div><a href="/2020/11/27/JavaScript基础教程（2）——变量作用域与var和let/" title="JavaScript基础教程（2）——变量作用域与var和let"><img class="cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210322215551.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-11-27</div><div class="title">JavaScript基础教程（2）——变量作用域与var和let</div></div></a></div><div><a href="/2020/11/28/JavaScript基础教程（3）——常见流程控制/" title="JavaScript基础教程（3）——常见流程控制"><img class="cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210322215551.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-11-28</div><div class="title">JavaScript基础教程（3）——常见流程控制</div></div></a></div><div><a href="/2020/12/06/JavaScript知识点——Event Loop/" title="JavaScript知识点——JavaScript中的EventLoop机制"><img class="cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210322215551.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-06</div><div class="title">JavaScript知识点——JavaScript中的EventLoop机制</div></div></a></div><div><a href="/2020/12/13/前端DOM发展史、性能与产能双赢背后的思考/" title="前端DOM发展史、性能与产能双赢背后的思考"><img class="cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201213181408.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2020-12-13</div><div class="title">前端DOM发展史、性能与产能双赢背后的思考</div></div></a></div><div><a href="/2021/03/19/Web前端开发概述/" title="Web前端开发概述"><img class="cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-03-19</div><div class="title">Web前端开发概述</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201125000839.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Zhang ling hao</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">15</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ZLHad"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ZLHad" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="/zhangczssx@hotmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BC%AB%E8%B0%88websocket"><span class="toc-text"> 漫谈WebSocket</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="toc-text"> 写在前面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#serverclient"><span class="toc-text"> Server&amp;client</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#websocket%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-text"> WebSocket的特点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%87%E7%A8%8B%E5%AE%9E%E4%BE%8B"><span class="toc-text"> 过程实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E8%A7%A3%E6%9E%90"><span class="toc-text"> 作用解析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="toc-text"> 缺点？兼容性？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-text"> 具体的实现</span></a></li></ol></li></ol></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/04/02/%E6%BC%AB%E8%B0%88WebSocket/" title="漫谈WebSocket"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210403172539.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="漫谈WebSocket"/></a><div class="content"><a class="title" href="/2021/04/02/%E6%BC%AB%E8%B0%88WebSocket/" title="漫谈WebSocket">漫谈WebSocket</a><time datetime="2021-04-02T15:33:21.000Z" title="发表于 2021-04-02 23:33:21">2021-04-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/24/%E5%89%8D%E7%AB%AF%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%9E%B6%E6%9E%84/" title="前端应用开发架构"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端应用开发架构"/></a><div class="content"><a class="title" href="/2021/03/24/%E5%89%8D%E7%AB%AF%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%9E%B6%E6%9E%84/" title="前端应用开发架构">前端应用开发架构</a><time datetime="2021-03-24T11:55:22.000Z" title="发表于 2021-03-24 19:55:22">2021-03-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/22/SAST2020.WOC%E4%BC%98%E7%A7%80%E4%BD%9C%E5%93%81%E5%B1%95%E7%A4%BA/" title="SAST2020.WOC优秀作品展示"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210322215853.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SAST2020.WOC优秀作品展示"/></a><div class="content"><a class="title" href="/2021/03/22/SAST2020.WOC%E4%BC%98%E7%A7%80%E4%BD%9C%E5%93%81%E5%B1%95%E7%A4%BA/" title="SAST2020.WOC优秀作品展示">SAST2020.WOC优秀作品展示</a><time datetime="2021-03-22T04:11:00.000Z" title="发表于 2021-03-22 12:11:00">2021-03-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/19/Web%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/" title="Web前端路由"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319143004.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web前端路由"/></a><div class="content"><a class="title" href="/2021/03/19/Web%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/" title="Web前端路由">Web前端路由</a><time datetime="2021-03-19T08:33:03.000Z" title="发表于 2021-03-19 16:33:03">2021-03-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/03/19/Web%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%A6%82%E8%BF%B0/" title="Web前端开发概述"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web前端开发概述"/></a><div class="content"><a class="title" href="/2021/03/19/Web%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%A6%82%E8%BF%B0/" title="Web前端开发概述">Web前端开发概述</a><time datetime="2021-03-19T05:11:12.000Z" title="发表于 2021-03-19 13:11:12">2021-03-19</time></div></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png)"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2021 By Zhang ling hao</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">To be best, to be helpful!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script>$(function () {
+  $('span.katex-display').wrap('<div class="katex-wrap"></div>')
+})</script><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'Sr2EUsxrC5MGqfWfdzRr90Ig-MdYXbMMI',
+      appKey: 'cGMTNkFCjQCx6CvF1meFmUkE',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script id="canvas_nest" defer="defer" color="255,140,0" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script></div></body></html>
