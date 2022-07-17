@@ -1,0 +1,754 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>5G核心网架构和未来网络架构演进趋势 | ZLH's Blog</title><meta name="keywords" content="通信"><meta name="author" content="Zhang ling hao"><meta name="copyright" content="Zhang ling hao"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="5G核心网架构和未来核心网演进趋势 了不起的阿斗 NJUPT一只小小的菜鸡 移动通信已经融入到了家家户户的日常生活之中，为了适应更高带宽需求、超高流量密度、超低时延需求，第五代移动通信标准（5G）逐渐成型并已经进入商业化使用阶段。5G已经成为家喻户晓的名词，但是5G网络结构究竟有什么不同？是哪些因素影响了网络结构的演进？未来的新一代移动通信网络结构又会是什么样子？本文将重点调研这几个问题，将从移">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5G核心网架构和未来网络架构演进趋势">
+<meta property="og:url" content="https://zlhad.top/2022/07/17/5G%E6%A0%B8%E5%BF%83%E7%BD%91%E6%9E%B6%E6%9E%84%E5%92%8C%E6%9C%AA%E6%9D%A5%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B%E8%B6%8B%E5%8A%BF/index.html">
+<meta property="og:site_name" content="ZLH&#39;s Blog">
+<meta property="og:description" content="5G核心网架构和未来核心网演进趋势 了不起的阿斗 NJUPT一只小小的菜鸡 移动通信已经融入到了家家户户的日常生活之中，为了适应更高带宽需求、超高流量密度、超低时延需求，第五代移动通信标准（5G）逐渐成型并已经进入商业化使用阶段。5G已经成为家喻户晓的名词，但是5G网络结构究竟有什么不同？是哪些因素影响了网络结构的演进？未来的新一代移动通信网络结构又会是什么样子？本文将重点调研这几个问题，将从移">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/%E5%9B%BE%E7%89%871.png">
+<meta property="article:published_time" content="2022-07-17T04:09:12.000Z">
+<meta property="article:modified_time" content="2022-07-17T01:58:38.593Z">
+<meta property="article:author" content="Zhang ling hao">
+<meta property="article:tag" content="通信">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/%E5%9B%BE%E7%89%871.png"><link rel="shortcut icon" href="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201124235459.png"><link rel="canonical" href="https://zlhad.top/2022/07/17/5G%E6%A0%B8%E5%BF%83%E7%BD%91%E6%9E%B6%E6%9E%84%E5%92%8C%E6%9C%AA%E6%9D%A5%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B%E8%B6%8B%E5%8A%BF/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-right"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-07-17 09:58:38'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201125000839.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/smalltalk/"><i class="fa-fw far fa-comments"></i><span> SmallTalk</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://zlhad.oss-cn-shanghai.aliyuncs.com/img/%E5%9B%BE%E7%89%871.png)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">ZLH's Blog</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/smalltalk/"><i class="fa-fw far fa-comments"></i><span> SmallTalk</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">5G核心网架构和未来网络架构演进趋势</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-07-17T04:09:12.000Z" title="发表于 2022-07-17 12:09:12">2022-07-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-07-17T01:58:38.593Z" title="更新于 2022-07-17 09:58:38">2022-07-17</time></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">13.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>43分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="5g核心网架构和未来核心网演进趋势"><a class="markdownIt-Anchor" href="#5g核心网架构和未来核心网演进趋势"></a> 5G核心网架构和未来核心网演进趋势</h1>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/people/liao-bu-qi-de-a-dou-32">了不起的阿斗</a></p>
+<p>NJUPT一只小小的菜鸡</p>
+<p>移动通信已经融入到了家家户户的日常生活之中，为了适应更高带宽需求、超高流量密度、超低时延需求，第五代移动通信标准（5G）逐渐成型并已经进入商业化使用阶段。5G已经成为家喻户晓的名词，但是5G网络结构究竟有什么不同？是哪些因素影响了网络结构的演进？未来的新一代移动通信网络结构又会是什么样子？本文将重点调研这几个问题，将从移动通信发展历程开始研究，探索5G核心网架构的组成和设计理念，研究其主要网元功能和接口协议，并根据网络演进发展需求探讨3GPP标准下5G-Advanced的新特性和新趋势，最后讨论未来6G网络的性能需求和网络架构。</p>
+<p><strong>关键词：</strong> 5G，6G，核心网，通信</p>
+<p><strong>引言</strong></p>
+<p><strong>移动通信的发展是业务和技术的双重驱动是贯穿本文全部调研内容的核心思想</strong>。具体来说，根据不断衍生的业务场景需求，基于已有和可以达到的技术基础，逐渐实现移动通信网络体系<strong>低成本、低耦合、高效率、通用化、标准化</strong>以及<strong>业务场景深入化</strong>是移动通信网络一以贯之的演进趋势。</p>
+<p>本文将分为4大部分，</p>
+<p><strong>第一部分</strong>介绍移动通信的基础原理和历史发展，从最早的交换系统开始，介绍2G、3G、4G网络的特性和网络结构变化，总结其变迁规律和影响因素，验证5G网络架构的设计理念。</p>
+<p><strong>第二部分</strong>将结合5G时代的需求特点和设计原则来介绍5G核心网架构的组成部分和特点，重点着眼于SBA架构，研究5G核心网NFV网元的功能和演进特点，最后简单介绍5G核心网相关接口协议。</p>
+<p><strong>第三部分</strong>将介绍3GPP Rel-18标准内的5G-Advanced演进新趋势，验证网络架构演进的核心驱动力，并介绍5G-Advanced的几个新特性和应用场景。</p>
+<p><strong>第四部分</strong>将讨论未来6G网络的演进可能性，从业务技术双重驱动的角度调研6G网络的愿景和性能指标，并介绍当下通信前沿领域关于6G网络架构的研究。</p>
+<h2 id="一-移动通信工作原理与发展历程"><a class="markdownIt-Anchor" href="#一-移动通信工作原理与发展历程"></a> <strong>一、移动通信工作原理与发展历程</strong></h2>
+<p>移动通信是一种无线通信技术，相比于固定的有线通信而言，移动通信所处的传输环境和管理技术更加复杂，移动通信技术需解决<strong>两大技术问题</strong>：</p>
+<p>1、 克服移动通信复杂信道的影响实现较高的的通信性能，涉及的通信技术主要包括调制，编码，天线，资源调度等等；</p>
+<p>2、 移动性管理，包括通信核心网的注册，切换，漫游，业务连续性等等。</p>
+<p>因此，从技术角度出发，每一代移动通信网络都在前一代的基础上对上述两个方面做出了优化，本部分将从移动通信基础原来开始介绍，逐代介绍2G、3G、4G网络的特性和架构变化。</p>
+<h3 id="11-电磁波与频段"><a class="markdownIt-Anchor" href="#11-电磁波与频段"></a> <strong>1.1</strong> <strong>电磁波与频段</strong></h3>
+<p>移动通信中，信号的传输载体是电磁波。电磁波的基础公式：</p>
+<p><img src="https://pic2.zhimg.com/80/v2-63abd8d9b765f28c3ebdfd08dae0018d_720w.png" alt="img"></p>
+<p>其中，f是载波频率，光速常量为C，波长为λ。可以发现，波长和频率呈现反比关系。而信号装载在电磁波上是利用了波的周期性特性，因此频率越大，波长越小，也就是说，可以传递的数据量会更大。因此在移动通信传输中，我们会倾向于使用更高的电磁频段，因为使用的电磁频段越高，单位时间传递的信息量就越大，但是频率越大，电磁波发射所需要的能量也越大，而且频率越大，电磁波的绕障能力会降低，传播过程会受到各种障碍物和噪声的影响。</p>
+<p>因此，如何通过一系列技术来减少高频段下信号传输的噪声和干扰，以及如何提高高频率下整个通信系统的效率成为是每一代通信标准的研究重点和技术驱动力。</p>
+<p>下图简要展现了2G、3G、4G、5G标准所使用的频段。</p>
+<p><img src="https://pic1.zhimg.com/80/v2-ee0527f3d00cb48b754edf3a595b2bf8_720w.jpg" alt="img"></p>
+<p>图2 移动通信频段范围概图</p>
+<h3 id="12-通信网络基础架构"><a class="markdownIt-Anchor" href="#12-通信网络基础架构"></a> <strong>1.2</strong> <strong>通信网络基础架构</strong></h3>
+<p>当然，我们所说的每一代通信网络，频段的不同也仅仅是其中的一个区别，要明白当下5G第五代移动通信标准的制定逻辑和网络架构，就需要先回顾前几代的移动通信原理。</p>
+<p>简而言之，1G采用模拟信号传输，即将电磁波进行频率调制，将语音信号转换到载波电磁波上，只可以传递语音，而且抗干扰能力很差；2G采用的是数字调制技术，比1G多了数据传输的服务，此时的移动通信便可以传递数据，可以收发短信和链接互联网，同时数据速率也大大提升。同时，当下5G移动通信的基础结构也在2G时代跌定了基础。</p>
+<p>自从交换系统出现之后，通信网络的基础架构可以用下图简要概述：</p>
+<p><img src="https://pic1.zhimg.com/80/v2-63314f98f1bb3bc4a66485798e29a4b4_720w.jpg" alt="img"></p>
+<p>图3 通信网络基础架构</p>
+<p>在移动通信系统中，终端部分还需要经过一个信号接入网从而通过承载网络与核心网相连接。因此从最早的移动通信网络架构开始，核心网、承载网、接入网和终端便是移动通信网络结构的组成成分。</p>
+<p>其中，无线接入网，也就是通常所说的RAN（Radio Access Network），我们常说的基站（BaseStation，BS），就是属于无线接入网（RAN）；核心网（Core Network，简称 CN），本质就是对数据的处理和分发以及对终端账户进行管理与运营；承载网则是作为连接核心网和接入网，核心网和因特网的桥梁，通常以有线通信作为传输方式。</p>
+<h3 id="13-第2代移动通信系统2g"><a class="markdownIt-Anchor" href="#13-第2代移动通信系统2g"></a> <strong>1.3</strong> <strong>第2代移动通信系统（2G）</strong></h3>
+<p>我所说的蜂窝移动通信便是从2G的GSM网络开始，在2G的GSM网络架构中，我们会将信号覆盖地区划分为一个个蜂窝，也叫cell。BTS指的是基站，BSC指的是基站控制器。</p>
+<p>在2G的时代，基站控制器是独立的硬件系统，负责控制基站接收和发送信号。信号通过承载网传递到核心网的网元MSC（移动交换中心），而HLR（位置寄存器）、AUC（鉴权中心）等核心网网元也分别承担了一些功能。</p>
+<p>值得一提的是，在2G时代，这些网元指的都是<strong>实体</strong>网络功能单元。信号经过核心网的处理后，转发给公共电话网络。</p>
+<p><img src="https://pic1.zhimg.com/80/v2-420f1aef1e679a0c3d501a6c94ea2e88_720w.jpg" alt="img"></p>
+<p>图4 2G-GSM网络架构</p>
+<p>在2G和3G之间还存在一个2.5G网络GPRS，它在2G只能打电话发短信的基础上，开始有了数据（上网）业务。也是2G的GSM网络向3G的WCDMA的过渡。而2.5G相比于2G最重要的一点变化就是，有了数据的分组交换（Packet Switch），也叫包交换，GPRS全称General Packet Radio Service，也即通用分组无线服务。</p>
+<p><img src="https://pic2.zhimg.com/80/v2-6fb770a1b94ae794d209341773d0070d_720w.jpg" alt="img"></p>
+<p>图5 2.5G-GPRS网络架构图</p>
+<p>上图所示的2.5G网络架构中，GPRS网络实现了PS数据交换，其中SGSN（Serving GPRS Support Node），即服务GPRS支持节点，GGSN（Gateway GPRS Support Node），即网关GPRS支持节点，它们都是为了实现GPRS数据业务。通过上述网络结构，移动通信网络可以将数据传输业务通过GPRS网络传送给IP数据网络，传统的语音业务依然走GSM网络，是2G向3G时代的一种过渡。</p>
+<h3 id="14-第3代移动通信系统3g"><a class="markdownIt-Anchor" href="#14-第3代移动通信系统3g"></a> <strong>1.4</strong> <strong>第3代移动通信系统（3G）</strong></h3>
+<p>3G网络主要的特点就是提供数据业务，因此3G的网络架构有两个重要的特点：</p>
+<p>- <strong>第一点是IP化</strong>。传统的TDM中继电路变成了以网线、光纤为主的以太网连接方式，基站设备的外部接口和内部通信，都开始围绕IP和端口号进行交互；</p>
+<p>- <strong>第二点是控制面与用户面的分离</strong>。具体就是网元设备功能模块开始解耦和细化，将功能模块化而非单一设备集成多个功能。其中，用户面负责用户的实际业务数据，控制面主要管理数据的走向。业务数据承载和信令控制分离的设计理念使得3G的WCDMA网络架构中SGSN网元被独立出来，用于专门控制信令。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-b11e64439003f49998ec860a691a318a_720w.jpg" alt="img"></p>
+<p>图6 3G-WCDMA网络架构图</p>
+<h3 id="15-第4代移动通信系统4g"><a class="markdownIt-Anchor" href="#15-第4代移动通信系统4g"></a> <strong>1.5</strong> <strong>第4代移动通信系统（4G）</strong></h3>
+<p>4G的LTE网络架构提供了3G不能满足的无线网络宽带化。4G 网络是全 IP 化网络，主要提供数据业务，其数据传输的上行速率可达20Mbps，下行速率高达 100Mbps，基本能够满足各种移动通信业务的需求。</p>
+<p>4G 网络架构中，SGSN 变成 MME（Mobility Management Entity，移动管理实体），GGSN 变成 SGW/PGW（Serving Gateway，服务网关；PDN Gateway，PDN 网关），也就演进成了 4G 核心网。而接入网部分，为了实现扁平化，基站eNodeB合并了部分RNC的功能，还有一部分功能分给了核心网，基站可以进行自我的控制管理。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-e16b55c52d35ee4eab72fad85e88d5e6_720w.jpg" alt="img"></p>
+<p>图7 4GLTE网络架构图</p>
+<p>在4G时代，硬件平台开始电脑化。电信运营商使用IT的方式来重构网络，目前常用的就是ATCA平台，可以提供更强大的多媒体数据服务，硬件上采用IBM等厂商生产的x86通用平台服务器，也称“刀片”，使得一部分的网元功能实现虚拟化，成为NFV网元（Network Function Virtualization），也即将实体的网元硬件功能软件化，集成在x86的服务器平台上，方便模块化调用。这样同时打开了第三方生态，有利于不同客户进行不同的商业模式个性化改造。</p>
+<p><img src="https://pic2.zhimg.com/80/v2-837891ea662d149376e3939e99d0e4f1_720w.jpg" alt="img"></p>
+<p>图8 网元功能虚拟化</p>
+<p>但是上述的架构还有些不足，主要是控制面和用户面的分离做的还不够彻底，网络中的SGW/PGW两个网关不但要处理转发用户面的数据，还要负责进行会话的管理和承载控制等功能，这使得部署运维还是受限于“中心化”。</p>
+<p>因此，2016年，3GPP组织对SGW/PGW做了一次拆分，将这两个网元拆分成控制面和用户面两部分，称作CUPS架构，这使得其可以灵活部署于核心网，也可以部署于接入网，最终可以实现可分布式部署，也是为多元化的5G业务需求奠定了一些基础理念。</p>
+<h3 id="16-总结"><a class="markdownIt-Anchor" href="#16-总结"></a> <strong>1.6</strong> <strong>总结</strong></h3>
+<p>回顾从1G到4G的移动通信发展历程，每一代移动通信系统都可以通过标志性的能力指标和核心的关键技术来定义，如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>网络</th>
+<th>信号类型</th>
+<th>理论速率（bps）</th>
+<th>代表技术</th>
+<th>制式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1G</td>
+<td>模拟</td>
+<td>2.4k</td>
+<td>FDMA</td>
+<td>AMPS、TACS</td>
+</tr>
+<tr>
+<td>2G</td>
+<td>数字</td>
+<td>64k</td>
+<td>TDMA、CDMA</td>
+<td>GSM、CDMA</td>
+</tr>
+<tr>
+<td>3G</td>
+<td>数字</td>
+<td>2M</td>
+<td>WCDMA、SCDMA</td>
+<td>WCDMA、CDMA-2000、TD-SCDMA</td>
+</tr>
+<tr>
+<td>4G</td>
+<td>数字</td>
+<td>100M</td>
+<td>OFDM、IMT-Advanced</td>
+<td>TD-LTE</td>
+</tr>
+<tr>
+<td>5G</td>
+<td>数字</td>
+<td>7.5G</td>
+<td>IMT-2020</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>除了通信技术的变迁外，从<strong>业务驱动的角度</strong>来看，移动通信的业务从最早的语音信号传输逐渐扩展到多媒体宽带数据业务，用户也从基础的toC到后面toB。因此，业务场景和业务需求的个性化和多元化也同样是是移动通信技术发展的驱动力。</p>
+<p>从这个角度我们可以发现，2G到4G的网络结构除了技术升级外，还有几个重要的变化特征：</p>
+<p>- <strong>网络结构耦合性降低</strong></p>
+<p>- <strong>网络兼容性上升，开始允许第三方生态接入</strong></p>
+<p>- <strong>用户面和控制面逐步分离，网元功能独立化、模块化</strong></p>
+<p>- <strong>硬件平台电脑化、通用化</strong></p>
+<p>- <strong>运维部署分布式化</strong></p>
+<p>从这几个方面可以看出，5G网络标准的设计理念将继续在上述角度上继续深入革新，最终满足不断发展的新业务场景的需求，实现<strong>低成本、低耦合、高效率、通用化、标准化</strong>的移动通信网络。下一部分将介绍5G网络的性能指标和标准演进。</p>
+<h2 id="二-5g核心网架构和接口协议"><a class="markdownIt-Anchor" href="#二-5g核心网架构和接口协议"></a> <strong>二、5G核心网架构和接口协议</strong></h2>
+<p>面对来自未来移动网络业务场景需求带来的挑战，IMT-2020（5G）推进组于2020年５月和2016年５月接连发布了“5Ｇ网络技术架构”和“5Ｇ网络架构设计”两本白皮书，确定了５Ｇ网络通过引入SDN/NFV技术，从基础设施平台和网络架构两方面来实现网络换代的５Ｇ网络架构设计原则。</p>
+<p>本部分将介绍5G网络结构，首先从5G业务需求分析、网络架构设计原则、5G频段资源划分等角度解释其必要性，并重点对SBA架构的5G核心网进行介绍，了解其中主要网元的功能和特点，然后将其与旧的通信网络架构组成进行对比，探索其中变化的特征，验证其低成本、低耦合、高效率、通用化、多场景的演进趋势，最后将介绍5G核心网的网络接口和协议。</p>
+<h3 id="21-5g时代通信业务需求分析"><a class="markdownIt-Anchor" href="#21-5g时代通信业务需求分析"></a> <strong>2.1</strong> <strong>5G时代通信业务需求分析</strong></h3>
+<p>从第一部分分析我们看出业务和技术是移动通信发展的主要驱动力，讨论5G性能指标和网络架构首先明确5G时代的业务场景和技术基础。</p>
+<p>当下，移动互联网和物联网业务已经成为了移动通信的主要驱动力，5G需要满足人们在生活、工作、交通、娱乐等多种场景下的多样化业务需求，不仅需要满足超高流量密度、超高连接数、超高移动特征的场景，也需要满足在“万物互联”领域下超低延迟、超高可靠性等特征。因此，这种多样化业务场景下的差异化性能指标要求对5G的网络架构设计产生了很大的挑战，总的来说，可以将应用场景分为以下四个方面：</p>
+<p>\1. <strong>连续广域覆盖场景</strong>：保证用户的通信移动性和连续性，提供高速的通信速率（100Mbps以上）。</p>
+<p>\2. <strong>热点高容量场景</strong>：对于极高流量密度的场景，提供正常的数据传输速率。</p>
+<p>\3. <strong>低功耗大连接场景</strong>：主要用于物联网应用场景具有低功耗、小数据包、海量连接等特点。这要求网络能够提供100万/km²的连接密度要求。</p>
+<p>\4. <strong>低时延高可靠性场景</strong>：主要面对车联网和工业控制等场景，这类场景对时延和可靠性有着很高的要求，需要提供毫秒级的端到端的链接和接近100%的可靠性保证。</p>
+<p>上述四个主要应用场景可以将5G的网络需求分为三个具体的需求指标：eMBB（增强型移动宽带）、mMTC（大规模机器类型通信）和uRLLC（超可靠和低延迟通信）。对应的指标雷达图如下图所示。</p>
+<p><img src="https://pic2.zhimg.com/80/v2-1739d4620cd49312947efe1bb187974d_720w.jpg" alt="img"></p>
+<p>图9 5G时代多样化的通信需求</p>
+<p>下图是IMT-2020的5G关键性能愿景图，以及和4G网络的对比：</p>
+<p><img src="https://pic1.zhimg.com/80/v2-e2a1d43072c69f562142a102729840e4_720w.jpg" alt="img"></p>
+<p>图10 IMT-2020的5G关键性能愿景图</p>
+<p>5G业务包含大连接、高速率、低延时等多种场景，业务驱动因素与技术驱动因素相辅相成，互相推动移动通信深入行业领域。因此，在理解5G的多样化场景需求和性能指标后，在现有技术的设计原则基础上，我们可以更好的理解5G核心网的功能组成和架构特点。</p>
+<h3 id="22-5g网络架构的设计原则"><a class="markdownIt-Anchor" href="#22-5g网络架构的设计原则"></a> <strong>2.2</strong> <strong>5G网络架构的设计原则</strong></h3>
+<p>根据ITU（国际电信联盟）提出的5G多样化通信需求，可以得出5G网络架构的设计原则以及演进方向，包括以下几个方面：</p>
+<p><img src="https://pic2.zhimg.com/80/v2-517adb91b2fc07d6867910cfd1f6ea6d_720w.jpg" alt="img"></p>
+<p>图11 5G网络架构的设计原则</p>
+<p>这种设计原则也是以满足上述5G性能指标的技术路线，整体上依旧符合网络架构模块化、通用化等规律。且借鉴IT的“微服务”领域，采取服务化架构拆解网络功能为独立NFV，提供自管理、自包含、可重用网络功能。这种网络架构及业务连接特征对核心网提出了新的要求。</p>
+<h3 id="23-5g频段资源划分"><a class="markdownIt-Anchor" href="#23-5g频段资源划分"></a> <strong>2.3</strong> <strong>5G频段资源划分</strong></h3>
+<p>在3GPP协议中，5G的总体频谱资源定义成了两个FR频段：</p>
+<p>FR1：Sub6G频段，也就是低频频段，频率范围是450MHz到6GHz。该频段频率低，信号绕射能力强，覆盖范围好，是当下的主流频段，其中低于3Ghz的部分，包括了现网使用的2G、3G、4G频谱，可以在实现较低成本的快速部署，我国的三大运营商所使用的5G频段就是Sub6G。</p>
+<p>FR2：毫米波频段，频率范围是24Ghz到52Ghz，为5G的扩展频段，频谱干净，干扰较小，最大支持400Mbps的带宽，5G所说的高达20Gbps的峰值速率也是基于FR2的超大带宽。但是使用FR2频谱建设成本较高，信号绕射能力低，覆盖范围小，需要建设更多的基站，目前使用者以美国高通公司为主。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-f25a7cec207733f4a1ebbdec33a127f2_720w.jpg" alt="img"></p>
+<p>图12 5G的总体频谱资源</p>
+<h3 id="24-5g核心网网络架构及特点"><a class="markdownIt-Anchor" href="#24-5g核心网网络架构及特点"></a> <strong>2.4</strong> <strong>5G核心网网络架构及特点</strong></h3>
+<p>5G网络架构宏观上分为接入网和核心网两部分，5G接入层成为NG-RAN（NR），由5G基站（gNB）组成；5G核心网由控制面（CP）、用户面（UP）分离组成。</p>
+<p><img src="https://pic2.zhimg.com/80/v2-84929b165d0ed9feee4d34faa579e169_720w.jpg" alt="img"></p>
+<p>图13 5G整体网络架构</p>
+<p>相比于传统的4G核心网，5G核心网采用了原生适配云平台的设计思路、基于服务的架构和功能设计提供更泛在的介入、更灵活的控制和转发以及更友好的能力开放。</p>
+<p>5G通过架构和功能扩充，实现了软件定义网络功能（SDN），4G的“网元”重构为5G的虚拟网元功能（NFV），这些网络功能相互之间解耦，具备独立升级和独立弹性能力，同时具备标准接口与其他网络功能服务互通，这种基于服务的网络架构（SBA）是5G核心网基础的设计思维。3GPP标准的eSBA核心网架构如下图所示。</p>
+<p><img src="https://pic1.zhimg.com/80/v2-2e7e1a23047570c61fddb5f3a6b43ef0_720w.jpg" alt="img"></p>
+<p>图14 5G核心网eSBA架构</p>
+<p>总的来说，相比于4G网络，5G网络引入了SBA架构、CP/UP（控制平面与用户平面）分离、网络切片、边缘计算等多项关键技术。在R16版本中，5G核心网的架构和功能进一步演进，包括eSBA（服务化架构增强）、ETSUN（拓扑架构增强）、eNS（网络切片增强）、eLCS（位置服务增强）等关键功能。同时，5G核心网整体依旧处于一个非常全面且标准不断动态演进的状态，而5G核心网设计之初已经应用的基于SDN与NFV技术的SBA架构使得网络功能的升级和扩展更为灵活、便捷。</p>
+<h3 id="25-5g网元虚拟化"><a class="markdownIt-Anchor" href="#25-5g网元虚拟化"></a> <strong>2.5</strong> <strong>5G网元虚拟化</strong></h3>
+<p>5G的网元是虚拟化的网元功能模块，而传统的网元是一种软硬件结合的紧耦合的独立设备。在引入了虚拟化之后，软件和硬件解耦，从4G时代开始便使用通用服务器运行虚拟的网元功能模块。</p>
+<p>专家们借鉴了IT系统中微服务的架构，把大的单体软件进一步分解为多个小的模块化组件，这些组件就叫做网络功能服务 (NFS)，它们高度独立自治，并通过开放接口来相互通信，可以像搭积木一样组合成大的网络功能(NF)，以提升业务部署的敏捷性和弹性。在SBA架构中，各NF通过服务化接口对外提供服务，并允许其他NF访问或调用自身的服务。下图展现了5G核心网内主要的网元及其功能。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-712e6236b6462d5c518a0e1f83f94f83_720w.jpg" alt="img"></p>
+<p>图15 5G核心网网元功能一览</p>
+<p>可以看到，5G核心网架构的网元组成和之前2.2节提到的5G网络架构设计原则是相呼应的。因此，<strong>业务驱动——技术解决方案——标准制定和演进</strong>是移动通信网络不断更新迭代的基本流程。</p>
+<h3 id="26-5g主要nfv介绍"><a class="markdownIt-Anchor" href="#26-5g主要nfv介绍"></a> <strong>2.6</strong> <strong>5G主要NFV介绍</strong></h3>
+<p>下面将对核心网主要网元功能进行介绍：</p>
+<p>**AMF：接入和移动管理功能。**主要功能是移动性管理、可达性管理，注册连接管理，在接入网和CP控制面穿钉信令N2终结。同时也可以用于UE和其他CP的NF的NAS消息转发，也可以提供非3GPP的接入。类似于4GEPC核心网中的MME网元。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-9c6efb9399d968ba3174c4280a6d0c02_720w.jpg" alt="img"></p>
+<p>图16 接入和移动管理功能AMF</p>
+<p>**SMF：会话管理功能。**负责会话管理、UP选择和控制，包含对AN和UPF之间的隧道维护，也负责管理和分配UE的IP地址和接口，提供下行数据通知、数据漫游等功能。类似于4GEPC核心网中MME+SGW+PGW中会话和承载管理的控制面功能（SGW-C/PGW-C）。</p>
+<p><img src="https://pic2.zhimg.com/80/v2-948c4e8d12ec94779f4208bd031e49dd_720w.jpg" alt="img"></p>
+<p>图17 会话管理功能SMF</p>
+<p><strong>UPF：用户平面功能</strong>。负责数据报文的路由、转发、检测和QoS处理，负责流量的统计和上报，也作为分支点支持multihomed类型PDU会话，也可用于下行数据的缓存和通知触发。类似于4GEPC核心网中的SGW/PGW用户面功能。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-f7687cd760c1ab2a4f2c99e3e9b25643_720w.jpg" alt="img"></p>
+<p>图18 用户平面功能UPF2</p>
+<p>除了这三个网元外，5GSBA网络还有其他的一些网元功能，下表简单介绍。</p>
+<table>
+<thead>
+<tr>
+<th>网元简称</th>
+<th>网元中文名称</th>
+<th>主要功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AMF</td>
+<td>接入和移动管理</td>
+<td>完成移动性管理、NAS MM信令管理，NAS SM信令路由、安全锚点和安全上下文管理等</td>
+</tr>
+<tr>
+<td>SMF</td>
+<td>会话管理功能</td>
+<td>完成会话管理、UE IP地址分配和管理、UP选择和控制等</td>
+</tr>
+<tr>
+<td>UPF</td>
+<td>用户面功能</td>
+<td>完成用户面转发处理</td>
+</tr>
+<tr>
+<td>UDM</td>
+<td>统一数据管理</td>
+<td>管理和存储签约数据、鉴权数据</td>
+</tr>
+<tr>
+<td>PCF</td>
+<td>策略控制功能</td>
+<td>支持统一策略框架、提供策略规则</td>
+</tr>
+<tr>
+<td>NRF</td>
+<td>网络存储功能</td>
+<td>维护已部署NF的信息，处理从其他NF过来的请求</td>
+</tr>
+<tr>
+<td>NSSF</td>
+<td>网络切片选择功能</td>
+<td>完成切片选择功能</td>
+</tr>
+<tr>
+<td>AUSF</td>
+<td>鉴权服务器功能</td>
+<td>完成鉴权服务功能</td>
+</tr>
+<tr>
+<td>NEF</td>
+<td>网路开放功能</td>
+<td>开放各网络功能的能力吗，内外部信息转换</td>
+</tr>
+<tr>
+<td>LMF</td>
+<td>位置管理功能</td>
+<td>管理和控制端和基站的相对位置</td>
+</tr>
+<tr>
+<td>NRF</td>
+<td>网络仓储功能</td>
+<td>NF的登记和管理</td>
+</tr>
+</tbody>
+</table>
+<h3 id="27-5g-nfv主要特点"><a class="markdownIt-Anchor" href="#27-5g-nfv主要特点"></a> <strong>2.7</strong> <strong>5G NFV主要特点</strong></h3>
+<p>其实，大部分5G NF还是能在4G核心网中找到影子，上面三个标红的虚拟网元功能AMF、SMF、UPF是5GSBA架构中最重要的三个网元，承担了原4GEPC核心网中MME、PGW，SWG三个网元的绝大多数功能，并实现了控制面和用户面的分离。</p>
+<p>而4G CUPS核心网的MME和HSS中关于用户鉴权的功能也被抽取出来，合并成为5G的AUSF。与此同时，HSS中剩余的用户数据管理功能独立成为UDM，和AUSF配合工作来完成用户鉴权数据相关的处理。</p>
+<p>下图这种从4G到5G的网元变化的特点践行了移动通信网络组件<strong>逐步独立化、模块化</strong>的原则。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-c28f8a0a93b596cd4a03bb3470389d1e_720w.jpg" alt="img"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-9ff2cd176d9966a5dde4a5614917c15b_720w.jpg" alt="img"></p>
+<p>图19 4G与5G网元功能变化</p>
+<p>在5G的网络架构中，最大的变化还是每个NF都通过服务化接口对外提供服务，并允许其他NF访问或调用自身的服务。提供服务的NF被称作“NF服务提供者”，访问或调用服务的NF被称作“NF服务使用者”。这些活动都需要NRF的管理和监控。<strong>这套设计理念与当下互联网Web2.0中的前后端分离思想是有异曲同工之处的。</strong></p>
+<h3 id="28-5g网络接口"><a class="markdownIt-Anchor" href="#28-5g网络接口"></a> <strong>2.8</strong> <strong>5G网络接口</strong></h3>
+<p>在5G总体网络架构中，接口主要分为两种，一种是基于服务的接口，一种是基于参考点的接口。</p>
+<p>其中，<strong>基于服务的接口</strong>是核心网内每个网络功能单元和总线之间的接口，它是核心网基于服务架构SBA的体现，CP控制面的NF（例如AMF等网元功能）使其他授权的NF可以访问它所提供的服务。</p>
+<p><strong>基于参考点的功能接口</strong>聚焦于成对网络功能之间的交互，主要是接入网基站gNB与5G Core核心网之间的接口,这两个网络功能的交互通过点对点的参考点进行（如N1接口），详见上文图12。</p>
+<p>下表列出了基于服务的接口（SBI）：</p>
+<table>
+<thead>
+<tr>
+<th>接口</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Namf</td>
+<td>AMF展示的基于服务的接口</td>
+</tr>
+<tr>
+<td>Nsmf</td>
+<td>SMF展示的基于服务的接口</td>
+</tr>
+<tr>
+<td>Nnef</td>
+<td>NEF展示的基于服务的接口</td>
+</tr>
+<tr>
+<td>Npcf</td>
+<td>PCF展示的基于服务的接口</td>
+</tr>
+<tr>
+<td>Nudm</td>
+<td>UDM展示的基于服务的接口</td>
+</tr>
+<tr>
+<td>NAF</td>
+<td>AF展示的基于服务的接口</td>
+</tr>
+<tr>
+<td>Nnrf</td>
+<td>NRF展示的基于服务的接口</td>
+</tr>
+<tr>
+<td>Nausf</td>
+<td>AUSF展示的基于服务的接口</td>
+</tr>
+<tr>
+<td>Nudr</td>
+<td>UDR展示的基于服务的接口</td>
+</tr>
+<tr>
+<td>Nudsf</td>
+<td>UDSF展示的基于服务的接口</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody>
+</table>
+<p>下表列出了主要的参考点：</p>
+<table>
+<thead>
+<tr>
+<th>参考点</th>
+<th>位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>N1</td>
+<td>UE和AMF之间的参考点</td>
+</tr>
+<tr>
+<td>N2</td>
+<td>RAN和AMF之间的参考点</td>
+</tr>
+<tr>
+<td>N3</td>
+<td>RAN和UPF之间的参考点</td>
+</tr>
+<tr>
+<td>N4</td>
+<td>SMF和UPF之间的参考点</td>
+</tr>
+<tr>
+<td>N6</td>
+<td>UPF和数据网络之间的参考点</td>
+</tr>
+<tr>
+<td>N9</td>
+<td>两个UPF之间的参考点</td>
+</tr>
+<tr>
+<td>N5</td>
+<td>PCF和AF之间的参考点</td>
+</tr>
+<tr>
+<td>N7</td>
+<td>SMF和PCF之间的参考点</td>
+</tr>
+<tr>
+<td>N24</td>
+<td>访问网络中的PCF和旧属网络中PCF之间的参考点</td>
+</tr>
+</tbody>
+</table>
+<p>事实上，我们讨论的5G核心网内部的接口，主要是基于服务的接口（SBI），SBI也是和SBA架构相辅相成的，这类接口使用统一的定义，基于HTTP/2协议栈，使得NF之间的通信更像一个服务网络功能，而不是串行连接，它减少了接口之间的依赖性并且给每个网元功能的独立扩展留有足够的个性化空间，提高了跨功能拥有新功能和服务的依赖性。</p>
+<h3 id="29-5g网络协议"><a class="markdownIt-Anchor" href="#29-5g网络协议"></a> <strong>2.9</strong> <strong>5G网络协议</strong></h3>
+<p>在拓扑图上可以看出，5G网络接口分为Xn和NG两种接口。</p>
+<p><img src="https://pic1.zhimg.com/80/v2-090bf388d86577edb8fc9a7a0bece3e0_720w.jpg" alt="img"></p>
+<p>图20 5G网络接口拓扑图</p>
+<p>上图所示的5G无线接入网内，Xn表示了gNB与gNB间的接口，支持数据和信令传输；NG为gNB与核心网的接口；F1表示gNB-CU和gNB-DU之间的接口。</p>
+<p>所为“协议”，是指对等逻辑实体之间共同遵循的一套规则，下图展现了5G无线控制面和用户面协议栈。我们可以将上述三种接口分为两块，控制面CP协议栈主要包括Xn-C、NG-C、F1-C接口信令，基于SCTP协议（可靠性高）；用户面UP协议栈主要包括Xn-U、NG-U、F1-U，基于GTP-U协议。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-89f19e9eb895aca0f4c661111cc4d086_720w.jpg" alt="img"></p>
+<p>图21 5G无线协议栈</p>
+<p><img src="https://pic1.zhimg.com/80/v2-614447dccda8f4c04966f2e565a8d7a0_720w.jpg" alt="img"></p>
+<p>图22 5G端到端网络控制面协议栈</p>
+<p><img src="https://pic1.zhimg.com/80/v2-ab3e8cb55abd6d016702883ad683c5cc_720w.jpg" alt="img"></p>
+<p>图23 5G端到端网络用户面协议栈</p>
+<p>上图所示5G的控制面和用户面协议栈实现了协议分层化，类似于计算机网络中的OSI参考模型，这种<strong>分层化、服务化</strong>的协议模型有以下好处：</p>
+<p><strong>1、</strong> <strong>各层之间相互独立，通过层间接口调用对应服务，降低系统的复杂度。</strong></p>
+<p><strong>2、</strong> <strong>灵活性好，可以对某一层的服务进行增删改查。</strong></p>
+<p><strong>3、</strong> <strong>易于实现和维护，降低了整个体系的耦合度。</strong></p>
+<p><strong>4、</strong> <strong>用户面控制面协议分离，使得核心网和接入网直接的关联降低，方便网络切片和分布式部署运维。</strong></p>
+<h3 id="210-总结"><a class="markdownIt-Anchor" href="#210-总结"></a> <strong>2.10</strong> <strong>总结</strong></h3>
+<p>纵观整个5G的SBA网络架构、NFV网元、分层协议、独立接口等技术，均是以<strong>降低整个通信系统的系统的耦合度、提高通信系统效率、提高兼容性、适应个性化业务场景需求</strong>为目标导向。将一个复杂的系统进行模块化、通用化是当下各类电子设计的演进趋势，也是工程架构领域中的“自顶向下”的思维理念。</p>
+<p>因此，整个移动通信系统的演进趋势都是在不断的业务驱动需求下，基于现有和可以达到的技术基础，<strong>提高整体系统效率，实现系统的模块化、个性化、标准化</strong>。</p>
+<h2 id="三-未来移动通信技术演进趋势5g-advanced"><a class="markdownIt-Anchor" href="#三-未来移动通信技术演进趋势5g-advanced"></a> <strong>三、未来移动通信技术演进趋势——5G-Advanced</strong></h2>
+<p>2022年2月，工信部公布数据显示，我国已经建成142万个5G基站，5G网络已经能够覆盖全国所有地市一级县城城区，以及87%的乡镇镇区。5G的发展已经满足当下很多业务场景的需求并保留足够多的性能冗余，但是仍然有很多新的业务场景需要更加个性化的通信服务要求。产业界和学术界将在这种业务驱动下，继续升级完善现有的5G网络。这就是R-18标准下的5G-Advanced架构体系。</p>
+<p>本部分将从介绍3GPP组织5G标准演进日程开始，然后介绍5G-Advanced的需求背景，业务指标以及技术解决方案。从这过程中形成一套业<strong>务场景驱动-技术解决方案-标准制定</strong>的移动通信网络演进体系，并将其应用到未来的网络演进规划中。</p>
+<h3 id="31-5g-advanced诞生背景"><a class="markdownIt-Anchor" href="#31-5g-advanced诞生背景"></a> <strong>3.1</strong> <strong>5G-Advanced诞生背景</strong></h3>
+<p>3GPP作为国际移动通信行业的主要标准组织，承担5G国际标准技术内容的制定工作。3GPP R14阶段被认为是启动5G标准研究的时机，R15阶段启动了5G标准工作项目，R16及以后阶段将对5G标准进行完善增强，并提出5G-Advanced。3GPP组织 5G发展时间计划如下图所示：</p>
+<p><img src="https://pic4.zhimg.com/80/v2-59b6483d23fed20b8be3f7bac775f15f_720w.jpg" alt="img"></p>
+<p>图24 3GPP组织 5G发展时间计划</p>
+<p>5G从3GPP Release 15开始提出，5G的标准是全球统一的，由3GPP组织制定。在R15阶段，提出了NR NSA（非独立组网NR）和NR SA（独立组网NR）。非独立组网就是现网升级NSA，在现有LTE4G网络基础设施上升级，之后再向独立组网SA演进，这种部署方式易于早期eMBB快速部署，投资较小。</p>
+<p>在“2022年世界电信和信息社会日大会”的5G网络创新与应用扬帆论坛上，中国信息通信研究院副院长王志勤表示，5G增强标准将助力行业应用，5G行业标准的制定预计分为四个阶段：</p>
+<p><img src="https://pic4.zhimg.com/80/v2-036d37e36babe94b7c75548311a76b2b_720w.jpg" alt="img"></p>
+<p>图25 5G行业标准的制定四个阶段</p>
+<p>前三个阶段覆盖了5G的三大应用场景以及基础性问题，第四阶段的R18标准正在制定中，将会开启5G的第二个阶段即5.5G的标准（5G-Advanced），有5G与人工智能融合等全方位的能力提升和场景拓展。</p>
+<p>事实上，在3GPP最新的工作计划（SP-220718）中，R18已经在日程上，R19也已经启动。而2022 年 3 月已经实现了R17版的功能冻结。</p>
+<p><img src="https://pic1.zhimg.com/80/v2-7c99a24420761a145e6d5c7bafced0ec_720w.jpg" alt="img"></p>
+<p>图26 3GPP最新的工作计划（SP-220718）</p>
+<p>下图展现了3GPP 整体架构和规范，包括 2G、3G、4G 和 5G 系统，直至 Release-17（Copyright © 2021 Muneaki Ogawa）。</p>
+<p><img src="https://pic1.zhimg.com/80/v2-3583f624808eb31114a5038ab429e1c0_720w.jpg" alt="img"></p>
+<p>图27 3GPP 整体架构和规范</p>
+<p>自从2020年5G开始商用化，除了进一步促进移动互联网的发展，更重要的是会促进移动互联网和物联网的整合，进而全面落地大数据、云计算和人工智能等相关技术。根据下图5G核心网商用部署演进流程可以看出，目前5G的商用化部署已经处于后期阶段，除了满足消费者的通信需求，当下有越来越多新的场景需要5G更多的定制化需求，立足2C(to customer)基础，拓展2B2C(to business to customer)商业模式。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-601d63640ffa1708966c1fa72161eaaf_720w.jpg" alt="img"></p>
+<p>图28 5G核心网商用部署演进流程</p>
+<p>新商业模式和应用场景的需求也反过来要求5G开始制定新的标准和功能特性。3GPP早年间定义了5G三大应用场景，即eMBB、mMTC、uRLLC。后来，华为2020年11月提出在原有5G网络应用场景基础上加入UCBC（上行超带宽）、RTBC（宽带实时交互）、HCS（通信感知融合）三大应用场景，5G网络的应用架构由此从原有的“三角形”也开始向“六边形”演进。这就催生出了5G-Advanced网络演进理念。</p>
+<h3 id="32-5g-advanced-新特性"><a class="markdownIt-Anchor" href="#32-5g-advanced-新特性"></a> <strong>3.2</strong> <strong>5G-Advanced 新特性</strong></h3>
+<p>2021年4月3GPP提出5G-Advanced网络演进理念，产业各界从R18开始逐步为5G-Advanced完善框架和充实内容。5G-Advanced将从R18版本开始，预计2023年底标准冻结。</p>
+<p>3GPP 5G-Advanced主要关注五个方面：<strong>基础能力增强、新业务支持、分布式智能化、垂直行业能力增强和物联网架构演进</strong>，涉及实时通信、近距通信、无人机等关键特性，能更好地满足不同行业客户需求。</p>
+<p>与R-18版本前的5G相比，5G-Advanced进一步增强上行能力，宽带实时交互以及低时延等能力，将为5G后续发展定义新的目标和新的能力，通过网络演进和技术增强，实现万物智联等目标，将产生更大的社会和经济价值。5G-Advanced也将为未来6G愿景的实现提供前期的基础。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-bf69a392c3f1ec7dd9035805c7c49363_720w.jpg" alt="img"></p>
+<p>图29 5G-Advanced LOGO</p>
+<p>根据3GPP TSG SA Chair，Ceorg Mayer发布的《5G Advanced in the Making the TSG SA Approach to Release-18》白皮书中所述，R-18所关注的增强5G网络架构将会重点围绕“增能、智能、赋能”三个特性来研究和扩展，进一步增强网络基础能力及融合能力，推动网络智能化变革，为千行百业用户高效赋能。下表列出了这三个需求特性对应的网络要求和功能解决方案。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>网络特性</th>
+<th>功能/方案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>增强</td>
+<td>基础能力增强</td>
+<td>网络切片能力增强 ATSSS增强 卫星接入增强</td>
+</tr>
+<tr>
+<td></td>
+<td>新业务支持</td>
+<td>XR与媒体业务 下一代实时通信业务 近距通信业务 位置定位增强</td>
+</tr>
+<tr>
+<td>智能</td>
+<td>分布式智能化</td>
+<td>网络智能化 AI/ML业务 数字孪生</td>
+</tr>
+<tr>
+<td>赋能</td>
+<td>垂直行业能力增强</td>
+<td>5G LAN增强 NPN增强 确定性网络 支持无人机系统 多播广播增强</td>
+</tr>
+<tr>
+<td></td>
+<td>物联网架构演进</td>
+<td>无源物联网 能力简化技术</td>
+</tr>
+</tbody>
+</table>
+<p>下面以上述五个网络特性中的基础能力增强需求为例，简要介绍5G-Advanced的新技术及其解决方案。</p>
+<p><strong>【举例：基础能力增强特性】</strong></p>
+<p>5G-Advanced网络需要充分考虑基础架构演进以及功能的增强，从网络架构、组网方案、设备形态和服务能力上去匹配更加复杂的业务场景，从网络切片增强、ATSSS（接入流量控制、切换和分流）增强、卫星接入设计等方向推动网络能力增强。</p>
+<p>- 网络切片增强：</p>
+<p>网络切片技术可基于统一的网络基础资源及设施隔离出多个虚拟的端到端网络，并且保证各虚拟网络的业务隔离性，以适应多样化业务。5G-Advanced网络将针对以下三个方面进行增强，推动网络切片更好地应用于不同的通信业务。</p>
+<p>n 实现SLA保障增强</p>
+<p>n 支持切片智能化管理</p>
+<p>n 支持切片能力开放</p>
+<p>- ATSSS（接入流量控制、切换和分流）增强:</p>
+<p>R17中，多连接接入流量切换与分流管理技术通过增强UE和UPF间数据分流、增加QoS流的性能检测等方案，使得UE能够根据网络提供的ATSSS规则在3GPP接入和non-3GPP接入之间实现流量控制、切换和拆分。5G-Advanced致力于实现多场景、多能力以及多接入的增强。</p>
+<p>R16/R17仅支持一个3GPP接入（NR或者LTE）和一个非3GPP接入的业务建立场景，5G-Advanced网络支持更多接入的解决方案，如实现在相同PLMN内的两个非3GPP接入之间切换。</p>
+<p>- 卫星接入增强: 5G与卫星通信的融合是未来空天一体的基础,5G-Advanced将对5G与卫星通信融合技术在卫星作为接入和卫星作为回传两方面进行增强和完善。</p>
+<p>n 在卫星作为接入方面：针对卫星不连续覆盖的情况，实现移动性管理方面的优化；在移动情况时，支持再生模式下的移动性管理和会话管理的优化增强方案。</p>
+<p>n 在卫星作为回传方面：增强5G系统对卫星回传质量变化的适配，提供基于包检测的动态QoS控制以及回传质量信息开放等机制；分析UPF在低轨卫星上部署的可行性，探讨通过星上UPF实现基于卫星的边缘计算和本地环回等降低回传时延的技术方案。</p>
+<h3 id="33-总结"><a class="markdownIt-Anchor" href="#33-总结"></a> <strong>3.3</strong> <strong>总结</strong></h3>
+<p>正如在R18版本正式立项之前，2021年8月，包括国内三大运营商在内的21家单位联合发布的《5G-Advanced网络技术演进白皮书》一书所述，网络系统融合、网络智能化、行业使能应用这三个方向是5G当下阶段和未来一段时间演进的主要方向，说到底其实就是<strong>以业务场景驱动作为核心驱动力</strong>，<strong>以个性化的需求定制作为应用增长点</strong>，同时实现社会治理和社会生活的智能化、便捷化，提升总体社会生产力水平。</p>
+<p>同时，从5G-Advanced的技术新趋势可以看出，移动通信的演进趋势将会更加和具体业务场景关联，这也是基于模块化、标准化的网络结构所形成的优势。</p>
+<h2 id="四-未来移动通信技术演进趋势6g"><a class="markdownIt-Anchor" href="#四-未来移动通信技术演进趋势6g"></a> <strong>四、未来移动通信技术演进趋势——6G</strong></h2>
+<p>随着5G的大规模商用，6G研究也成为了移动通信行业新的研究热点。全球通信发达的国家和地区纷纷出台6G研发规划。尽管5G已将人与人之间的简单通信做得很完善了，但是在人机物方面还没有达到完美的地步，6G相关研究已经提出，研究6G也是迭代的需要，为了满足未来行业的需求。面向2030年，如何定义6G，如何支撑6G突破现有技术的束缚，构建全新的能力体系，推动移动通信产业的进一步升级，是目前学术界和工业界都在努力研究的问题。</p>
+<p>本部分将从6G时代的需求愿景出发，探讨6G网络的性能指标和频谱方案，最后再根据性能要求提出6G网络可能的网络架构和特征，进一步揭示移动通信系统和核心网架构逐渐个性化、业务化的演进趋势。</p>
+<h3 id="41-6g网络整体愿景目标"><a class="markdownIt-Anchor" href="#41-6g网络整体愿景目标"></a> <strong>4.1</strong> <strong>6G网络整体愿景目标</strong></h3>
+<p>回顾整个移动通信发展历史，每一代通信技术从它的标准化到实用化都是迭代的过程，每一代通信技术迭代发展都有一定的客观规律和节奏，从2G/3G/4G到现在的5G，以及未来的6G，市场的需求是推动每一代通信技术向前发展的根本动力所在，这个过程需要时间。</p>
+<p>而随着5G应用的快速渗透、科学技术的不断突破、DICT的深度融合，通过调研本文认为，6G将在5G基础上全面支持世界的数字化，即基于物理世界生成一个数字化的孪生虚拟世界，物理世界的人和人、人和物、物和物之间将可以通过数字化世界来传递信息与智能。基于数字世界，可以模拟物理世界的运行状态，预测物理世界的发展趋势等。基于这些预测形成一些预防性措施，提前干预物理世界的运行，由此改变未来。在这样的社会发展愿景下，将会涌现出非常多的全新应用场景，比如人的数字孪生、全息交互、通感互联及智能交互等，如下图所示。</p>
+<p><img src="https://pic1.zhimg.com/80/v2-d192dd684014f8a3b21f9d14521b80d4_720w.jpg" alt="img"></p>
+<p>图30 6G时代应用场景</p>
+<p>6G时代的核心需求场景也将着重于“万物智联”，下图展现了从3G的“人连”、到5G的“万物互联”，再到6G“万物智联”的演进趋势。而实现万物智联，核心性能要求就是实现通信网络更强的感知性和原生AI化。</p>
+<p><img src="https://pic1.zhimg.com/80/v2-7a8c14b05ac01aea108b2f9f9d3a1f28_720w.jpg" alt="img"></p>
+<p>图31 移动通信发展趋势</p>
+<p><img src="https://pic3.zhimg.com/80/v2-de27cb6848159566a1445250fabb507e_720w.jpg" alt="img"></p>
+<p>图32 6G时代应用场景概览</p>
+<h3 id="42-6g关键性能指标"><a class="markdownIt-Anchor" href="#42-6g关键性能指标"></a> <strong>4.2</strong> <strong>6G关键性能指标</strong></h3>
+<p>借鉴整个5G的研发历程，可以初步研判，整个6G研发将大概分为两个阶段:第一个阶段(2018—2025)，愿景、需求的定义和关键技术的研究验证、系统概念设计与原型验证;第二个阶段(2026—2030)，3GPP开始相关标准的研究和制定，端到端产业化推进，业务和应用培育以及商用部署。目前全球关于6G的研究正处于定义愿景需求、寻找关键技术的阶段，正在百花齐放、百家争鸣。</p>
+<p>而根据图33的这些应用场景的分析，可以推导出其对网络能力的需求，由此形成6G网络的KPI需求，如下图所示。怎么满足这些指标，将是未来行业共同努力的方向，通过从频谱、无线传输技术、网络架构、网络功能、安全、AI能力以及技术平台等方面的突破，实现6G网络技术体系质的飞跃。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-31ead43dcf05f267c90ec1fa5e2c1273_720w.jpg" alt="img"></p>
+<p>图33 6G场景化关键性能指标（与5G对比）</p>
+<p>从上图可以看出，未来场景化的6G KPI定义将是6G需求指标定义的重要形式。当然，对每个6G场景下的网络技术指标体系的数值，业界还没有达成共识，还需要结合应用和技术的发展去进一步丰富和完善。同时，6G的性能指标中除传统的通信功能之外，还包括确定性QoS、更精准的定位、姿态感知、计算能力、AI能力、安全能力等指标。所以未来6G网络将不再简单提供通信连接的能力，还需提供更加综合的能力体系，以支持更加丰富多彩的应用场景。</p>
+<h3 id="43-6g频谱分配"><a class="markdownIt-Anchor" href="#43-6g频谱分配"></a> <strong>4.3</strong> <strong>6G频谱分配</strong></h3>
+<p>从4G和5G发展的历史来看，频率的规划和选择至关重要。5G实现了Sub-6GHz的100 MHz带宽的载波，毫米波达到了400 MHz的带宽，结合大规模天线技术，实现了1 Gbit/s以上的峰值速率。而6G需要支持非常高的传输速率，如Tbit/s，因此需要更大的连续带宽;另一方面，6G也需要无缝覆盖，需要更多的低端频谱。这两个方面是相互矛盾的。</p>
+<p>因此，面向6G，如下图所示，我们可以对不同的应用场景动态按需分配不同的频段范围。一方面需要10 GHz以下的连续大带宽频率以保证基础的网络覆盖，支持无缝的地面覆盖网络部署，保障基础的业务能力提升;另一方面，也可以考虑根据业务的需要，按需部署与动态开启毫米波、THz和可见光等高频段，满足超高速率、超大容量的业务需求，或者在提供数据传输的同时，提供定位等感知能力，进一步拓展6G网络能够支持的应用场景。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-b42bb4a31eae2fcff5b8f38e70fc1257_720w.jpg" alt="img"></p>
+<p>图34 6G多层频段动态选择方案</p>
+<h3 id="44-6g网络架构特征"><a class="markdownIt-Anchor" href="#44-6g网络架构特征"></a> <strong>4.4</strong> <strong>6G网络架构特征</strong></h3>
+<p>从面向垂直行业的差异化、碎片化业务的应用拓展来看，6G网络架构需要有更大的突破才能真正灵活地适应未来网络能力指标范围更为动态的业务发展需求。</p>
+<p>结合6G网络架构演进的驱动力、已有网络发展的经验和教训以及对未来技术发展趋势的分析和理解，6G时代的网络架构应该具备6个特征：</p>
+<p><img src="https://pic1.zhimg.com/80/v2-c6feb5f9de2a2053ede01fd4d2fab374_720w.jpg" alt="img"></p>
+<p>图35 6G时代的网络架构特征</p>
+<p>通过这6条6G网络架构演进要求，我们可以看到未来的网络架构演进趋势着重于以下5个变化：</p>
+<p>- <strong>个性化动态配置资源、功能、参数，实现网络资源按需满足。</strong></p>
+<p>- <strong>实现网元功能模块化，核心网统一化，降低耦合性，精简接口协议。</strong></p>
+<p>- <strong>实现云原生，提升通信网络的敏捷和高效。</strong></p>
+<p>- <strong>智能化，实现AI的原生化，并智能控制和管理网络。</strong></p>
+<p>- <strong>网元的虚拟化和数字化程度加强。</strong></p>
+<h3 id="45-6g三层四面网络架构设想"><a class="markdownIt-Anchor" href="#45-6g三层四面网络架构设想"></a> <strong>4.5</strong> <strong>6G“三层四面”网络架构设想</strong></h3>
+<p>根据上述的6G网络架构特征分析，未来的6G网络可以分为三层:</p>
+<p>第一层是<strong>资源层</strong>，包括无线、计算、存储等物理的资源;</p>
+<p>第二层是<strong>网络功能层</strong>，基于下层资源形成特定的网络功能来支撑上层的服务;</p>
+<p>第三层是<strong>服务层</strong>，包括各类的应用和服务。</p>
+<p>除传统的控制面和用户面，未来网络还需引入新四面，包括<strong>数据收集面、智能面、共享与协作面、安全面</strong>。</p>
+<p>为了实现AI的内生，需要数据收集面去实现全域端到端数据的采集、清洗、结构化以及存储等工作来保证数据的按需采集和订阅;需要AI面来为不同应用场景的AI应用提供数据的训练、模型的更新和算法的调优等，保证AI应用需求的满足;同时，为了实现安全内生需要引入单独的安全面，保证安全能够成为整个网络的免疫系统。</p>
+<p>下图为6G“三层四面”的网络架构设想图：</p>
+<p><img src="https://pic2.zhimg.com/80/v2-2f39f3152edd9e5abc2b5080d4a7e92d_720w.jpg" alt="img"></p>
+<p>图36 6G“三层四面”网络架构设想图</p>
+<h3 id="46-6g总结"><a class="markdownIt-Anchor" href="#46-6g总结"></a> <strong>4.6</strong> <strong>6G总结</strong></h3>
+<p>5G已在全球开始大规模的商业部署，全球产业正在围绕2B和2C开展业务和应用的孵化和培育。5G的经验和教训都将成为6G研究非常重要的创新源泉，6G必将进一步继承和发展5G中已经验证可行的技术和理念，比如MIMO、polar/LDPC码、服务化、云化以及网络切片等。</p>
+<p>另一方面，6G也需要往前看，去寻找新的创新突破、理论突破、产业突破，比如在物理层技术已经逼近香农限的情况下，<strong>如何进一步提升无线传输的效率</strong>;在摩尔定律已经接近极限时，拿<strong>复杂度换性能的技术路线</strong>是否还可以延续，6G需要去重新思考新的产业路径和布局。</p>
+<p>此外，在需求方面，6G面临的应用场景会更加复杂，需要在网络设计之初考虑到更灵活的适应性。因此，我们既要脚踏实地，也要仰望星空，产、学、研、用协同推动5G往6G的方向演进和发展。</p>
+<p>回顾从1G时代开始到未来6G时代的网络演进趋势，从核心网的角度来看，逐渐实现移动通信网络体系<strong>低成本、低耦合、高效率、通用化、标准化</strong>以及<strong>业务场景深入化</strong>是移动通信网络一以贯之的演进趋势，而<strong>技术和业务就是网络架构演进的核心驱动力</strong>。</p>
+<h2 id="结束语"><a class="markdownIt-Anchor" href="#结束语"></a> <strong>结束语</strong></h2>
+<p>本文调研现有5G核心网架构组成，了解其主要组成单元和功能，相关接口和协议； 调研6G网络演进发展需求以及5G核心网的未来发展趋势；调研现有开源5G核心网仿真软件，并对其功能和优劣进行了对比分析。</p>
+<p>通过调研可以得出结论：<strong>移动通信的发展是业务和技术的双重驱动，具体而言，根据不断衍生的业务场景需求，基于已有和可以达到的技术基础，逐渐实现移动通信网络体系低成本、低耦合、高效率、通用化、标准化以及业务场景深入化是移动通信网络一以贯之的演进趋势。</strong></p>
+<p>谢谢！</p>
+<h2 id="参考文献"><a class="markdownIt-Anchor" href="#参考文献"></a> <strong>【参考文献】</strong></h2>
+<p>[1] China MobileＲesearch Institute．Vision andＲequirementsfor 2030+(version 2．0)［Ｒ］，2020．</p>
+<p>[2] 3GPP. 3GPP TS 22.215: Unmanned Aerial System (UAS) support in 3GPP[S]. 2021.</p>
+<p>[3] 3GPP. 3GPP TR 22.822 V16.0.0: Study on using Satellite Access in 5G[S]. 2018.</p>
+<p>[4] 3GPP. 3GPP TR 22.829: Enhancement for Unmanned Aerial Vehicles[S]. 2021.</p>
+<p>[5] 3GPP. 3GPP TS 23.273: 5G System (5GS) Location Services (LCS)[S]. 2021.</p>
+<p>[6] 3GPP. 3GPP TS 23.288: 5G System; Architecture enhancements for 5G System (5GS) to support network data analytics service[S]. 2021.</p>
+<p>[7] 3GPP. 3GPP TS 23.501 V17.1.1: System architecture for the 5G System (5GS)[S]. 2021.</p>
+<p>[8] 3GPP. 3GPP TS 23.520: 5G System; Network Data Analytics Services[S]. 2021.</p>
+<p>[9] 3GPP. 3GPP TR 23.737 V17.2.0: Study on architecture aspects for using satellite access in 5G[S]. 2021.</p>
+<p>[10]3GPP. Proxy mobile IPv6 based mobility and tunneling protocols：TS29.275[S]. 2020.</p>
+<p>[11]3GPP. 3GPP TR 38.821 V16.1.0: Solutions for NR to support non-terrestrial networks (NTN)[S]. 2021.</p>
+<p>[12]3GPP. 3GPP TS 38.413 V15.4.0：Technical Specification Group Radio Access Network. 2019.</p>
+<p>[13]3GPP TR 38.913 V0.4.0, Study on Scenarios and Requirements for Next Generation Access Technologies (Release 14)[S].</p>
+<p>[14]GSA. GSA 5G Market Snapshot[Z]. 2021.</p>
+<p>[15]TANG W K，DAI J Y，CHEN M Z，et al．MIMO Transmis-sion throughＲeconfigurable Intelligent Surface:SystemDesign，Analysis，and Implementation［J/OL］．arX iv:1912．09955，Dec 2019．https:∥arxiv．org/abs/arX iv:1912．09955．</p>
+<p>[16]ITU. Report ITU-R M.2460-0: Key elements for integration of satellite systems into Next Generation Access Technologies[R]. 2019.</p>
+<p>[17]Costa-Requena J. SDN integration in LTE mobile backhaul networks[C]// International Conference on Information NETWORKING. IEEE, 2014:264-269.</p>
+<p>[18]Haw R, Hong C S, Lee S. An efficient content delivery framework for SDN basedLTE network[C]/l International Conference on Ubiquitous InformationManagement and Communication. 2014:1-6.</p>
+<p>[19]Chourasia S, Sivalingam K M. SDN based Evolved Packet Core architecture for efficient user mobility support[C]//Network Softwarization. IEEE, 2015:1-5.</p>
+<p>[20]Zhang J, Ji Y, Zhang J, et al. Baseband unit cloud interconnection enabled by flexible gridoptical networks with software defined elasticity[J]. Communications Magazine IEEE, 2015, 53(9):90-98.</p>
+<p>[21]Yazıcı V, Kozat U C, Sunay M O. A new control plane for 5G network architecture with a case study on unified handoff, mobility, and routing management[J]. IEEE Communications Magazine, 2014, 52(11):76-85.</p>
+<p>[22]杨文强,王友祥,唐雄燕,王立文.面向云原生的5G核心网云化架构和演进策略[J].邮电设计技术,2021(03):12-15.</p>
+<p>[23]基于SDN的5G架构研究_何晨[J].</p>
+<p>[24]移动运营商第五代通信网络技术优化策略及行业应用_段姗伶[J].</p>
+<p>[25]吴英娜,余永聪.5G核心网组网方案分析及演进路线研究[J].数字技术与应用,2019,37(07):28-29.</p>
+<p>[26]沈孝萍,曹广山,陈成运.移动核心网的发展及演进[J].广东通信技术,2019,39(07):64-69.</p>
+<p>[27]广电5G核心网规划思考_张健[J].</p>
+<p>[28]5G核心网架构及演进研究_尤星[J].</p>
+<p>[29]杨旭,肖子玉,邵永平,等. 面向5G的核心网演进规划[J]. 电信科学, 2018(7): 162-170.</p>
+<p>[30]面向5G的核心网规划思路分析_王少波[J].</p>
+<p>[31]面向行业的5G标准组网架构研究_张力伟[J].</p>
+<p>[32]刘光毅,王莹莹,王爱玲. 6G进展与未来展望_刘光毅[J]. 无线电通信技术, 2021, 47(6): 668-678.</p>
+<p>[33]刘超，陆璐，王硕，等．面向空天地一体多接入的融合6G网络架构展望［J］．移动通信，2020，44(6):116－120．</p>
+<p>[34]5G-Advanced核心网技术综述_秦鹏太[J].</p>
+<p>[35]杨林瑶,韩双双,王晓,李玉珂,王飞跃.网络系统实验平台:发展现状及展望[J].自动化学报,2019,45(09):1637-1654.</p>
+<p>[36]王全国,刘苓.浅析三种常见的网络仿真软件[J].企业技术开发,2015,34(32):88+90.</p>
+<p>[37]俗世的囚徒遇见. 移动通信原理—（1）移动通信的发展历程，<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/435388237">https://zhuanlan.zhihu.com/p/435388237</a></p>
+<p>5G哥. 5G核心网的颠覆：SBA架构，<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/822833">https://zhuanlan.zhihu.com/p/82</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Zhang ling hao</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://zlhad.top/2022/07/17/5G%E6%A0%B8%E5%BF%83%E7%BD%91%E6%9E%B6%E6%9E%84%E5%92%8C%E6%9C%AA%E6%9D%A5%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B%E8%B6%8B%E5%8A%BF/">https://zlhad.top/2022/07/17/5G核心网架构和未来网络架构演进趋势/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://zlhad.top" target="_blank">ZLH's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%80%9A%E4%BF%A1/">通信</a></div><div class="post_share"><div class="social-share" data-image="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/%E5%9B%BE%E7%89%871.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/12/31/2021%E6%AF%9B%E6%A6%82%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B2/"><img class="next-cover" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20211231041646.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">2021毛概期末考试复习大纲</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201125000839.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Zhang ling hao</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ZLHad"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ZLHad" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="/zhangczssx@hotmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#5g%E6%A0%B8%E5%BF%83%E7%BD%91%E6%9E%B6%E6%9E%84%E5%92%8C%E6%9C%AA%E6%9D%A5%E6%A0%B8%E5%BF%83%E7%BD%91%E6%BC%94%E8%BF%9B%E8%B6%8B%E5%8A%BF"><span class="toc-text"> 5G核心网架构和未来核心网演进趋势</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80-%E7%A7%BB%E5%8A%A8%E9%80%9A%E4%BF%A1%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E5%8F%91%E5%B1%95%E5%8E%86%E7%A8%8B"><span class="toc-text"> 一、移动通信工作原理与发展历程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E7%94%B5%E7%A3%81%E6%B3%A2%E4%B8%8E%E9%A2%91%E6%AE%B5"><span class="toc-text"> 1.1 电磁波与频段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-%E9%80%9A%E4%BF%A1%E7%BD%91%E7%BB%9C%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84"><span class="toc-text"> 1.2 通信网络基础架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-%E7%AC%AC2%E4%BB%A3%E7%A7%BB%E5%8A%A8%E9%80%9A%E4%BF%A1%E7%B3%BB%E7%BB%9F2g"><span class="toc-text"> 1.3 第2代移动通信系统（2G）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-%E7%AC%AC3%E4%BB%A3%E7%A7%BB%E5%8A%A8%E9%80%9A%E4%BF%A1%E7%B3%BB%E7%BB%9F3g"><span class="toc-text"> 1.4 第3代移动通信系统（3G）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-%E7%AC%AC4%E4%BB%A3%E7%A7%BB%E5%8A%A8%E9%80%9A%E4%BF%A1%E7%B3%BB%E7%BB%9F4g"><span class="toc-text"> 1.5 第4代移动通信系统（4G）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#16-%E6%80%BB%E7%BB%93"><span class="toc-text"> 1.6 总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C-5g%E6%A0%B8%E5%BF%83%E7%BD%91%E6%9E%B6%E6%9E%84%E5%92%8C%E6%8E%A5%E5%8F%A3%E5%8D%8F%E8%AE%AE"><span class="toc-text"> 二、5G核心网架构和接口协议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#21-5g%E6%97%B6%E4%BB%A3%E9%80%9A%E4%BF%A1%E4%B8%9A%E5%8A%A1%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="toc-text"> 2.1 5G时代通信业务需求分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#22-5g%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="toc-text"> 2.2 5G网络架构的设计原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#23-5g%E9%A2%91%E6%AE%B5%E8%B5%84%E6%BA%90%E5%88%92%E5%88%86"><span class="toc-text"> 2.3 5G频段资源划分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#24-5g%E6%A0%B8%E5%BF%83%E7%BD%91%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E5%8F%8A%E7%89%B9%E7%82%B9"><span class="toc-text"> 2.4 5G核心网网络架构及特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#25-5g%E7%BD%91%E5%85%83%E8%99%9A%E6%8B%9F%E5%8C%96"><span class="toc-text"> 2.5 5G网元虚拟化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#26-5g%E4%B8%BB%E8%A6%81nfv%E4%BB%8B%E7%BB%8D"><span class="toc-text"> 2.6 5G主要NFV介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#27-5g-nfv%E4%B8%BB%E8%A6%81%E7%89%B9%E7%82%B9"><span class="toc-text"> 2.7 5G NFV主要特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#28-5g%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3"><span class="toc-text"> 2.8 5G网络接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#29-5g%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE"><span class="toc-text"> 2.9 5G网络协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#210-%E6%80%BB%E7%BB%93"><span class="toc-text"> 2.10 总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89-%E6%9C%AA%E6%9D%A5%E7%A7%BB%E5%8A%A8%E9%80%9A%E4%BF%A1%E6%8A%80%E6%9C%AF%E6%BC%94%E8%BF%9B%E8%B6%8B%E5%8A%BF5g-advanced"><span class="toc-text"> 三、未来移动通信技术演进趋势——5G-Advanced</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#31-5g-advanced%E8%AF%9E%E7%94%9F%E8%83%8C%E6%99%AF"><span class="toc-text"> 3.1 5G-Advanced诞生背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#32-5g-advanced-%E6%96%B0%E7%89%B9%E6%80%A7"><span class="toc-text"> 3.2 5G-Advanced 新特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#33-%E6%80%BB%E7%BB%93"><span class="toc-text"> 3.3 总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B-%E6%9C%AA%E6%9D%A5%E7%A7%BB%E5%8A%A8%E9%80%9A%E4%BF%A1%E6%8A%80%E6%9C%AF%E6%BC%94%E8%BF%9B%E8%B6%8B%E5%8A%BF6g"><span class="toc-text"> 四、未来移动通信技术演进趋势——6G</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#41-6g%E7%BD%91%E7%BB%9C%E6%95%B4%E4%BD%93%E6%84%BF%E6%99%AF%E7%9B%AE%E6%A0%87"><span class="toc-text"> 4.1 6G网络整体愿景目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#42-6g%E5%85%B3%E9%94%AE%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87"><span class="toc-text"> 4.2 6G关键性能指标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#43-6g%E9%A2%91%E8%B0%B1%E5%88%86%E9%85%8D"><span class="toc-text"> 4.3 6G频谱分配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#44-6g%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E7%89%B9%E5%BE%81"><span class="toc-text"> 4.4 6G网络架构特征</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#45-6g%E4%B8%89%E5%B1%82%E5%9B%9B%E9%9D%A2%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E8%AE%BE%E6%83%B3"><span class="toc-text"> 4.5 6G“三层四面”网络架构设想</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#46-6g%E6%80%BB%E7%BB%93"><span class="toc-text"> 4.6 6G总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9D%9F%E8%AF%AD"><span class="toc-text"> 结束语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-text"> 【参考文献】</span></a></li></ol></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/07/17/5G%E6%A0%B8%E5%BF%83%E7%BD%91%E6%9E%B6%E6%9E%84%E5%92%8C%E6%9C%AA%E6%9D%A5%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B%E8%B6%8B%E5%8A%BF/" title="5G核心网架构和未来网络架构演进趋势"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/%E5%9B%BE%E7%89%871.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="5G核心网架构和未来网络架构演进趋势"/></a><div class="content"><a class="title" href="/2022/07/17/5G%E6%A0%B8%E5%BF%83%E7%BD%91%E6%9E%B6%E6%9E%84%E5%92%8C%E6%9C%AA%E6%9D%A5%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B%E8%B6%8B%E5%8A%BF/" title="5G核心网架构和未来网络架构演进趋势">5G核心网架构和未来网络架构演进趋势</a><time datetime="2022-07-17T04:09:12.000Z" title="发表于 2022-07-17 12:09:12">2022-07-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/12/31/2021%E6%AF%9B%E6%A6%82%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B2/" title="2021毛概期末考试复习大纲"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20211231041646.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="2021毛概期末考试复习大纲"/></a><div class="content"><a class="title" href="/2021/12/31/2021%E6%AF%9B%E6%A6%82%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B2/" title="2021毛概期末考试复习大纲">2021毛概期末考试复习大纲</a><time datetime="2021-12-30T20:23:43.000Z" title="发表于 2021-12-31 04:23:43">2021-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/04/19/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E9%9A%8F%E6%9C%BA%E5%8F%98%E9%87%8F%E5%8F%8A%E5%85%B6%E5%88%86%E5%B8%83/" title="概率论-随机变量及其分布"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210416172517.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="概率论-随机变量及其分布"/></a><div class="content"><a class="title" href="/2021/04/19/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E9%9A%8F%E6%9C%BA%E5%8F%98%E9%87%8F%E5%8F%8A%E5%85%B6%E5%88%86%E5%B8%83/" title="概率论-随机变量及其分布">概率论-随机变量及其分布</a><time datetime="2021-04-19T09:12:00.000Z" title="发表于 2021-04-19 17:12:00">2021-04-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/04/11/CDN%E6%A6%82%E5%BF%B5%E7%BB%BC%E8%BF%B0/" title="CDN基本原理"><img src="https://tse3-mm.cn.bing.net/th/id/OIP.RhRnxBahpUcd8F4-vgNe6wHaDr?pid=ImgDet&amp;rs=1" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CDN基本原理"/></a><div class="content"><a class="title" href="/2021/04/11/CDN%E6%A6%82%E5%BF%B5%E7%BB%BC%E8%BF%B0/" title="CDN基本原理">CDN基本原理</a><time datetime="2021-04-11T05:23:43.000Z" title="发表于 2021-04-11 13:23:43">2021-04-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/04/03/%E6%BC%AB%E8%B0%88WebSocket/" title="漫谈WebSocket"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210403172539.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="漫谈WebSocket"/></a><div class="content"><a class="title" href="/2021/04/03/%E6%BC%AB%E8%B0%88WebSocket/" title="漫谈WebSocket">漫谈WebSocket</a><time datetime="2021-04-03T15:33:21.000Z" title="发表于 2021-04-03 23:33:21">2021-04-03</time></div></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://zlhad.oss-cn-shanghai.aliyuncs.com/img/%E5%9B%BE%E7%89%871.png)"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2022 By Zhang ling hao</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">To be best, to be helpful!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css"><script>$(function () {
+  $('span.katex-display').wrap('<div class="katex-wrap"></div>')
+})</script><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: 'Sr2EUsxrC5MGqfWfdzRr90Ig-MdYXbMMI',
+      appKey: 'cGMTNkFCjQCx6CvF1meFmUkE',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script id="canvas_nest" defer="defer" color="255,140,0" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script></div></body></html>
