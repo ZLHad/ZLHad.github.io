@@ -1,0 +1,37 @@
+title: A Task Prediction-Augmented Hierarchical Offloading Method for Space-Air-Ground Integrated Networks
+titleZh: 任务预测增强的空天地一体化网络分层卸载方法
+authors: [Linghao Zhang, Bo Xu, Jinlong Sun, Haiguang Lai, Haitao Zhao]
+authorsZh: [张凌豪, 徐波, 孙金龙, 赖海光, 赵海涛]
+venue: Journal of Electronics & Information Technology
+venueZh: 电子与信息学报
+venueShort: JEIT
+kind: journal
+status: online-first
+date: 2026-06-19
+year: 2026
+doi: 10.11999/JEIT260217
+tiers: [space, air, ground]
+stratum: air
+mechanism: offload
+altitudes: UAV 100 m · LEO 500 km
+summary:
+  en: Task-prediction-driven hierarchical offloading. A lightweight workload forecast strengthens forward-looking decisions among UAV agents, to minimize a weighted cost of task delay and flight energy.
+  zh: 任务预测驱动的分层卸载。轻量化任务负载预测增强无人机之间的前瞻性决策，以任务时延与飞行能耗的加权成本最小为目标。
+abstract:
+  en: "Space-air-ground integrated networks (SAGIN) combine low Earth orbit satellites, unmanned aerial vehicles and ground devices into an efficient converged architecture for computation-intensive mobile applications. However, the strong coupling among UAV trajectory control, task offloading and resource allocation, together with dynamic and uncertain task workloads, makes it challenging to offload tasks efficiently while balancing delay and energy. This paper minimizes a weighted cost of task completion delay and UAV flight energy, models the problem as a decentralized partially observable Markov decision process, and proposes a prediction-augmented multi-agent proximal policy optimization algorithm (PA-MAPPO). A lightweight task workload prediction module is introduced into the multi-agent reinforcement learning framework to strengthen forward-looking decisions among agents, jointly optimizing UAV trajectories, task offloading and computing resource allocation in dynamic SAGIN. Simulation results show that the proposed algorithm effectively lowers the overall system cost and balances average task delay against UAV flight energy."
+  zh: "空天地一体化网络(SAGIN)通过低轨卫星(LEO)、无人机(UAV)与地面设备的协同，构建了面向计算密集型移动应用的高效融合架构。然而，由于无人机轨迹控制、任务卸载与资源分配之间存在强耦合关系，加之任务负载的动态性和不确定性，实现时延与能耗兼顾的高效任务卸载仍面临挑战。该文以任务完成时延与无人机飞行能耗加权成本最小化为优化目标，将优化问题建模为去中心化部分可观测马尔可夫决策过程(DEC-POMDP)，并提出一种任务预测增强的多智能体近端策略优化算法(PA-MAPPO)。该方法在多智能体强化学习框架中引入轻量化任务负载预测模块，以增强多智能体之间的前瞻性决策能力，从而在动态SAGIN环境下实现无人机轨迹规划、任务卸载与计算资源分配的联合优化。仿真结果表明，所提算法能够有效降低系统综合成本，并在平均任务时延与无人机飞行能耗之间取得良好平衡。"
+firstPage: true
+figures:
+  - file: scenario.webp
+    width: 1600
+    height: 968
+    caption:
+      en: "The SAGIN-based MEC scenario (Fig. 1)."
+      zh: "基于 SAGIN 的 MEC 场景图（图 1）。"
+  - file: framework.webp
+    width: 1400
+    height: 1638
+    caption:
+      en: "The PA-MAPPO algorithm flow (Fig. 2)."
+      zh: "PA-MAPPO 算法流程图（图 2）。"
+selected: 4

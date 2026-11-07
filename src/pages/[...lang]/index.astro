@@ -1,0 +1,206 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/chrome/Icon.astro';
+import Hero from '~/components/home/Hero.astro';
+import PaperCard from '~/components/papers/PaperCard.astro';
+import Portrait from '~/components/widgets/Portrait.astro';
+import OutputChart from '~/components/widgets/OutputChart.astro';
+import { href, langPaths, paperHref, pick, toLang, ui } from '~/lib/i18n';
+import { allPapers, selectedPapers } from '~/lib/papers';
+import { profile } from '~/data/profile';
+import { news } from '~/data/news';
+import metrics from '~/data/generated/metrics.json';
+
+export const getStaticPaths = langPaths;
+const lang = toLang(Astro.params.lang);
+const s = ui(lang);
+const zh = lang === 'zh';
+const selected = selectedPapers(await allPapers());
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order).slice(0, 3);
+const stars = metrics.stars as Record<string, number>;
+const copy = zh
+  ? { all: '全部论文', about: '关于我', more: '其他工作', allProjects: '全部项目', portrait: '张凌豪的点描肖像', descend: '从轨道到地面，一层一层看' }
+  : { all: 'All publications', about: 'About', more: 'Beyond the papers', allProjects: 'All projects', portrait: 'A stipple portrait of Linghao Zhang', descend: 'From orbit to the ground, layer by layer' };
+---
+<Base lang={lang} papers>
+  <main>
+    <Hero lang={lang} />
+    <div class="frame home">
+      <section aria-labelledby="selected-title">
+        <header class="sec-head">
+          <h2 class="section-title" id="selected-title">{s.selected}</h2>
+          <a class="btn" href={href(lang, '/publications/')}>{copy.all}<Icon name="next" /></a>
+        </header>
+        <div class="bento">
+          {selected.map((p, i) => <PaperCard paper={p} lang={lang} size={i < 2 ? 'lg' : 'md'} i={i < 2 ? i : i - 2} />)}
+        </div>
+      </section>
+
+      <section class="sec door card" aria-labelledby="research-title" data-reveal>
+        <a class="door-sky" href={href(lang, '/research/')}>
+          <span class="eyebrow">{s.research}</span>
+          <h2 class="door-q" id="research-title">{profile.question[lang]}</h2>
+          <span class="door-go">{copy.descend}<Icon name="next" /></span>
+        </a>
+        <div class="map"><OutputChart lang={lang} all /></div>
+      </section>
+
+      <section class="sec two">
+        <div class="about">
+          <h2 class="section-title" data-reveal>{copy.about}</h2>
+          <div class="who">
+            <div class="face"><Portrait alt={copy.portrait} /></div>
+            <div>
+              {profile.about[lang].map((t) => <p class="bio">{t}</p>)}
+            </div>
+          </div>
+        </div>
+        <div class="news">
+          <h2 class="section-title" data-reveal>{s.news}</h2>
+          <ol>
+            {news.map((n) => (
+              <li>
+                <span class="date num">{n.date}</span>
+                <span class="what">
+                  {'paper' in n && n.paper ? (
+                    <a href={paperHref(lang, n.paper)} data-open-paper={n.paper}>{pick(n, lang)}</a>
+                  ) : 'to' in n && n.to ? (
+                    <a href={href(lang, n.to)}>{pick(n, lang)}</a>
+                  ) : (
+                    pick(n, lang)
+                  )}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section class="sec" aria-labelledby="more-title">
+        <header class="sec-head">
+          <h2 class="section-title" id="more-title" data-reveal>{copy.more}</h2>
+          <a class="link-more" href={href(lang, '/projects/')}>{copy.allProjects}<Icon name="next" /></a>
+        </header>
+        <ul class="projects">
+          {projects.map((p, i) => (
+            <li class="pj card spot" data-spot data-reveal style={`--i:${i}`}>
+              <a href={href(lang, `/projects/#${p.id}`)}>
+                <span class="cover">
+                  {p.data.cover ? (
+                    <img src={p.data.cover} alt="" width="800" height="450" loading="lazy" decoding="async" />
+                  ) : p.id === 'wireless-theory-tutorials' ? (
+                    <span class="book" lang="zh-CN" aria-hidden="true">理论地基</span>
+                  ) : (
+                    <span class="repo plate dark num" aria-hidden="true"><span><i>ZLHad/</i>{p.data.repo?.split('/')[1]}</span></span>
+                  )}
+                </span>
+                <span class="p-text">
+                  <span class="p-name">
+                    {zh && p.data.nameZh ? p.data.nameZh : p.data.name}
+                    {p.data.repo && stars[p.data.repo] > 1 && <span class="p-stars num"><Icon name="star" size={13} fill />{stars[p.data.repo]}</span>}
+                  </span>
+                  <span class="p-line">{pick(p.data.tagline, lang)}</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+  </main>
+</Base>
+
+<style>
+  /* The list starts over the planet, so the first figures are on the first screen. */
+  .home { position: relative; margin-top: -84px; padding-bottom: clamp(72px, 12vh, 128px); }
+  .bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px; margin-top: clamp(14px, 2.2vh, 22px); }
+  .bento > :global(.pcard) { grid-column: span 4; }
+  .bento > :global(.pcard:nth-child(1)) { grid-column: span 7; }
+  .bento > :global(.pcard:nth-child(2)) { grid-column: span 5; }
+  /* Frosted so the limb glows through the top of the first row. */
+  .bento > :global(.pcard:nth-child(-n + 2)) { background-color: rgba(9, 12, 16, 0.72); backdrop-filter: blur(14px); }
+
+  /* The way into the research page: the same sky, and the work counted underneath it. */
+  .door { padding: 0; overflow: hidden; }
+  .door-sky {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: clamp(300px, 28vw, 400px);
+    padding: clamp(22px, 2.6vw, 34px) clamp(18px, 2.6vw, 34px);
+    overflow: hidden;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .door-sky::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: url('/media/sky-control.webp') center bottom / cover no-repeat;
+    transform-origin: 70% 100%;
+    transition: transform var(--d-4) var(--ease-out);
+  }
+  .door-sky:hover { color: var(--fg); }
+  .door-sky:hover::before { transform: scale(1.05); }
+  .door-sky .eyebrow { color: var(--signal-2); }
+  .door-q { margin-top: 12px; max-width: 32em; font-family: var(--f-display); font-stretch: 110%; font-weight: 300; font-size: clamp(1.375rem, 1rem + 1.25vw, 2.25rem); line-height: 1.18; letter-spacing: -0.016em; text-wrap: pretty; }
+  :global(:lang(zh)) .door-q { font-weight: 400; letter-spacing: 0.01em; line-height: 1.26; }
+  .door-go { display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; font-size: var(--t-small); font-weight: 500; }
+  .door-go :global(.icon) { transition: transform var(--d-2) var(--ease-out); }
+  .door-sky:hover .door-go :global(.icon) { transform: translateX(4px); }
+  .map { padding: 20px clamp(16px, 2.6vw, 34px) 18px; box-shadow: 0 -1px 0 var(--line-2); }
+
+  .two { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: clamp(32px, 6vw, 96px); }
+  .who { display: grid; grid-template-columns: 176px minmax(0, 1fr); gap: 26px; margin-top: 22px; align-items: start; }
+  .bio + .bio { margin-top: 0.9em; }
+  .bio { font-size: var(--t-body); line-height: 1.6; color: var(--fg-2); text-wrap: pretty; }
+  .news ol { margin-top: 22px; box-shadow: 0 -1px 0 var(--line); }
+  .news li { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 12px; padding-block: 11px; box-shadow: 0 1px 0 var(--line-2); transition: background var(--d-1); }
+  .date { padding-top: 1px; font-size: var(--t-label); color: var(--fg-3); }
+  .what { font-size: var(--t-text); line-height: 1.45; color: var(--fg); }
+  .what a { color: var(--fg); text-decoration: none; }
+  .what a:hover { color: var(--signal-2); }
+
+  .projects { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
+  .pj { overflow: hidden; }
+  .pj a { display: block; text-decoration: none; color: inherit; }
+  .pj a:hover { color: inherit; }
+  .cover { display: block; overflow: hidden; aspect-ratio: 16 / 9; background: var(--plate-bg); box-shadow: 0 1px 0 var(--line-2); }
+  .cover img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--d-4) var(--ease-out); }
+  .pj:hover .cover img { transform: scale(1.04); }
+  .book {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-family: var(--f-display);
+    font-weight: 300;
+    font-size: clamp(2rem, 1.3rem + 2.4vw, 3.25rem);
+    letter-spacing: 0.14em;
+    color: #f3ebde;
+    background: linear-gradient(to bottom, #3a281a, #1b120c 60%, #0a0705);
+  }
+  .repo { height: 100%; border-radius: 0; font-size: var(--t-text); letter-spacing: -0.03em; color: var(--fg); }
+  .repo i { font-style: normal; color: var(--fg-3); }
+  .p-text { display: block; padding: 14px 18px 16px; }
+  .p-name { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 1.0625rem; font-weight: 500; line-height: 1.3; letter-spacing: -0.012em; }
+  .p-stars { display: inline-flex; align-items: center; gap: 4px; font-size: var(--t-label); font-weight: 400; color: var(--fg-3); }
+  .p-line { display: block; margin-top: 5px; font-size: var(--t-small); line-height: 1.5; color: var(--fg-2); text-wrap: pretty; }
+
+  @media (max-width: 999px) {
+    .bento > :global(.pcard:nth-child(n)) { grid-column: span 6; }
+    .bento > :global(.pcard:nth-child(1)) { grid-column: span 12; }
+    .bento > :global(.pcard:nth-child(2)) { grid-column: span 12; }
+    .two { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 620px) {
+    .home { margin-top: -48px; }
+    .bento > :global(.pcard:nth-child(n)) { grid-column: span 12; }
+    .who { grid-template-columns: 96px minmax(0, 1fr); gap: 14px; }
+    .projects { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

@@ -1,0 +1,58 @@
+{
+ "title": "Overall comparison at held-out configurations (Table III / Fig. 5)",
+ "source": "results/commfix/train_final_v4/table3.json",
+ "x": {
+  "label": "Scheme",
+  "unit": null,
+  "values": [
+   "Proposed",
+   "CD-TD3-Fixed",
+   "TD3",
+   "PPO",
+   "Greedy"
+  ]
+ },
+ "series": [
+  {
+   "name": "Per-user QoE",
+   "values": [
+    1.7978726745753024,
+    1.5065666282063763,
+    1.363087895417104,
+    1.1735779409949538,
+    1.0628527344463878
+   ]
+  },
+  {
+   "name": "TTFT (s)",
+   "values": [
+    0.8725898098080968,
+    1.2253510835027537,
+    0.8055197102190531,
+    0.9165545896443904,
+    0.9034888557965112
+   ]
+  },
+  {
+   "name": "TPOT (s/token)",
+   "values": [
+    0.027178718889521458,
+    0.02705550254915333,
+    0.05221638074499676,
+    0.03626506042241883,
+    0.036766847157066934
+   ]
+  },
+  {
+   "name": "Generation quality",
+   "values": [
+    0.8114442110553616,
+    0.8325944458121808,
+    0.7265833860444671,
+    0.638014377648379,
+    0.5989298312792583
+   ]
+  }
+ ],
+ "notes": "Copied from table3.json (run train_final_v4); matches paper Table III to 3 decimals (QoE 1.798/1.507/1.363/1.174/1.063). Series have different units; plot QoE as bars, others as secondary."
+}

@@ -1,0 +1,95 @@
+# Display order: granted first, then by inventor position (see the CV README).
+- id: z01
+  title:
+    en: Graph Neural Network-Based Traffic Offloading Decision Method and System for Space-Air-Ground Networks
+    zh: 基于图神经网络的空天地网络流量卸载决策方法及系统
+  number: CN118972900B
+  kind: invention
+  status: granted
+  date: 2025-02-11
+  position: 4/7
+- id: isolator
+  title:
+    en: An Embedded Microwave Isolator for Communications
+    zh: 一种嵌入式通讯微波隔离器
+  number: CN114786396B
+  kind: invention
+  status: granted
+  date: 2022-09-02
+  position: 1/2
+- id: rf-source
+  title:
+    en: A Portable Vector Digital Baseband Modulation RF Signal Source
+    zh: 一种便携式矢量数字基带调制射频信号源
+  number: CN217037207U
+  kind: utility
+  status: granted
+  date: 2022-07-22
+  position: 3/3
+- id: z07
+  title:
+    en: Anti-Jamming Cell-Free Edge Computing Resource Allocation Method for UAVs in Space-Air-Ground Integrated Networks
+    zh: 一种空天地一体化网络中抗干扰的无人机去蜂窝边缘计算资源分配方法
+  number: CN121568169A
+  kind: invention
+  status: published
+  date: 2026-02-24
+  position: 2/8
+- id: z05
+  title:
+    en: SAM-Model-Based Railway Track Intrusion Data Annotation and Augmented Training Method
+    zh: 基于SAM模型的铁路轨道入侵数据标注和增强训练方法
+  number: CN118379615A
+  kind: invention
+  status: published
+  date: 2024-07-23
+  position: 2/9
+- id: z03
+  title:
+    en: Traffic Flow Prediction Model Method Based on Discrete Graph Structure
+    zh: 一种基于离散图结构的交通流预测模型方法
+  number: CN118470972A
+  kind: invention
+  status: published
+  date: 2024-08-09
+  position: 3/5
+- id: z04
+  title:
+    en: Low-Latency High-Performance Federated Learning Method for Space-Air-Ground Integrated Networks
+    zh: 一种面向空天地一体化网络的低时延高性能联邦学习方法
+  number: CN120499851A
+  kind: invention
+  status: published
+  date: 2025-08-15
+  position: 6/7
+- id: z06
+  title:
+    en: High-Reliability Deployment Method for Decentralized Federated Neural Network Models in Smart Cities
+    zh: 一种面向智慧城市的去中心化联邦神经网络模型高可靠部署方法
+  number: CN121390203A
+  kind: invention
+  status: published
+  date: 2026-01-23
+  position: 6/7
+# Kept in the record, not shown.
+- id: z02
+  title:
+    en: Automatic Image Cropping Method and System with SAM-Enhanced CNN-RoI
+    zh: 一种SAM模型增强的CNN-RoI下的图像自动裁切方法及系统
+  number: CN117974679A
+  kind: invention
+  status: published
+  date: 2024-05-03
+  position: 2/5
+  hidden: true
+# Kept in the record, not shown.
+- id: light
+  title:
+    en: A Light-Emitting Device and Its Manufacturing Method
+    zh: 一种发光装置及其制作方法
+  number: CN116844408A
+  kind: invention
+  status: published
+  date: 2023-10-03
+  position: 4/4
+  hidden: true

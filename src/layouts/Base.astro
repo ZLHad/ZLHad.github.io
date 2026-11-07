@@ -1,0 +1,85 @@
+---
+import '@fontsource-variable/archivo/standard.css';
+import '@fontsource-variable/geist/wght.css';
+import '@fontsource-variable/geist-mono/wght.css';
+import '~/styles/tokens.css';
+import '~/styles/base.css';
+import '~/styles/fonts.css';
+import TopBar from '~/components/chrome/TopBar.astro';
+import SiteFooter from '~/components/chrome/SiteFooter.astro';
+import Palette from '~/components/chrome/Palette.astro';
+import ZoomDialog from '~/components/chrome/ZoomDialog.astro';
+import PaperDialog from '~/components/papers/PaperDialog.astro';
+import { ui, otherLangPath, type Lang } from '~/lib/i18n';
+import { profile } from '~/data/profile';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: Lang;
+  jsonld?: Record<string, unknown>;
+  ogImage?: string;
+  papers?: boolean; // this page lists papers, so include the overview popup
+}
+const { title, description, lang = 'en', jsonld, ogImage = '/og.jpg', papers = false } = Astro.props;
+const s = ui(lang);
+const pageTitle = title ?? s.siteTitle;
+const desc = description ?? s.siteDesc;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const alternate = new URL(otherLangPath(lang, Astro.url.pathname), Astro.site).href;
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name.en,
+  alternateName: profile.name.zh,
+  url: Astro.site?.href,
+  email: profile.email,
+  affiliation: [
+    { '@type': 'CollegeOrUniversity', name: 'Nanjing University of Posts and Telecommunications' },
+    { '@type': 'CollegeOrUniversity', name: 'National University of Singapore' },
+  ],
+  sameAs: Object.values(profile.links).filter(Boolean),
+};
+---
+<!doctype html>
+<html lang={lang === 'zh' ? 'zh-CN' : 'en'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={desc} />
+    <meta name="theme-color" content="#07090d" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={lang === 'zh' ? 'en' : 'zh-CN'} href={alternate} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonld ?? person)} />
+    <script is:inline>document.documentElement.classList.add('js')</script>
+    <slot name="head" />
+    <noscript>
+      <style>
+        [data-portrait] canvas, [data-token-race], [data-forecast], [data-traj-caption] { display: none; }
+      </style>
+    </noscript>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{s.skip}</a>
+    <TopBar lang={lang} />
+    <div id="main">
+      <slot />
+    </div>
+    <SiteFooter lang={lang} />
+    {papers && <PaperDialog lang={lang} />}
+    <ZoomDialog lang={lang} />
+    <Palette lang={lang} />
+    <script>
+      import '~/scripts/page';
+      import '~/scripts/palette';
+    </script>
+  </body>
+</html>

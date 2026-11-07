@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+.font-cache/
+*.log
+.unpublished/
+
+# Local only: editor and assistant settings
+.claude/
+CLAUDE.md

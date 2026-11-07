@@ -1,0 +1,47 @@
+---
+paper: tvt-hastening
+lang: zh
+look: air
+headline: 设备关联是一个子模问题，所以可以用贪心法求解。
+dek: 地面设备、基站、无人机和卫星之间的协同推理。模型分割、设备关联、计算单元和带宽依次优化，降低总推理时延。
+---
+
+## 问题在哪
+
+在空天地网络里，推理时延同时取决于通信链路、各层算力和协同推理决策。DNN 越来越复杂，用来交换中间特征的频谱却一直紧张，计算时延和传输时延都在累积。大多数协同推理工作只在地面网络里做。已有的子模方法也缺两样这个场景需要的东西：分割决策会逐层改变计算和通信代价；卫星算力需要第二阶段再分配。
+
+## 思路
+
+把联合问题拆成三部分，依次求解。带宽子问题是凸的，有闭式解；分割点逐层搜索；设备关联和计算单元分配被写成一个时延减少量的最大化问题，它在一个拟阵上单调子模，所以可以用贪心法一步一步加进来。卫星不参与这一步。最后再做一次资源再分配：只要能降低时延，就把由无人机服务的设备挪到卫星的计算单元上。
+
+<Plate lang="zh" n="1" src="/figures/tvt-hastening/architecture.webp" width={836} height={693} alt="支持协同推理的 SAGIN 架构" caption="地面设备把分割后的 DNN 的一部分卸载到基站、无人机，或经无人机转到卫星。论文图 1。" />
+
+## 系统怎么运转
+
+地面上有设备和基站，每个基站有 N 个计算单元；空中有悬停的无人机，每架有 L 个；上方有一颗卫星，有 M 个。设备可以在本地跑完整个模型，也可以在某一层切开，把这一层的输出发给基站、无人机，或经无人机转给卫星。
+
+<Eq tex="\widehat{t}^{u,\mathrm{comp}}_j=\frac{\alpha_j\widehat{A}^{\widehat{i}^u_j}}{\xi_j}+\frac{\alpha_j\widehat{A}^{I-\widehat{i}^u_j}}{\widehat{\xi}_u\sum_{n\in\mathcal{N}}\widehat{z}^{u,n}_j}" note="在第 i 层切开时，设备算前一部分，基站 u 用分给这台设备的计算单元算剩下的部分。" />
+
+<Eq tex="t^{\mathrm{off}}_j=\widehat{w}^u_j\big(\widehat{t}^{u,\mathrm{comm}}_j+\widehat{t}^{u,\mathrm{comp}}_j\big)+\overline{w}^k_j\big(\overline{t}^{k,\mathrm{comm}}_j+\overline{t}^{k,\mathrm{comp}}_j\big)+\tilde{w}^{k,s}_j\big(\tilde{t}^{s,\mathrm{comp}}_j+\overline{t}^{k,\mathrm{comm}}_j+\tilde{t}^{s,\mathrm{comm}}_k\big)" note="按设备选择的协同对象计算卸载时延。经卫星时还要加上无人机中继和卫星计算。" />
+
+<Eq tex="\min_{\mathcal Z,\,\mathcal W,\,\mathcal I}\;\sum_{j\in\mathcal J}T_j" note="总推理时延，决策变量是计算单元和带宽（Z）、设备关联（W）和分割点（I）。" />
+
+<Plate lang="zh" n="2" src="/figures/tvt-hastening/framework.webp" width={836} height={655} alt="所提求解方案示意图" caption="问题拆成带宽分配、设备关联与算力联合分配、模型分割三个子问题，最后做资源再分配。论文图 2。" />
+
+子模这一步优化的是相对于一个较大参考时延 T₀ 的时延减少量。
+
+<Eq tex="D=\sum_{j\in\mathcal J}D_j,\qquad D_j=T_0-T_j" note="论文证明，在由关联约束和计算单元约束构成的拟阵上，D 是单调子模的。" />
+
+每加一个计算单元或一次关联，时延都会下降，但已经加得越多，降得越少。所以算法每次加入边际收益最大的动作，带宽直接取闭式解，再删掉与之冲突的动作。它的复杂度随设备、基站和无人机的数量多项式增长，而穷举搜索是指数增长。三步中每一步都不会让目标变差，目标又有下界，所以交替迭代会收敛。
+
+## 结果
+
+仿真区域是 500 m × 500 m，有 5 个基站、5 架 50 m 高的无人机和一颗 600 km 高的卫星，模型是 VGG16 和 AlexNet。对比四个基线：只用基站、用基站和无人机但不用卫星、随机选择协同对象，以及平均分配带宽。
+
+<Plate lang="zh" n="3" src="/figures/tvt-hastening/convergence.webp" width={844} height={671} alt="VGG16 模型下不同方案的收敛" caption="VGG16 下总时延随迭代次数的变化。前 25 次迭代，所提方案与不用卫星的版本几乎重合；卫星再分配开始后继续下降。论文图 3。" />
+
+两种模型下，在论文测试的每一种算力、带宽和分割点设置里，所提方案的时延都最低。设备越多，增加无人机或卫星的收益越大。50 个设备时，无人机从 5 架增加到 9 架，或卫星从 1 颗增加到 3 颗，时延都下降约 10%。
+
+## 还没做的
+
+模型只有一颗卫星，假设无人机和卫星能量充足，并忽略了结果回传，因为结果数据量很小。论文把提前退出和批处理留作后续工作。

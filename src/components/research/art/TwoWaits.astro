@@ -1,0 +1,88 @@
+---
+// The same answer, delivered from two altitudes. One tick is one token. The shape follows
+// the paper's analytic model at the default settings of the deep dive's token race: a UAV
+// starts about two seconds sooner, a satellite sends each token faster, and they finish together.
+import type { Lang } from '~/lib/i18n';
+interface Props { lang: Lang }
+const zh = Astro.props.lang === 'zh';
+const TOKENS = 36;
+const SHOWN = 3; // seconds across the drawing
+const lanes = [
+  {
+    key: 'sat',
+    first: 2.2,
+    per: 0.0157,
+    who: zh ? 'LEO 大模型' : 'LEO large model',
+    note: zh ? '首 Token 晚，质量高' : 'Later first token, better quality',
+    glyph: 'M-7-5h14v10h-14zM-7 0h-6M7 0h6M-13-6v12M-21-6h8v12h-8zM13-6h8v12h-8z',
+  },
+  {
+    key: 'uav',
+    first: 0.2,
+    per: 0.0723,
+    who: zh ? 'UAV 小模型' : 'UAV small model',
+    note: zh ? '首 Token 早' : 'Earlier first token',
+    glyph: 'M-11 0h22M-11-4v8M11-4v8M-16-4h10M6-4h10M-4 0v4h8v-4',
+  },
+].map((l) => ({
+  ...l,
+  ticks: Array.from({ length: TOKENS }, (_, i) => ((l.first + i * l.per) / SHOWN) * 100),
+}));
+const copy = zh
+  ? { first: 'TTFT', cap: '流式回答有两种时延：首 Token 时延 TTFT 和单 Token 时延 TPOT。一道竖线是一个 Token。' }
+  : { first: 'TTFT', cap: 'A streamed answer has two delays: TTFT, the time to first token, and TPOT, the time per output token. One tick is one token.' };
+---
+<figure class="waits" data-reveal>
+  <div class="lanes">
+    {lanes.map((l) => (
+      <div class:list={['lane', l.key]}>
+        <p class="who">
+          <svg viewBox="-24 -9 48 18" width="36" height="14" aria-hidden="true"><path d={l.glyph} /></svg>
+          <b>{l.who}</b><span>{l.note}</span>
+        </p>
+        <div class="track">
+          <div class="sweep">
+            <svg viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true">
+              {l.ticks.map((x) => <line x1={x} x2={x} y1="0" y2="10" />)}
+            </svg>
+            <span class="first" style={`left:${l.ticks[0].toFixed(1)}%`}>{copy.first}</span>
+          </div>
+          <span class="head" aria-hidden="true"></span>
+        </div>
+      </div>
+    ))}
+  </div>
+  <figcaption>{copy.cap}</figcaption>
+</figure>
+
+<style>
+  .waits { width: 100%; }
+  .lanes { display: grid; gap: 28px; }
+  .who { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px; font-size: var(--t-small); line-height: 1.4; color: var(--fg-2); }
+  .who b { font-weight: 500; color: var(--fg); }
+  .who svg { flex: none; fill: none; stroke: currentColor; stroke-width: 1; }
+  .track { position: relative; height: 68px; margin-top: 30px; box-shadow: 0 1px 0 var(--line-3); }
+  .sweep { position: absolute; inset: -22px 0 0; animation: sweep 8s linear infinite; }
+  .sweep svg { position: absolute; inset: 22px 0 0; width: 100%; height: calc(100% - 22px); max-width: none; overflow: visible; }
+  line { vector-effect: non-scaling-stroke; stroke: var(--fg); stroke-width: 1.25; }
+  .sat line { stroke: var(--signal); stroke-width: 1.5; }
+  .first { position: absolute; top: 0; font-family: var(--f-mono); font-size: var(--t-label); line-height: 1.2; white-space: nowrap; color: var(--fg-2); }
+  .sat .first { transform: translateX(-100%); padding-right: 6px; }
+  .uav .first { padding-left: 0; }
+  .head { position: absolute; top: 0; bottom: 0; left: 0; width: 1px; background: linear-gradient(to bottom, transparent, var(--fg)); animation: head 8s linear infinite; }
+  figcaption { margin-top: 14px; font-size: var(--t-small); line-height: 1.45; color: var(--fg-2); }
+  @keyframes sweep {
+    0% { clip-path: inset(0 100% 0 0); }
+    78%, 100% { clip-path: inset(0 0 0 0); }
+  }
+  @keyframes head {
+    0% { left: 0; opacity: 1; }
+    78% { left: 100%; opacity: 1; }
+    84%, 100% { left: 100%; opacity: 0; }
+  }
+  :global(.stop.off) .sweep, :global(.stop.off) .head { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) {
+    .sweep { animation: none; }
+    .head { display: none; }
+  }
+</style>

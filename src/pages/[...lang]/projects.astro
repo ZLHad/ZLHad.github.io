@@ -1,0 +1,36 @@
+---
+import Base from '~/layouts/Base.astro';
+import PageHead from '~/components/chrome/PageHead.astro';
+import ToolsBlock from '~/components/blocks/ToolsBlock.astro';
+import RecordBlock from '~/components/blocks/RecordBlock.astro';
+import BookBlock from '~/components/blocks/BookBlock.astro';
+import { langPaths, toLang, ui } from '~/lib/i18n';
+
+export const getStaticPaths = langPaths;
+const lang = toLang(Astro.params.lang);
+const s = ui(lang);
+const zh = lang === 'zh';
+---
+<Base lang={lang} title={`${s.projects} — ${zh ? '张凌豪' : 'Linghao Zhang'}`}>
+  <main>
+    <PageHead
+      band="ground"
+      alt={zh ? '地面 · 0 m' : 'Ground · 0 m'}
+      title={s.projects}
+      dek={zh ? '做研究时造的工具，一本开放的书，以及专利和奖项。' : 'Tools I built while doing the research, an open book, and the patents and awards along the way.'}
+    />
+    <div class="frame work">
+      <ToolsBlock lang={lang} />
+      <section class="sec">
+        <h2 class="section-title">{zh ? '专利与奖项' : 'Patents and awards'}</h2>
+        <RecordBlock lang={lang} />
+      </section>
+    </div>
+    <BookBlock lang={lang} />
+  </main>
+</Base>
+
+<style>
+  .work { padding-top: clamp(20px, 4vh, 40px); padding-bottom: clamp(64px, 11vh, 120px); }
+  .sec :global(.record) { margin-top: 22px; }
+</style>

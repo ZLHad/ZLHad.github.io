@@ -1,0 +1,174 @@
+---
+// Every paper, placed by first public date and by the tiers in
+// its system model. Built at compile time from the paper records; nothing to maintain.
+import { paperHref, type Lang } from '~/lib/i18n';
+import { allPapers, isFirstAuthor, type Paper } from '~/lib/papers';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const zh = lang === 'zh';
+const papers = (await allPapers()).filter((p) => p.data.tiers.length > 0);
+
+const W = 1240, H = 500;
+const L = 82, R = 40, TOP = 112, BOT = 46;
+// The range follows the papers, so a new one always lands on the chart.
+const DAY = 86400000;
+const times = papers.map((p) => p.data.date.getTime());
+const t0 = Math.min(...times) - 55 * DAY;
+const t1 = Math.max(...times) + 50 * DAY;
+const x = (d: Date) => L + ((d.getTime() - t0) / (t1 - t0)) * (W - L - R);
+const tierY = { space: TOP, air: (TOP + H - BOT) / 2, ground: H - BOT } as const;
+
+// Keep neighbours from overlapping: walk in date order and nudge by at least 19 units.
+const placed = [...papers]
+  .sort((a, b) => a.data.date.getTime() - b.data.date.getTime())
+  .map((p) => ({ p, x: x(p.data.date) }));
+for (let i = 1; i < placed.length; i++) {
+  if (placed[i].x - placed[i - 1].x < 19) placed[i].x = placed[i - 1].x + 19;
+}
+
+const shortName = (p: Paper) => {
+  const custom: Record<string, string> = {
+    'tvt-cr-sagin': 'TVT',
+    'tvt-hastening': 'TVT',
+    'tvt-task-prediction': 'TVT',
+    'network-agentic': 'Network',
+    'tmc-token-qoe': 'TMC',
+    'jeit-pa-mappo': 'JEIT',
+    'spl-hsfl': 'SPL',
+    'pimrc-submodular': 'PIMRC',
+    'iccc-d2d': 'ICCC',
+    'iot-graph': 'CJIoT',
+    'iotj-fog': 'IoT-J',
+  };
+  return custom[p.id] ?? p.data.venueShort;
+};
+
+const rows = placed.map(({ p, x: px }) => {
+  const ys = p.data.tiers.map((t) => tierY[t]);
+  const top = Math.min(...ys);
+  const bottom = Math.max(...ys);
+  return { p, px, ys, top, bottom, to: paperHref(lang, p.id), first: isFirstAuthor(p), name: shortName(p) };
+});
+
+const years: { label: string; d: Date }[] = [];
+for (let y = new Date(t0).getUTCFullYear() + 1; y <= new Date(t1).getUTCFullYear(); y++) {
+  years.push({ label: String(y), d: new Date(Date.UTC(y, 0, 1)) });
+}
+const tierLabels = zh
+  ? { space: '天 · 低轨卫星', air: '空 · 无人机', ground: '地 · 用户与边缘' }
+  : { space: 'Space · LEO', air: 'Air · UAV', ground: 'Ground · users, edge' };
+const notes = zh
+  ? [
+      { id: 'iotj-fog', text: ['2024 年 12 月', '工业雾网络里的移动任务卸载，', '只有地面一层。'], dx: 12, y: tierY.ground - 68 },
+      { id: 'tvt-task-prediction', text: ['2026 年 3 月', '第一篇一作：', '任务预测增强的协同卸载。'], dx: -214, y: tierY.air - 62 },
+      { id: 'tmc-token-qoe', text: ['2026 年 10 月', 'Token 感知的多模态推理，跨无人机和低轨卫星。'], dx: -226, y: 16 },
+    ]
+  : [
+      { id: 'iotj-fog', text: ['Dec 2024', 'Mobile offloading in fog networks.', 'One tier, on the ground.'], dx: 12, y: tierY.ground - 68 },
+      { id: 'tvt-task-prediction', text: ['Mar 2026', 'First first-author paper:', 'prediction-augmented offloading.'], dx: -262, y: tierY.air - 62 },
+      { id: 'tmc-token-qoe', text: ['Oct 2026', 'Token-aware multimodal inference across UAVs and LEO.'], dx: -316, y: 16 },
+    ];
+const legend = zh
+  ? { first: '第一作者', co: '合作', hint: '每条竖线是一篇论文，跨越它系统模型里的网络层。' }
+  : { first: 'First author', co: 'Co-author', hint: 'Each vertical is one paper, spanning the network tiers in its system model.' };
+---
+<figure class="traj card" data-traj data-reveal>
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={zh ? '论文按时间和网络层的分布' : 'Papers by date and network tier'}>
+    {Object.entries(tierY).map(([k, y]) => (
+      <g>
+        <line x1={L} x2={W - R} y1={y} y2={y} class="tier" />
+        <text x="0" y={y + 3.5} class="tier-label">{tierLabels[k as keyof typeof tierLabels].split(' · ')[0]}</text>
+      </g>
+    ))}
+    {years.map((yr) => (
+      <g>
+        <line x1={x(yr.d)} x2={x(yr.d)} y1={TOP - 6} y2={H - BOT + 18} class="year" />
+        <text x={x(yr.d) + 5} y={H - BOT + 18} class="year-label">{yr.label}</text>
+      </g>
+    ))}
+    {rows.map((r) => (
+      <a href={r.to} data-open-paper={r.p.id} class:list={['paper', { first: r.first }]} data-title={r.p.data.title} data-venue={`${r.p.data.venueShort} ${r.p.data.year}`} style={`--n:${rows.indexOf(r)}`}>
+        <line x1={r.px} x2={r.px} y1={r.top} y2={r.bottom} class="span" />
+        <line x1={r.px} x2={r.px} y1={r.top - 40} y2={r.bottom + 12} class="hit" />
+        {r.ys.map((y) => <circle cx={r.px} cy={y} r={r.first ? 4.2 : 2.8} class="node" />)}
+        {r.top === tierY.ground ? (
+          <text x={r.px} y={r.top + 19} text-anchor="middle" class="name">{r.name}</text>
+        ) : (
+          <text transform={`translate(${r.px + 3} ${r.top - 10}) rotate(-58)`} class="name">{r.name}</text>
+        )}
+      </a>
+    ))}
+    {notes.map((n) => {
+      const row = rows.find((r) => r.p.id === n.id);
+      if (!row) return null;
+      return (
+        <g class="note" transform={`translate(${row.px + n.dx} ${n.y})`}>
+          {n.text.map((line, i) => (
+            <text y={i * 19} class:list={[i === 0 ? 'note-date' : 'note-line']}>{line}</text>
+          ))}
+        </g>
+      );
+    })}
+  </svg>
+  <figcaption>
+    <p class="caption" data-traj-caption>{legend.hint}</p>
+    <p class="key label">
+      <span class="k first"></span>{legend.first}
+      <span class="k co"></span>{legend.co}
+    </p>
+  </figcaption>
+</figure>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-traj]').forEach((root) => {
+    // Where it has to scroll sideways, start at the newest papers.
+    root.scrollLeft = root.scrollWidth;
+    const cap = root.querySelector<HTMLElement>('[data-traj-caption]')!;
+    const initial = cap.textContent;
+    root.querySelectorAll<SVGAElement>('.paper').forEach((a) => {
+      const show = () => (cap.textContent = `${a.dataset.venue} · ${a.dataset.title}`);
+      a.addEventListener('mouseenter', show);
+      a.addEventListener('focus', show);
+      a.addEventListener('mouseleave', () => (cap.textContent = initial));
+      a.addEventListener('blur', () => (cap.textContent = initial));
+    });
+  });
+</script>
+
+<style>
+  .traj { padding: clamp(14px, 2vw, 24px); overflow: hidden; }
+  svg { width: 100%; height: auto; overflow: visible; display: block; }
+  .tier { stroke: var(--line); }
+  .tier-label, .year-label, .name, .note-date { font-family: var(--f-sans); font-weight: 450; }
+  .tier-label { font-size: 16px; font-weight: 500; fill: var(--fg-2); }
+  .year { stroke: var(--line-2); stroke-dasharray: 2 4; }
+  .year-label { font-family: var(--f-mono); font-size: 15px; fill: var(--fg-3); }
+  .span { stroke: var(--fg-3); stroke-width: 1; transition: stroke var(--d-1); }
+  .hit { stroke: transparent; stroke-width: 12; }
+  .node { fill: var(--bg-1); stroke: var(--fg-3); stroke-width: 1; transition: stroke var(--d-1), fill var(--d-1), r var(--d-2) var(--ease-out); }
+  .name { font-size: 15px; fill: var(--fg-3); transition: fill var(--d-1); }
+  .paper.first .span { stroke: var(--signal); stroke-width: 1.6; }
+  .paper.first .node { fill: var(--signal); stroke: var(--signal); filter: drop-shadow(0 0 5px rgba(255, 122, 61, 0.7)); }
+  .paper.first .name { fill: var(--signal-2); font-weight: 500; }
+  .paper:hover .span, .paper:focus-visible .span { stroke: var(--fg); }
+  .paper:hover .node, .paper:focus-visible .node { stroke: var(--fg); r: 6px; }
+  .paper:hover .name, .paper:focus-visible .name { fill: var(--fg); }
+  /* The papers arrive in date order, once. */
+  :global(.js) .traj .paper { opacity: 0; transition: opacity 0.7s var(--ease-out) calc(var(--n) * 55ms + 200ms); }
+  :global(.js) .traj:global(.in) .paper { opacity: 1; }
+  .note text { font-size: 16px; fill: var(--fg-2); font-family: var(--f-sans); }
+  .note .note-date { font-family: var(--f-mono); font-size: 15px; fill: var(--fg-3); }
+  figcaption { display: flex; justify-content: space-between; gap: 24px; align-items: baseline; margin-top: 12px; padding-top: 10px; flex-wrap: wrap; box-shadow: 0 -1px 0 var(--line-2); }
+  .caption { font-size: var(--t-small); color: var(--fg-2); min-height: 1.6em; max-width: 78ch; }
+  .key { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .k { display: inline-block; width: 14px; height: 0; margin-left: 12px; border-top: 2px solid var(--signal); }
+  .k.co { border-top: 1px solid var(--fg-3); }
+  @media (max-width: 1100px) {
+    /* Too many labels for a small screen: scroll sideways and keep the type readable. */
+    svg { min-width: 1080px; }
+    figure { overflow-x: auto; }
+  }
+  @media (max-width: 760px) {
+    .note { display: none; }
+  }
+</style>

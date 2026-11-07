@@ -1,0 +1,43 @@
+/* Noto Sans SC, subset to the characters this site actually uses (npm run fonts).
+   PingFang comes first in the stack, so a Mac or iPhone never downloads these. A glyph
+   missing from the subset falls back to the system sans, so a new Chinese sentence
+   never breaks: it just waits for the next subset run.
+
+   The mini faces are declared last, so they win for their few characters. English
+   pages use only those, and therefore never download the full files. */
+@font-face {
+  font-family: 'Noto Sans SC Subset';
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/NotoSansSC-300.woff2') format('woff2');
+  unicode-range: U+3000-303F, U+3400-9FFF, U+FF00-FFEF, U+2018-201D;
+}
+@font-face {
+  font-family: 'Noto Sans SC Subset';
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/NotoSansSC-400.woff2') format('woff2');
+  unicode-range: U+3000-303F, U+3400-9FFF, U+FF00-FFEF, U+2018-201D;
+}
+@font-face {
+  font-family: 'Noto Sans SC Subset';
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/NotoSansSC-500.woff2') format('woff2');
+  unicode-range: U+3000-303F, U+3400-9FFF, U+FF00-FFEF, U+2018-201D;
+}
+/* 张凌豪理论地基 */
+@font-face {
+  font-family: 'Noto Sans SC Subset';
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/NotoSansSC-mini-300.woff2') format('woff2');
+  unicode-range: U+5F20, U+51CC, U+8C6A, U+7406, U+8BBA, U+5730, U+57FA;
+}
+@font-face {
+  font-family: 'Noto Sans SC Subset';
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/NotoSansSC-mini-400.woff2') format('woff2');
+  unicode-range: U+5F20, U+51CC, U+8C6A, U+7406, U+8BBA, U+5730, U+57FA;
+}

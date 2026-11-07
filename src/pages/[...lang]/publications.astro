@@ -1,0 +1,37 @@
+---
+import Base from '~/layouts/Base.astro';
+import PageHead from '~/components/chrome/PageHead.astro';
+import PubList from '~/components/papers/PubList.astro';
+import OutputChart from '~/components/widgets/OutputChart.astro';
+import { langPaths, toLang, ui } from '~/lib/i18n';
+import { allPapers, scholarlyArticle } from '~/lib/papers';
+
+export const getStaticPaths = langPaths;
+const lang = toLang(Astro.params.lang);
+const s = ui(lang);
+const zh = lang === 'zh';
+const papers = await allPapers();
+const jsonld = { '@context': 'https://schema.org', '@graph': papers.map(scholarlyArticle) };
+---
+<Base lang={lang} papers title={`${s.publications} — ${zh ? '张凌豪' : 'Linghao Zhang'}`} jsonld={jsonld}>
+  <main>
+    <PageHead
+      band="orbit"
+      alt={zh ? '轨道 · 550 km' : 'Orbit · 550 km'}
+      title={s.publications}
+      dek={zh ? '点开任意一篇，可以看摘要、引用、首页和主要图片。' : 'Open any of them for its abstract, citation, first page and main figures.'}
+    >
+      <div slot="art" class="year card">
+        <OutputChart lang={lang} />
+      </div>
+    </PageHead>
+    <div class="frame page-main list-main">
+      <PubList lang={lang} />
+    </div>
+  </main>
+</Base>
+
+<style>
+  .year { padding: 16px 18px; background-color: rgba(9, 12, 16, 0.6); backdrop-filter: blur(12px); }
+  .list-main { padding-top: 8px; }
+</style>

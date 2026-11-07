@@ -1,0 +1,18 @@
+---
+// The facts on a paper, the same everywhere: venue, year, status, role, citations.
+import { ui, type Lang } from '~/lib/i18n';
+import { isFirstAuthor, type Paper } from '~/lib/papers';
+import metrics from '~/data/generated/metrics.json';
+interface Props { paper: Paper; lang: Lang; cites?: boolean; month?: boolean }
+const { paper: p, lang, cites = true, month = false } = Astro.props;
+const s = ui(lang);
+const zh = lang === 'zh';
+const d = p.data;
+const n = cites && d.doi ? (metrics.citations as Record<string, number>)[d.doi] : undefined;
+const role = d.authors.length === 1 ? s.soleAuthor : isFirstAuthor(p) ? s.firstAuthor : null;
+---
+<span class="chip venue">{d.venueShort}</span>
+<span class="chip">{month ? `${d.date.getUTCFullYear()}.${String(d.date.getUTCMonth() + 1).padStart(2, '0')}` : d.year}</span>
+{d.status !== 'published' && <span class="chip"><i class={`dot ${d.status}`}></i>{s.status[d.status]}</span>}
+{role && <span class="chip first">{role}</span>}
+{typeof n === 'number' && n > 0 && <span class="chip">{zh ? `引用 ${n}` : `${n} ${n === 1 ? 'citation' : 'citations'}`}</span>}

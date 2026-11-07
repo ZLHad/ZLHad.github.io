@@ -1,0 +1,86 @@
+---
+paper: tmc-token-qoe
+lang: en
+headline: From the task level to the token level.
+dek: "Token-aware inference for multimodal requests across UAVs and LEO satellites: a latency model built on TTFT and TPOT, and a two-timescale scheduler on top of it."
+---
+import overall from '~/data/charts/tmc-overall.json';
+import ablation from '~/data/charts/tmc-ablation.json';
+import storage from '~/data/charts/tmc-storage.json';
+
+## What breaks
+
+Generative AI answers are produced token by token, so a user feels two delays: the time to the first token (TTFT) and the time per output token (TPOT). Most offloading work treats a request as a bit-stream and a local-or-remote choice. That misses how prompt length drives both delays, and how much of a long image or video prompt is redundant.
+
+In a remote area with no base stations the choice is real. A small model on a drone answers fast at lower quality. A full foundation model on a LEO satellite answers better and later. And a drone can cache only a few models.
+
+<Plate lang="en" n="1" src="/figures/tmc-token-qoe/scenario.webp" width={1400} height={1188} alt="Three-tier SAGIN architecture for multimodal AIGC inference" caption="The three-tier architecture: full foundation models in orbit, cached lightweight models and semantic encoders on UAVs, multimodal requests on the ground. Fig. 1 of the paper." />
+
+## The idea
+
+Treat everything as tokens. One continuous ratio η compresses the whole input sequence, so it sets the uplink payload and the prefill work together, and therefore TTFT. It also costs quality, and the scheduler can price that cost.
+
+<Eq tex="\tilde n_u^{\rm in}=\eta_u\,(n_u^{\rm txt}+n_u^{\rm vis}),\qquad \eta_u\in[\eta_{\min},1]" note="One ratio compresses the input. It sets both the payload on the link and the work in prefill." />
+
+The first token has to cross the whole chain in series. Later tokens stream through a pipeline, so they are limited by its slowest stage.
+
+<Eq tex="\mathrm{TTFT}_u=T^{\rm G2A}_{u\to k}+T^{\rm A2G}_{k\to u}+(1-x_u)\mathrm{TTFT}^{\rm UAV}_u+x_u\left[T^{\rm A2S}+T^{{\rm ISL},\uparrow}+\mathrm{TTFT}^{\rm sat}_u+T^{{\rm ISL},\downarrow}+T^{\rm S2A}\right]" />
+
+<Eq tex="\mathrm{TPOT}_u=\begin{cases}\max\{\overline{\mathrm{TPOT}}^{\rm UAV}_u,\;T^{\rm A2G}_{k\to u}\}&x_u=0\\ \max\{\overline{\mathrm{TPOT}}^{\rm sat}_u,\;T^{{\rm ISL},\downarrow},\;T^{\rm S2A},\;T^{\rm A2G}\}&x_u=1\end{cases}" note="The first-token delay is a serial sum. The per-token delay is a pipeline bottleneck." />
+
+<Eq tex="\mathrm{QoE}_u=w_q\ln(1+Q_u)-w_1\,\mathrm{TTFT}_u-w_2\,\mathrm{TPOT}_u" note="A concave reward for quality, with diminishing returns, minus penalties for both delays." />
+
+<Plate lang="en" wide n="2" src="/figures/tmc-token-qoe/latency.webp" width={2000} height={1228} alt="Inference pipeline and end-to-end streaming latency model" caption="The inference pipeline and the end-to-end streaming latency model, for UAV-side and satellite-side inference. Fig. 2 of the paper." />
+
+## Run the model
+
+<div class="full"><TokenRace lang="en" /></div>
+
+## The system
+
+Three tiers and two timescales. Every 120 s a knowledge-driven planner proposes UAV positions and model caches from recent demand, scores each candidate by rolling out the fast scheduler, and refines by alternating search. Every 2.4 s slot a conditional-diffusion TD3 scheduler (CD-TD3) picks an offload tier and a compression ratio for each user, and closed-form rules allocate bandwidth and compute.
+
+<Plate lang="en" wide n="3" src="/figures/tmc-token-qoe/framework.webp" width={2200} height={1154} alt="Two-timescale optimization framework" caption="The fast-timescale CD-TD3 scheduler (left) and the slow-timescale knowledge-driven planner (right), coupled through configuration provisioning and value feedback. Fig. 3 of the paper." />
+
+## What it found
+
+The evaluation is a simulation: 5 UAVs, 30 users, 6 satellites and a library of 10 UAV models, with decode costs set from NVIDIA Jetson AGX Thor rates and quality coefficients from model cards. Results are over 30 held-out configurations. The proposed framework reaches the highest per-user QoE, **31.9% above TD3 and 69.2% above the Greedy heuristic**.
+
+<Bars
+  title="Per-user QoE"
+  rows={overall.x.values.map((n, i) => ({ label: n, value: overall.series[0].values[i], display: overall.series[0].values[i].toFixed(3), hi: i === 0 }))}
+  source="From the evaluation file behind the paper's Table III."
+/>
+
+<Table3 lang="en" />
+
+Where the gain comes from is visible in that table. Against the fixed-configuration variant the proposed scheme cuts TTFT from 1.225 s to 0.873 s. In the learned behaviour, 35.7% of requests with a cached model still go to the satellite voluntarily, and vision inputs headed there are compressed to about η = 0.44.
+
+Removing one component at a time shows what carries the result. Per-user factorization matters most, then the diffusion actor, then compression.
+
+<Bars
+  title="QoE lost when one component is removed"
+  rows={ablation.x.values.slice(1).map((n, i) => ({ label: n, value: -ablation.series[1].values[i + 1], display: `−${(-ablation.series[1].values[i + 1]).toFixed(1)}%` })).sort((a, b) => b.value - a.value).map((r, i) => ({ ...r, hi: i === 0 }))}
+  source="Retrained variants, from the evaluation file behind the paper's Fig. 7."
+/>
+
+The advantage is largest when resources are tight. With only 10 GB of UAV storage the proposed scheme exceeds Greedy by 67.3%, narrowing to 37.7% at 30 GB.
+
+<Lines
+  title="Aggregate slot QoE against UAV storage"
+  x={storage.x.values}
+  xLabel="UAV storage capacity (GB)"
+  yLabel="QoE"
+  yMin={10}
+  yMax={40}
+  yTicks={[10, 20, 30, 40]}
+  series={[
+    { name: 'Proposed', values: storage.series[0].values, hi: true },
+    { name: 'Greedy', values: storage.series[3].values, dy: -5 },
+    { name: 'TD3', values: storage.series[1].values, dy: 3 },
+    { name: 'PPO', values: storage.series[2].values, dy: 5 },
+  ]}
+  source="From the sensitivity sweep behind the paper's Fig. 8(b)."
+/>
+
+The scheduler is cheap enough to run in real time. One decision for all 30 users takes 0.67 ms on average on a single CPU core (Apple M3 Max, PyTorch), and 0.93 ms at the 99th percentile.

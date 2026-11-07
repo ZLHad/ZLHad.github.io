@@ -1,0 +1,34 @@
+---
+// A figure from the paper, on its plate. It opens in the inspector.
+import Icon from '~/components/chrome/Icon.astro';
+interface Props {
+  src: string;
+  alt: string;
+  caption: string;
+  n: string;
+  width: number;
+  height: number;
+  wide?: boolean;
+  lang?: 'en' | 'zh';
+}
+const { src, alt, caption, n, width, height, wide = false, lang = 'en' } = Astro.props;
+---
+<figure class:list={['fplate', { wide }]} data-reveal>
+  <button type="button" class="plate open" data-zoom={src} data-alt={caption} aria-label={lang === 'zh' ? `放大：${alt}` : `Enlarge: ${alt}`}>
+    <img class="fig" src={src} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
+    <span class="ex" aria-hidden="true"><Icon name="expand" /></span>
+  </button>
+  <figcaption><span class="eyebrow">{lang === 'zh' ? '图版' : 'Plate'} {n}</span> {caption}</figcaption>
+</figure>
+
+<style>
+  .fplate { margin: 2.2em 0; }
+  .wide { width: min(var(--page), 100vw - 2 * var(--gutter)); }
+  .open { padding: clamp(10px, 1.6vw, 22px); cursor: zoom-in; border-radius: var(--r-3); }
+  .open img { width: 100%; height: auto; max-height: none; }
+  .open:hover { box-shadow: 0 0 0 1px var(--line-3); }
+  .ex { position: absolute; right: 12px; top: 12px; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: #fff; border-radius: 9px; background: rgba(12, 15, 20, 0.76); box-shadow: inset 0 0 0 1px var(--line); opacity: 0; transition: opacity var(--d-1); }
+  .open:hover .ex, .open:focus-visible .ex { opacity: 1; }
+  figcaption { margin-top: 10px; font-size: var(--t-small); line-height: 1.5; color: var(--fg-2); max-width: 74ch; text-wrap: pretty; }
+  figcaption .eyebrow { margin-right: 6px; color: var(--fg); }
+</style>

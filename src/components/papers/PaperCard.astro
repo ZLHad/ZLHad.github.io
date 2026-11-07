@@ -1,0 +1,85 @@
+---
+// A publication on the home page. The figure leads; the whole card opens the overview.
+import Icon from '~/components/chrome/Icon.astro';
+import PaperThumb from '~/components/papers/PaperThumb.astro';
+import PaperMeta from '~/components/papers/PaperMeta.astro';
+import { paperHref, pick, type Lang } from '~/lib/i18n';
+import { authorsOf, isMe, titleOf, type Paper } from '~/lib/papers';
+interface Props { paper: Paper; lang: Lang; size?: 'lg' | 'md'; i?: number }
+const { paper: p, lang, size = 'md', i = 0 } = Astro.props;
+const zh = lang === 'zh';
+const d = p.data;
+const to = paperHref(lang, p.id);
+---
+<article class:list={['pcard', 'card', 'spot', 'has-thumb', size]} data-spot data-reveal data-paper-row={p.id} style={`--i:${i}`}>
+  <a class="thumb" href={to} data-open-paper={p.id} tabindex="-1" aria-hidden="true">
+    <PaperThumb paper={p} lang={lang} dark />
+    <span class="go" aria-hidden="true"><Icon name="expand" /></span>
+  </a>
+  <div class="body">
+    <p class="meta"><PaperMeta paper={p} lang={lang} /></p>
+    <h3 class="title" lang={zh && !d.titleZh ? 'en' : undefined}><a href={to} data-open-paper={p.id}>{titleOf(p, lang)}</a></h3>
+    <p class="authors">
+      {authorsOf(p, lang).map((a, n) => (
+        <Fragment>{n > 0 && (zh && d.authorsZh ? '，' : ', ')}{isMe(a) ? <b>{a}</b> : a}</Fragment>
+      ))}
+    </p>
+    {size === 'lg' && <p class="sum">{pick(d.summary, lang)}</p>}
+    {size === 'lg' && d.highlights.length > 0 && (
+      <dl class="stats">
+        {d.highlights.map((h) => (
+          <div><dd class="num">{h.value}</dd><dt>{pick(h.label, lang)}</dt></div>
+        ))}
+      </dl>
+    )}
+  </div>
+</article>
+
+<style>
+  .pcard { display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+  .thumb { position: relative; display: block; flex: none; min-height: 0; }
+  /* The two lead cards share one plate height, so their text starts on one line. */
+  .lg .thumb { height: clamp(250px, 23vw, 350px); }
+  .body { flex: 1; }
+  .thumb :global(.plate), .thumb :global(.ptile) { height: 100%; border-radius: 0; box-shadow: 0 1px 0 var(--line-2); }
+  .lg { --thumb-pad: 18px; }
+  @media (max-width: 999px) {
+    .lg { --thumb-ar: 16 / 9.6; }
+    .lg .thumb { height: auto; }
+  }
+  .md { --thumb-ar: 16 / 9.6; --thumb-pad: 14px; }
+  .go {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    color: var(--fg);
+    border-radius: 9px;
+    background: rgba(12, 15, 20, 0.72);
+    box-shadow: inset 0 0 0 1px var(--line);
+    opacity: 0;
+    transform: translateY(3px) scale(0.96);
+    transition: opacity var(--d-2), transform var(--d-2) var(--ease-out);
+  }
+  @media (hover: hover) {
+    .pcard:hover .go { opacity: 1; transform: none; }
+  }
+  .body { padding: 14px 18px 16px; }
+  .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px; }
+  .title { margin-top: 10px; font-size: 1.0625rem; font-weight: 500; line-height: 1.32; letter-spacing: -0.012em; text-wrap: pretty; }
+  .lg .title { font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem); line-height: 1.22; letter-spacing: -0.018em; }
+  .title:lang(zh) { line-height: 1.45; letter-spacing: 0; }
+  .title a { text-decoration: none; }
+  .title a:hover { color: inherit; }
+  .pcard:hover .title { color: #fff; }
+  .authors { margin-top: 7px; font-size: var(--t-small); line-height: 1.45; color: var(--fg-3); }
+  .authors b { color: var(--fg); font-weight: 500; }
+  .sum { margin-top: 8px; max-width: 62ch; font-size: var(--t-text); line-height: 1.5; color: var(--fg-2); text-wrap: pretty; }
+  .stats { display: flex; gap: 28px; margin-top: 14px; padding-top: 12px; box-shadow: 0 -1px 0 var(--line-2); }
+  .stats dd { font-size: 1.375rem; font-weight: 400; line-height: 1.1; letter-spacing: -0.03em; color: var(--signal-2); }
+  .stats dt { margin-top: 3px; font-size: var(--t-label); line-height: 1.3; color: var(--fg-3); }
+</style>

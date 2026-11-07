@@ -1,0 +1,27 @@
+title: Submodular Optimization Based Co-Inference in Space-Air-Ground Integrated Vehicular Networks
+authors: [Suyao Huang, Bo Xu, Guijin Tang, Haotong Cao, Linghao Zhang, Haitao Zhao]
+venue: 2025 IEEE 36th International Symposium on Personal, Indoor and Mobile Radio Communications (PIMRC)
+venueShort: IEEE PIMRC
+kind: conference
+status: published
+date: 2025-09-01
+year: 2025
+pages: 1-6
+doi: 10.1109/PIMRC62392.2025.11275599
+tiers: [space, air, ground]
+stratum: air
+mechanism: infer
+altitudes: UAV 50 m · satellite 600 km
+summary:
+  en: For connected vehicles, inference is split between vehicles, UAVs and a satellite, with submodular optimization and a satellite resource-reallocation step.
+  zh: 面向空天地一体化车联网的协同推理，联合优化模型分割、车辆关联与资源分配，并加入卫星资源再分配。
+abstract:
+  en: "Space-air-ground integrated vehicular networks (SAGVN) play a crucial role in the 6G system, offering global coverage and ultra-wide-area broadband access. Meanwhile, advancements in artificial intelligence (AI) have led to a significant increase in model inference demands, which come with stringent latency requirements. In this paper, considering the intelligent services in SAGVN, we explore the co-inference problem and improve the inference efficiency by performing model splitting, vehicle association, and resource allocation. This problem is solved iteratively by decomposing it into multiple sub-problems. In particular, the model splitting problem is addressed by systematically searching for the optimal split points. Besides, the joint vehicle association and resource allocation problem are reformulated into a monotone submodular function without satellites, and then a low-complexity submodular optimization algorithm is proposed. To further utilize the computing power of the satellite, we further introduce a resource reallocation algorithm based on the existing optimization results. These two subproblems can iterate alternately until the optimization goal converges. Simulation results show that the proposed algorithm can achieve better latency performance in several inference tasks."
+firstPage: true
+figures:
+  - file: convergence.webp
+    width: 762
+    height: 597
+    caption:
+      en: "Convergence of different schemes under the VGG16 model (Fig. 1)."
+      zh: "VGG16 模型下不同方案的收敛情况（图 1）。"

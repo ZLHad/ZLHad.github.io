@@ -1,0 +1,49 @@
+---
+paper: tvt-cr-sagin
+lang: en
+look: air
+headline: Pick the exit and the split together, by accuracy per unit of latency.
+dek: UAVs sense the road, generate DNN tasks and split them with vehicles, on spectrum shared with a satellite link under a cognitive-radio limit. Association, early exits, splitting, power, computing and trajectories are optimized together.
+---
+
+## What breaks
+
+DNNs keep growing while UAVs have limited communication and computing, so inference is split between UAVs and nearby vehicles. Two choices then pull against each other. The early-exit branch sets how accurate the result is. The split point sets how much has to be sent and computed, and so sets the latency. UAVs that reuse subchannels interfere with each other, and under cognitive radio their combined interference at the satellite's ground receiver must stay below a threshold. Earlier work mostly targets generic offloading rather than DNN inference, sends features to terrestrial edge servers, or ignores that tasks need different accuracy.
+
+## The idea
+
+Score each round by inference efficiency, the summed accuracy of all UAV tasks divided by their summed latency, and average it over the mission. Branch choice and split point then sit on one scale. The variables are handled by type.
+
+- Association and split decisions are written as QUBO Hamiltonians (quadratic unconstrained binary optimization), whose relaxed forms train graph attention networks without labels. Branch and split are then re-tuned pair by pair against the true ratio.
+- Transmit power is solved by successive convex approximation, and UAV computing has a closed form.
+- UAV trajectories, which couple the rounds, are learned with MAPPO. Every UAV gets the round's efficiency as its reward.
+
+<Plate lang="en" n="1" src="/figures/tvt-cr-sagin/architecture.webp" width={976} height={582} alt="Architecture of CR-SAGIN-enhanced IoV for DNN inference tasks" caption="UAVs collect road data and split DNN inference with vehicles, on subchannels shared with a satellite link. Fig. 1 of the paper." />
+
+## The system
+
+One LEO satellite at 800 km serves a ground receiver that has priority on the spectrum. UAVs are secondary users of the same spectrum. They sense the road with cameras and radar, generate inference tasks, and serve vehicles over subchannels. Each task runs on a multi-branch AlexNet with early exits. The UAV runs the first layers and the vehicle runs the rest.
+
+<Plate lang="en" n="2" src="/figures/tvt-cr-sagin/branches.webp" width={982} height={522} alt="The considered accuracy-aware multi-branch DNN model with early exiting" caption="An AlexNet with early-exit branches. Black bars mark where the model can be split. Fig. 2 of the paper." />
+
+<Eq tex="\xi(t)=\sum_{q=1}^{Q}\sum_{m=1}^{M}p^m_q(t)\,\hat g_{q,s}(t)<\xi^{\max}" note="The UAVs' total interference at the satellite's ground receiver has to stay below a threshold." />
+
+<Eq tex="\max_{\mathcal A,\,\mathcal O,\,\mathcal L,\,\mathcal P,\,\mathcal F,\,\mathcal U}\;\frac{1}{T}\sum_{t=1}^{T}\frac{\sum_{q=1}^{Q}\omega_q(t)}{\sum_{q=1}^{Q}\tau_q(t)}" note="Mission-average inference efficiency, over association, branches, split points, power, computing and trajectories." />
+
+<Plate lang="en" n="3" src="/figures/tvt-cr-sagin/framework.webp" width={967} height={626} alt="A schematic illustration of the solution logic for the subproblems" caption="Association, branch and split go to QUBO-GAT; power and computing to SCA and convex optimization; trajectories to MAPPO, scored by the same reward. Fig. 4 of the paper." />
+
+Inside a round, a new solution is kept only if it is feasible and does not lower the efficiency, so the accepted solutions never get worse and the loop converges. Across rounds, the UAVs learn where to fly, with centralized training and decentralized execution.
+
+<Eq tex="R_q(t)=R(t)=\frac{\sum_{q'=1}^{Q}\omega_{q'}(t)}{\sum_{q'=1}^{Q}\tau_{q'}(t)}-\zeta(t)" note="Every UAV gets the same reward: the round's efficiency, minus a penalty when a move breaks the speed or separation limits." />
+
+## What it found
+
+The simulation covers 1000 m by 1000 m with 5 UAVs at 100 m and 50 vehicles, 10 subchannels of 100 kHz and 4 exit branches, running AlexNet and VGG16. Five baselines are compared: a multi-agent reinforcement-learning scheme that learns every variable jointly, schemes that optimize only splitting and association, only computing, or only power, and greedy association by channel gain.
+
+<Plate lang="en" wide n="4" src="/figures/tvt-cr-sagin/results.webp" width={1983} height={482} alt="Comparison of objective values for AlexNet under different parameter settings" caption="Objective value for AlexNet against the number of vehicles, the bandwidth and the interference threshold. Fig. 7 of the paper." />
+
+With both models, the proposed scheme has the highest efficiency across the numbers of vehicles, bandwidths and interference thresholds tested. The graph attention networks converge within a few iterations, faster than a graph convolutional version, and the learned trajectories follow the vehicles as they move.
+
+## What is left
+
+The channel is free-space line of sight, and each branch's accuracy is a constant measured offline. The paper's next steps are an accuracy model that responds to data shift, scene complexity, the split position and feature distortion in transmission, larger deployments with more complex DNNs, and algorithms that adapt as the environment changes. The paper extends the group's earlier [graph-learning co-inference paper](/publications/iot-graph/) with early exits, moving vehicles, computing allocation and trajectories.

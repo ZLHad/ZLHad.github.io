@@ -1,0 +1,131 @@
+---
+// A CV generated from the same records as the rest of the site, so it cannot drift.
+// "Save as PDF" prints this page; the print stylesheet turns it into black on white.
+import { getCollection } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/chrome/Icon.astro';
+import PageHead from '~/components/chrome/PageHead.astro';
+import { langPaths, pick, toLang, ui } from '~/lib/i18n';
+import { allPapers, citation, publishedOrder, type Paper } from '~/lib/papers';
+import { profile } from '~/data/profile';
+
+export const getStaticPaths = langPaths;
+const lang = toLang(Astro.params.lang);
+const s = ui(lang);
+const zh = lang === 'zh';
+
+const papers = await allPapers();
+const published = publishedOrder(papers);
+const preprints = papers.filter((p) => p.data.status === 'preprint');
+const rank = (pos: string) => {
+  const [a, b] = pos.split('/').map(Number);
+  return a + b / 100;
+};
+const patents = (await getCollection('patents', (p) => !p.data.hidden)).sort(
+  (a, b) => Number(b.data.status === 'granted') - Number(a.data.status === 'granted') || rank(a.data.position) - rank(b.data.position),
+);
+const awards = (await getCollection('awards')).sort((a, b) => a.id.localeCompare(b.id));
+const labels = zh
+  ? { bio: '简介', edu: '教育背景', pub: '已发表论文', pre: '预印本', pat: '专利', awa: '获奖', save: '存为 PDF', granted: '已授权', pubP: '公开', inv: '发明人' }
+  : { bio: 'Biography', edu: 'Education', pub: 'Publications', pre: 'Preprints', pat: 'Patents', awa: 'Selected awards', save: 'Save as PDF', granted: 'Granted', pubP: 'Published', inv: 'inventor' };
+const emph = (text: string) => text.replace('Linghao Zhang', '<b>Linghao Zhang</b>').replace('张凌豪', '<b>张凌豪</b>');
+const cite = (p: Paper) => emph(citation(p, lang));
+---
+<Base lang={lang} title={`${s.cv} — ${profile.name[lang]}`}>
+  <main>
+    <PageHead band="ground" title={profile.name[lang]}>
+      <p class="contact">
+        <a href={`mailto:${profile.email}`}>{profile.email}</a>
+        <a href={`mailto:${profile.emailNus}`}>{profile.emailNus}</a>
+        <a href={Astro.site?.href}>zlhad.top</a>
+        <a href={profile.links.github}>github.com/ZLHad</a>
+      </p>
+      <button type="button" class="btn save" data-print><Icon name="download" />{labels.save}</button>
+    </PageHead>
+    <div class="frame cv">
+    <section><h2 class="eyebrow">{labels.bio}</h2><div><p class="bio">{profile.bio[lang]}</p></div></section>
+
+    <section>
+      <h2 class="eyebrow">{labels.edu}</h2>
+      <ol class="plain">
+        {profile.education.map((e) => (
+          <li class="row"><span class="when num">{e.period}</span><span><b>{e.place[lang]}</b>. {e.what[lang]}{e.who && `. ${e.who[lang]}`}.</span></li>
+        ))}
+      </ol>
+    </section>
+
+    <section>
+      <h2 class="eyebrow">{labels.pub}</h2>
+      <ol class="refs">{published.map((p) => <li set:html={cite(p)} />)}</ol>
+    </section>
+
+    <section>
+      <h2 class="eyebrow">{labels.pre}</h2>
+      <ol class="refs">{preprints.map((p) => <li set:html={cite(p)} />)}</ol>
+    </section>
+
+    <section>
+      <h2 class="eyebrow">{labels.pat}</h2>
+      <ol class="refs">
+        {patents.map((p) => (
+          <li>{pick(p.data.title, lang)}, {p.data.number}. {p.data.status === 'granted' ? labels.granted : labels.pubP}, {p.data.date.getUTCFullYear()}; {labels.inv} {p.data.position}.</li>
+        ))}
+      </ol>
+    </section>
+
+    <section>
+      <h2 class="eyebrow">{labels.awa}</h2>
+      <ol class="plain">
+        {awards.map((a) => <li><b>{pick(a.data.title, lang)}</b>, {pick(a.data.event, lang)}, {a.data.year}.</li>)}
+      </ol>
+    </section>
+    </div>
+  </main>
+</Base>
+
+<script>
+  document.querySelector('[data-print]')?.addEventListener('click', () => print());
+</script>
+
+<style>
+  .cv { padding-bottom: clamp(56px, 10vh, 112px); }
+  .contact { display: flex; flex-wrap: wrap; gap: 2px 20px; margin-top: 16px; font-family: var(--f-mono); font-size: var(--t-small); letter-spacing: -0.02em; color: var(--fg-2); }
+  .contact a { text-decoration: none; }
+  .save { position: absolute; right: 0; top: clamp(36px, 6vh, 64px); }
+  section { display: grid; grid-template-columns: 168px minmax(0, 960px); gap: 4px 24px; padding: 22px 0; box-shadow: 0 -1px 0 var(--line-2); font-size: var(--t-text); line-height: 1.58; color: var(--fg-2); }
+  section:first-child { box-shadow: 0 -1px 0 var(--line); }
+  h2 { position: sticky; top: calc(var(--bar) + 18px); align-self: start; padding-top: 2px; }
+  b { font-weight: 500; color: var(--fg); }
+  .bio { max-width: var(--measure); text-wrap: pretty; }
+  .plain li { margin-bottom: 8px; }
+  .row { display: grid; grid-template-columns: 236px minmax(0, 1fr); gap: 12px; }
+  .when { font-size: var(--t-label); color: var(--fg-3); padding-top: 2px; }
+  .refs { counter-reset: n; }
+  .refs li { counter-increment: n; position: relative; padding-left: 36px; margin-bottom: 8px; }
+  .refs li::before { content: counter(n, decimal-leading-zero); position: absolute; left: 0; top: 1px; font-family: var(--f-mono); font-size: var(--t-label); letter-spacing: -0.02em; color: var(--fg-3); }
+  .refs :global(b) { font-weight: 500; color: var(--fg); }
+  @media (max-width: 720px) {
+    section { grid-template-columns: 1fr; gap: 8px; }
+    h2 { position: static; }
+    .save { position: static; margin-top: 16px; }
+    .row { grid-template-columns: 1fr; gap: 0; }
+  }
+  @media print {
+    :global(.topbar), :global(.skip-link), :global(.footer), .save { display: none !important; }
+    :global(.page-head .inner) { width: auto !important; padding-block: 0 8px !important; }
+    :global(.page-title) { font-size: 26pt !important; }
+    .cv { padding: 0 !important; width: auto !important; }
+    .contact { font-size: 9.5pt; margin-top: 4px; }
+    section { grid-template-columns: 80px minmax(0, 1fr); gap: 2px 14px; padding: 6px 0; font-size: 9.2pt; line-height: 1.3; color: #111; }
+    h2 { position: static; font-family: var(--f-sans); font-size: 9pt; font-weight: 600; letter-spacing: 0; padding-top: 0; color: #333; }
+    b, .refs :global(b) { font-weight: 700; color: #111; }
+    li { break-inside: avoid; }
+    .plain li, .refs li { margin-bottom: 3px; }
+    .row { grid-template-columns: 120px minmax(0, 1fr); }
+    .when { font-size: 8.5pt; }
+    .refs li { padding-left: 24px; }
+    .refs li::before { font-size: 8.5pt; }
+    a { text-decoration: none; }
+  }
+  @page { margin: 14mm 15mm; }
+</style>

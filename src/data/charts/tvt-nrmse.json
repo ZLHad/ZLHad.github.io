@@ -1,0 +1,63 @@
+{
+ "title": "Task-size prediction error (NRMSE) vs prediction step h",
+ "source": "Paper_TVT_minor revision/code/prediction_results.mat",
+ "x": {
+  "label": "Prediction step h",
+  "unit": "slots",
+  "values": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ]
+ },
+ "series": [
+  {
+   "name": "Gamma-GLM",
+   "values": [
+    0.16697464940661036,
+    0.17658267010354678,
+    0.18393455446144907,
+    0.18927683897215425,
+    0.19296092545266813,
+    0.19579095322054083
+   ]
+  },
+  {
+   "name": "LSTM",
+   "values": [
+    0.16738551127975745,
+    0.18405659604885488,
+    0.20312488331817008,
+    0.22023274513000837,
+    0.23515786982222195,
+    0.24863987701750367
+   ]
+  },
+  {
+   "name": "Moving average (w=4)",
+   "values": [
+    0.1810749859202785,
+    0.19462499390399748,
+    0.206039374326754,
+    0.2154419231071986,
+    0.22298834763101433,
+    0.2291051700794637
+   ]
+  },
+  {
+   "name": "Last value",
+   "values": [
+    0.19352852471077556,
+    0.20817903492689108,
+    0.22090514810286754,
+    0.2320814991267045,
+    0.2405000788135636,
+    0.24817921884048974
+   ]
+  }
+ ],
+ "notes": "Exact values from .mat (mean over 30 series). Rounded to 3 decimals they equal Table II of the paper. Data are SYNTHETIC: log-AR(4) Gamma series, alpha=16, mean 1 Mbit, 1500 test slots; this is a stand-alone predictor test, not the SAGIN simulator. Std per point also in the .mat (nrmse_*_std). Inference time ms: GLM 0.0435, LSTM 0.3697, MA 0.0055, Last 0.0019."
+}

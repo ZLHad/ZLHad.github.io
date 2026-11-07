@@ -1,0 +1,28 @@
+title: "Mobility-Aware Task Offloading in Industrial Fog Networks: A Submodular-Based MARL Approach"
+authors: [Bo Xu, Haitao Zhao, Haotong Cao, Chun Zhu, Jinlong Sun, Linghao Zhang, Hongbo Zhu]
+venue: IEEE Internet of Things Journal
+venueShort: IEEE IoT-J
+kind: journal
+status: published
+date: 2024-12-09
+year: 2025
+volume: "12"
+number: "8"
+pages: 10795-10807
+doi: 10.1109/JIOT.2024.3514095
+tiers: [ground]
+stratum: ground
+mechanism: offload
+summary:
+  en: In industrial fog networks, moving robots and vehicles offload tasks using submodular optimization and learn their own trajectories with multi-agent reinforcement learning.
+  zh: 在工业雾网络中，移动的机器人和无人车用子模优化完成任务卸载，并通过多智能体强化学习自主规划轨迹。
+abstract:
+  en: "The development of Industrial Internet of Things (IIoT) applications presents a critical challenge in terms of latency limitation, particularly considering the limited availability of resources that prevent a single fog device from fully executing large-scale computing tasks. In such scenarios, enabling distributed computing across multiple fog servers or collaborating with cloud servers holds promising potential. To improve the efficiency of task offloading while accounting for the crucial role of movable fog devices (e.g., robots and unmanned cars), we formulate a joint optimization problem as a partially observable Markov decision process (POMDP), incorporating offloading decisions, computing resource allocation, and trajectory optimization under constraints related to available resources and collision avoidance. Due to the nondeterministic polynomial-time hardness (NP-hardness) in the problems of task offloading and resource allocation, we reformulate a matroid-constrained submodular maximization problem and propose an iterative low-complexity algorithm to find solutions. Subsequently, extracting better solutions from submodular optimization, we propose a multiagent reinforcement learning (MARL)-based algorithm to solve the trajectory optimization problem for the movable fog devices acting as agents, making decisions based on their local observations. Finally, simulation results have validated that the proposed scheme has a superior performance compared to the baselines."
+firstPage: true
+figures:
+  - file: architecture.webp
+    width: 1005
+    height: 773
+    caption:
+      en: "Typical architecture in fog-enabled IIoT networks (Fig. 1)."
+      zh: "雾使能工业物联网的典型架构（图 1）。"

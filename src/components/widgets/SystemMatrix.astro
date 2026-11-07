@@ -1,0 +1,154 @@
+---
+// The research system as one drawing: a control plane on top, the studies in
+// the middle, theory underneath, and every paper in the cell it belongs to.
+import Icon from '~/components/chrome/Icon.astro';
+import { href, paperHref, pick, ui, type Lang } from '~/lib/i18n';
+import { mechanisms } from '~/data/mechanisms';
+import { allPapers, isFirstAuthor, titleOf } from '~/lib/papers';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = ui(lang);
+const zh = lang === 'zh';
+const papers = await allPapers();
+const by = (m: string) => {
+  const list = papers.filter((p) => p.data.mechanism === m);
+  return [...list.filter(isFirstAuthor), ...list.filter((p) => !isFirstAuthor(p))];
+};
+const mechs = mechanisms.map((m) => ({ key: m.key, name: pick(m.name, lang), q: pick(m.q, lang) }));
+const rowLabels = zh
+  ? { control: '控制面', mech: '研究', res: '资源', tier: '网络层', found: '地基' }
+  : { control: 'Control plane', mech: 'Studies', res: 'Resources', tier: 'Tiers', found: 'Foundations' };
+const controlText = zh
+  ? '智能体读懂业务意图和语义资源状态，再去塑形快时标强化学习的奖励。'
+  : 'Agents read service intent and the network’s semantic state, then shape the reward of a fast RL agent.';
+const resources = zh ? ['通信', '计算', '存储'] : ['Communication', 'Computing', 'Storage'];
+const foundText = zh
+  ? '开放电子书《理论地基·四部曲》：环境 → 信道 → 任务 → 网络 → 群体。'
+  : 'An open book, Theory Foundations: environment → channel → task → network → swarm.';
+const tierKeys = ['space', 'air', 'ground'] as const;
+---
+<div class="matrix" data-reveal>
+  <div class="layer control">
+    <p class="eyebrow row-label">{rowLabels.control}</p>
+    <div class="control-body">
+      <div>
+        <p class="big">{zh ? 'Agentic 大脑' : 'Agentic brain'}</p>
+        <p class="desc">{controlText}</p>
+      </div>
+      <ul class="chips">
+        {by('control').map((p) => (
+          <li>
+            <a href={paperHref(lang, p.id)} data-open-paper={p.id} class:list={['pchip', { first: isFirstAuthor(p) }]} data-tip-head={`${p.data.venueShort} ${p.data.year}`} data-tip={titleOf(p, lang)}>
+              {p.data.venueShort} {p.data.year}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="layer">
+    <p class="eyebrow row-label">{rowLabels.mech}</p>
+    <div class="mechs">
+      {mechs.map((m) => (
+        <div class="mech">
+          <p class="big">{m.name}<span class="count num">{by(m.key).length}</span></p>
+          <p class="desc">{m.q}</p>
+          <ul class="chips stack">
+            {by(m.key).map((p) => (
+              <li>
+                <a href={paperHref(lang, p.id)} data-open-paper={p.id} class:list={['pchip', { first: isFirstAuthor(p) }]} data-tip-head={`${p.data.venueShort} ${p.data.year}`} data-tip={titleOf(p, lang)}>
+                  <span class="tiers" aria-label={p.data.tiers.map((t) => s.tiers[t]).join(', ')}>
+                    {tierKeys.map((t) => <i class:list={[{ on: p.data.tiers.includes(t) }]}></i>)}
+                  </span>
+                  <span>{p.data.venueShort} {p.data.year}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="layer thin">
+    <p class="eyebrow row-label">{rowLabels.res}</p>
+    <div class="strip">{resources.map((r) => <span>{r}</span>)}</div>
+  </div>
+  <div class="layer thin">
+    <p class="eyebrow row-label">{rowLabels.tier}</p>
+    <div class="strip">{tierKeys.map((t) => <span>{s.tiers[t]}</span>)}</div>
+  </div>
+  <div class="layer thin warm">
+    <p class="eyebrow row-label">{rowLabels.found}</p>
+    <div class="found">
+      <p>{foundText}</p>
+      <a class="link-more" href={href(lang, '/projects/#wireless-theory-tutorials')}>{zh ? '去看这本书' : 'See the book'}<Icon name="next" /></a>
+    </div>
+  </div>
+</div>
+<p class="label legend">{zh ? '论文前的三条短线依次代表天、空、地，点亮的是它系统模型里包含的网络层。' : 'The three bars before a paper stand for space, air and ground. The lit ones are the tiers in its system model.'}</p>
+
+<style>
+  .matrix { display: grid; gap: 8px; }
+  .layer {
+    display: grid;
+    grid-template-columns: 132px minmax(0, 1fr);
+    gap: 0 18px;
+    padding: 16px 20px;
+    border-radius: var(--r-3);
+    background: linear-gradient(180deg, rgba(190, 205, 225, 0.04), rgba(190, 205, 225, 0.012));
+    box-shadow: inset 0 0 0 1px var(--line-2);
+  }
+  .layer.thin { padding-block: 11px; align-items: center; }
+  .control { background: linear-gradient(90deg, var(--signal-wash), rgba(255, 122, 61, 0.015) 62%); box-shadow: inset 0 0 0 1px rgba(255, 122, 61, 0.2); }
+  .warm { background: linear-gradient(90deg, rgba(180, 110, 60, 0.12), rgba(180, 110, 60, 0.015) 62%); }
+  .row-label { padding-top: 3px; }
+  .thin .row-label { padding-top: 0; }
+  .control-body { display: flex; align-items: center; justify-content: space-between; gap: 12px 28px; flex-wrap: wrap; }
+  .big { font-size: var(--t-title); font-weight: 500; line-height: 1.2; letter-spacing: -0.016em; }
+  .desc { margin-top: 4px; font-size: var(--t-small); line-height: 1.45; color: var(--fg-2); text-wrap: pretty; }
+  .mechs { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+  .mech { padding: 0 16px; box-shadow: -1px 0 0 var(--line-2); }
+  .mech:first-child { padding-left: 0; box-shadow: none; }
+  .mech:last-child { padding-right: 0; }
+  .mech .desc { min-height: 2.9em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px 6px; }
+  .chips.stack { flex-direction: column; margin-top: 10px; margin-inline: -8px; gap: 1px; }
+  .pchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 4px 8px;
+    font-family: var(--f-mono);
+    font-size: var(--t-label);
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    text-decoration: none;
+    color: var(--fg-2);
+    border-radius: 6px;
+    transition: background var(--d-1), color var(--d-1);
+  }
+  .pchip.first { color: var(--signal-2); }
+  .pchip:hover { color: var(--fg); background: rgba(190, 205, 225, 0.1); }
+  .control .pchip { box-shadow: inset 0 0 0 1px rgba(255, 122, 61, 0.28); }
+  .tiers { display: inline-flex; flex-direction: column; gap: 1.5px; flex: none; }
+  .tiers i { display: block; width: 12px; height: 2.5px; border-radius: 1px; background: var(--line); }
+  .tiers i.on { background: currentColor; }
+  .strip { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); font-size: var(--t-small); font-weight: 500; color: var(--fg-2); }
+  .strip span { padding: 2px 0; text-align: center; }
+  .strip span + span { box-shadow: -1px 0 0 var(--line); }
+  .big { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  .count { font-size: var(--t-label); font-weight: 400; letter-spacing: -0.02em; color: var(--fg-3); }
+  .found { display: flex; justify-content: space-between; gap: 16px; align-items: center; font-size: var(--t-small); color: var(--fg-2); }
+  .legend { margin-top: 12px; }
+  @media (max-width: 899px) {
+    .layer { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    .mechs { grid-auto-flow: row; gap: 18px 0; }
+    .mech { padding-inline: 0; box-shadow: none; }
+    .found { flex-direction: column; align-items: flex-start; }
+    .strip { display: flex; flex-wrap: wrap; gap: 0 18px; }
+    .strip span { text-align: left; }
+    .strip span + span { box-shadow: none; }
+  }
+</style>

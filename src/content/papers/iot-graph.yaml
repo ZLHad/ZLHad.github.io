@@ -1,0 +1,30 @@
+title: Research on Graph Learning-Based Co-Inference Method for Space-Air-Ground Integrated Networks
+titleZh: 基于图学习的空天地一体化网络合作推理方法研究
+authors: [Yukai Xu, Bo Xu, Linghao Zhang, Qin Wang, Haitao Zhao]
+authorsZh: [徐煜凯, 徐波, 张凌豪, 王琴, 赵海涛]
+venue: Chinese Journal on Internet of Things
+venueZh: 物联网学报
+venueShort: CJIoT
+kind: journal
+status: online-first
+date: 2025-08-08
+year: 2025
+url: https://link.cnki.net/urlid/10.1491.tp.20250807.1640.004
+tiers: [space, air, ground]
+stratum: air
+mechanism: infer
+altitudes: UAV 100 m · LEO 800 km
+summary:
+  en: UAVs, ground devices and satellites jointly run a neural network, with a graph-attention method deciding associations and model splits under cognitive-radio interference limits.
+  zh: 无人机、地面设备和卫星共同运行一个神经网络，在认知无线电干扰约束下，用图注意力方法决定设备关联和模型分割。
+abstract:
+  en: "In the space-air-ground integrated network (SAGIN), diverse artificial intelligence (AI) applications are realized through the inference of pre-trained deep neural networks (DNNs). Owing to the ever-increasing parameter scale of DNNs, the execution of inference tasks under constrained communication and computational resources typically necessitates multi-party collaboration. This paper integrates cognitive radio (CR) technology into SAGIN, aiming to minimize inference latency while considering constraints such as satellite communication interference thresholds, device quality-of-service requirements, and transmit power limitations. We formulate a cooperative inference problem involving device association, model splitting, and power optimization, with unmanned aerial vehicle (UAV) serving as task initiators. The considered problem is a non-convex optimization with coupled multi-dimensional variables. Accordingly, we decompose the original problem based on optimization variables and propose a graph learning method combining quadratic unconstrained binary optimization (QUBO) and an attention mechanism. Specifically, the objective function and constraints are modeled in QUBO form, and a differentiable loss function is derived through Hamiltonian relaxation, where a dynamic multi-head attention mechanism is then employed to aggregate node information in the graph-structured problem, optimizing device association and model splitting. Additionally, transmit power is optimized using successive convex approximation (SCA). Ultimately, the three sub-problems are solved alternately in an iterative process. Simulation results indicate that the proposed method reduces the total latency of collaborative inference tasks by 11%."
+  zh: "在空天地一体化网络 (SAGIN, space-air-ground integrated network) 中，通过推理已训练的深度神经网络 (DNN, deep neural network) 能够实现多样化的人工智能 (AI, artificial intelligence) 服务。由于 DNN 的参数量不断增大，在有限的通信和计算资源下，推理任务的执行过程通常需要多方的合作。本论文将认知无线电技术 (CR, cognitive radio) 融入 SAGIN 中，以最小化合作推理时延为目标，在卫星通信干扰阈值约束、设备服务质量约束以及发射功率约束下，以无人机 (UAV, unmanned aerial vehicle) 为推理任务的发起者建立考虑设备关联、模型分割以及功率优化的合作推理问题。该问题是多维变量耦合的非凸问题，本文根据优化变量将原问题分解，提出一种融合二次无约束二值优化 (QUBO, quadratic unconstrained binary optimization) 和注意力机制的图学习法，将目标函数和约束条件建模为 QUBO 形式，并且通过哈密尔顿量松弛生成可微的损失函数，进而利用动态多头注意力机制对图结构问题中的节点信息进行聚合，从而完成设备关联和模型分割优化。此外，使用连续凸逼近 (SCA, successive convex approximation) 对发射功率进行优化，最后对三部分子问题交替迭代求解。仿真结果表明，所提方法能够将合作推理任务总时延降低 11%。"
+firstPage: true
+figures:
+  - file: architecture.webp
+    width: 961
+    height: 741
+    caption:
+      en: "The CR-SAGIN system for cooperative inference tasks (Fig. 1)."
+      zh: "面向合作推理任务的 CR-SAGIN 系统（图 1）。"

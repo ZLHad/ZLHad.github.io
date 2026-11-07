@@ -1,0 +1,43 @@
+---
+// TMC paper, Table III, read straight from the evaluation file behind it.
+import overall from '~/data/charts/tmc-overall.json';
+interface Props { lang?: 'en' | 'zh' }
+const { lang = 'en' } = Astro.props;
+const zh = lang === 'zh';
+const schemes = overall.x.values;
+const col = (name: string) => overall.series.find((s) => s.name === name)!.values;
+const qoe = col('Per-user QoE');
+const ttft = col('TTFT (s)');
+const tpot = col('TPOT (s/token)');
+const quality = col('Generation quality');
+const head = zh ? ['方案', 'QoE', '首 token (s)', '每 token (s)', '质量'] : ['Scheme', 'QoE', 'TTFT (s)', 'TPOT (s/token)', 'Quality'];
+---
+<div class="wrap card" data-reveal>
+  <table>
+    <thead><tr>{head.map((h) => <th scope="col" class="label">{h}</th>)}</tr></thead>
+    <tbody>
+      {schemes.map((s, i) => (
+        <tr class:list={[{ hi: i === 0 }]}>
+          <th scope="row">{s === 'Proposed' && zh ? '本文方案' : s}</th>
+          <td>{qoe[i].toFixed(3)}</td>
+          <td>{ttft[i].toFixed(3)}</td>
+          <td>{tpot[i].toFixed(4)}</td>
+          <td>{quality[i].toFixed(3)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .wrap { overflow-x: auto; margin: 2em 0; padding: 6px 16px; }
+  table { font-family: var(--f-mono); font-size: var(--t-label); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  th, td { padding: 9px 12px 9px 0; text-align: right; box-shadow: 0 1px 0 var(--line-2); white-space: nowrap; color: var(--fg-2); }
+  tr:last-child th, tr:last-child td { box-shadow: none; }
+  th:first-child { text-align: left; font-family: var(--f-sans); font-size: var(--t-small); font-weight: 450; letter-spacing: 0; color: var(--fg); }
+  thead th { font-family: var(--f-sans); font-weight: 450; letter-spacing: 0; color: var(--fg-3); box-shadow: 0 1px 0 var(--line); }
+  thead th:first-child { color: var(--fg-3); font-size: var(--t-label); }
+  .hi th, .hi td { color: var(--signal-2); font-weight: 500; }
+  tbody tr { transition: background var(--d-1); }
+  tbody tr:hover { background: rgba(190, 205, 225, 0.04); }
+</style>

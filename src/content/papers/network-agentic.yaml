@@ -1,0 +1,34 @@
+title: "Agentic AI for SAGIN Resource Management: Semantic Awareness, Orchestration, and Optimization"
+authors: [Linghao Zhang, Haitao Zhao, Bo Xu, Hongbo Zhu, Xianbin Wang]
+venue: IEEE Network
+venueShort: IEEE Network
+kind: magazine
+status: early-access
+date: 2026-06-17
+year: 2026
+pages: 1-8
+doi: 10.1109/MNET.2026.3695611
+tiers: [space, air, ground]
+stratum: control
+mechanism: control
+summary:
+  en: An agentic AI control plane for SAGIN. Semantic resource perceivers, intent-driven orchestrators and adaptive learners close a MAPE-K loop, coupling LLM orchestration on a slow timescale with reinforcement learning on a fast one.
+  zh: 面向空天地网络的 Agentic AI 控制面。语义资源感知、意图驱动编排和反馈学习三类智能体构成 MAPE-K 闭环，结合大模型的慢时标编排与强化学习的快时标优化。
+dossier: true
+abstract:
+  en: "Space-air-ground integrated networks (SAGIN) promise ubiquitous sixth-generation (6G) connectivity but face significant resource management challenges due to heterogeneous infrastructure, dynamic topologies, and stringent quality-of-service (QoS) requirements. Conventional model-driven approaches struggle with scalability and adaptability in such complex environments. This paper presents an agentic artificial intelligence (AI) framework for autonomous SAGIN resource management by embedding large language model (LLM)-based agents into a Monitor-Analyze-Plan-Execute-Knowledge (MAPE-K) control plane. The framework incorporates three specialized agents, namely semantic resource perceivers, intent-driven orchestrators, and adaptive learners, that collaborate through natural language reasoning to bridge the gap between operator intents and network execution. At the core of the framework is a hierarchical agent-reinforcement learning (RL) collaboration mechanism, wherein LLM-based orchestrators dynamically shape reward functions for RL agents based on semantic network conditions. Validation through unmanned aerial vehicle (UAV)-assisted AI-generated content (AIGC) service orchestration in energy-constrained scenarios demonstrates that LLM-driven reward shaping achieves 14% energy reduction and the lowest average service latency among all compared methods. This agentic paradigm offers a scalable pathway toward adaptive, AI-native 6G networks, capable of autonomously interpreting intents and adapting to dynamic environments."
+firstPage: true
+figures:
+  - file: control-plane.webp
+    width: 2000
+    height: 1232
+    caption:
+      en: "The agentic AI control plane on the MAPE-K framework (Fig. 2)."
+      zh: "基于 MAPE-K 的智能体 AI 控制面（图 2）。"
+  - file: reward-shaping.webp
+    width: 1500
+    height: 1090
+    caption:
+      en: "Hierarchical agent-RL collaboration in the Plan phase (Fig. 3)."
+      zh: "规划阶段的智能体与强化学习分层协作（图 3）。"
+selected: 2

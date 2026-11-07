@@ -1,0 +1,305 @@
+---
+// The short version of a paper: a stage for its figures and first page beside what it
+// is, its link, abstract and citation. The same markup is the popup on list pages and
+// the top of the paper's own page.
+import Icon from '~/components/chrome/Icon.astro';
+import PaperMeta from '~/components/papers/PaperMeta.astro';
+import { paperHref, pick, ui, type Lang } from '~/lib/i18n';
+import {
+  abstractOf,
+  authorsOf,
+  bibtex,
+  citation,
+  isMe,
+  linkLabel,
+  paperLink,
+  titleOf,
+  venueOf,
+  type Paper,
+} from '~/lib/papers';
+interface Props { paper: Paper; lang: Lang; inPage?: boolean }
+const { paper: p, lang, inPage = false } = Astro.props;
+const s = ui(lang);
+const zh = lang === 'zh';
+const d = p.data;
+const link = paperLink(p);
+const abstract = abstractOf(p, lang);
+const translatedAbstract = !zh && p.id === 'jeit-pa-mappo';
+const isIeee = d.doi?.startsWith('10.1109');
+const Title = inPage ? 'h1' : 'h2';
+// Figures first, so the stage opens on the same figure the list shows; the page is last.
+const slides = [
+  ...d.figures.map((f) => ({ src: `/figures/${p.id}/${f.file}`, cap: pick(f.caption, lang), page: false, w: f.width, h: f.height })),
+  ...(d.firstPage ? [{ src: `/figures/${p.id}/first-page.webp`, cap: s.firstPage, page: true, w: undefined, h: undefined }] : []),
+];
+const hasStage = slides.length > 0;
+const ariaFig = (cap: string) => (zh ? `放大：${cap}` : `Enlarge: ${cap}`);
+---
+<article class:list={['overview', { 'in-page': inPage, 'no-stage': !hasStage }]} data-overview={p.id}>
+  <div class="ov-stage">
+    {hasStage ? (
+      <Fragment>
+        <div class="ov-view" data-stage-view>
+          {slides.map((sl, i) => (
+            <figure class:list={['slide', { on: i === 0 }]} data-slide={i}>
+              <div class="slide-box">
+                <button
+                  type="button"
+                  class:list={['ov-plate', { sheet: sl.page }]}
+                  data-zoom={sl.src}
+                  data-alt={sl.cap}
+                  aria-label={ariaFig(sl.cap)}
+                >
+                  <img class="fig" src={sl.src} alt={sl.cap} width={sl.w} height={sl.h} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" />
+                  <span class="ov-expand" aria-hidden="true"><Icon name="expand" /></span>
+                </button>
+              </div>
+              <figcaption><span class="num">{i + 1}/{slides.length}</span> {sl.cap}</figcaption>
+            </figure>
+          ))}
+        </div>
+        <div class="ov-bar">
+          <div class="ov-film" role="tablist" aria-label={zh ? '图片' : 'Figures'}>
+            {slides.map((sl, i) => (
+              <button type="button" role="tab" class:list={['thumb-btn', { page: sl.page }]} data-slide-to={i} aria-selected={i === 0 ? 'true' : 'false'} aria-label={sl.cap}>
+                <span class="plate"><img src={sl.src} alt="" loading="lazy" decoding="async" /></span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </Fragment>
+    ) : (
+      <div class="ov-tile" data-stage-view>
+        <p class="tile-venue">{d.venueShort}</p>
+        <p class="tile-status"><i class={`dot ${d.status}`}></i>{s.status[d.status]}</p>
+      </div>
+    )}
+  </div>
+
+  <div class="ov-info">
+    <header class="ov-head">
+      <p class="ov-meta"><PaperMeta paper={p} lang={lang} /></p>
+      <Title class="ov-title" lang={zh && !d.titleZh ? 'en' : undefined}>{titleOf(p, lang)}</Title>
+      <p class="ov-authors">
+        {authorsOf(p, lang).map((a, i) => (
+          <Fragment>{i > 0 && (zh && d.authorsZh ? '，' : ', ')}{isMe(a) ? <b>{a}</b> : a}</Fragment>
+        ))}
+      </p>
+      <p class="ov-venue">{venueOf(p, lang)}{d.volume && `, vol. ${d.volume}`}{d.number && `, no. ${d.number}`}{d.pages && `, pp. ${d.pages.replace('-', '–')}`}{`, ${d.year}`}</p>
+      {(link || d.dossier) && (
+        <div class="ov-actions">
+          {link && <a class="btn primary" href={link} target="_blank" rel="noopener">{linkLabel(p, lang)}<Icon name="go" /></a>}
+          {d.links?.pdf && <a class="btn" href={d.links.pdf} target="_blank" rel="noopener"><Icon name="doc" />{s.pdf}</a>}
+          {d.links?.code && <a class="btn" href={d.links.code} target="_blank" rel="noopener"><Icon name="github" />{s.code}</a>}
+          {d.links?.data && <a class="btn" href={d.links.data} target="_blank" rel="noopener">{s.data}<Icon name="go" /></a>}
+          {d.dossier && !inPage && <a class="btn" href={`${paperHref(lang, p.id)}#deep-dive`}>{s.deepDive}<Icon name="next" /></a>}
+        </div>
+      )}
+    </header>
+
+    <div class="ov-scroll" tabindex={inPage ? undefined : 0}>
+      {d.highlights.length > 0 && (
+        <dl class="ov-stats">
+          {d.highlights.map((h) => (
+            <div><dd class="num">{h.value}</dd><dt>{pick(h.label, lang)}</dt></div>
+          ))}
+        </dl>
+      )}
+      <h3 class="eyebrow ov-h">{s.abstract}</h3>
+      <p class="ov-abstract" lang={abstract && zh && !d.abstract?.zh ? 'en' : undefined}>{abstract ?? pick(d.summary, lang)}</p>
+      {translatedAbstract && <p class="label ov-note">Translated from the Chinese abstract.</p>}
+    </div>
+
+    <section class="ov-cite" data-cite>
+      <div class="cite-head">
+        <h3 class="eyebrow ov-h">{s.cite}</h3>
+        <div class="cite-tabs" role="tablist" aria-label={s.cite}>
+          <button type="button" role="tab" data-cite-tab="ieee" aria-selected="true">IEEE</button>
+          <button type="button" role="tab" data-cite-tab="bib" aria-selected="false">BibTeX</button>
+        </div>
+      </div>
+      <div data-cite-pane="ieee" class="cite-box">
+        <p data-copy-source>{citation(p, lang)}</p>
+        <button type="button" class="copy" data-copy={citation(p, lang)} data-copied={s.copied} data-failed={s.copyFailed}><Icon name="copy" /><Icon name="check" /><span>{s.copy}</span></button>
+      </div>
+      <div data-cite-pane="bib" class="cite-box" hidden>
+        <pre data-copy-source>{bibtex(p)}</pre>
+        <button type="button" class="copy" data-copy={bibtex(p)} data-copied={s.copied} data-failed={s.copyFailed}><Icon name="copy" /><Icon name="check" /><span>{s.copy}</span></button>
+      </div>
+    </section>
+
+    <footer class="ov-foot">
+      <span>{isIeee && hasStage && (zh ? '© IEEE。图片仅供个人使用。' : '© IEEE. Figures shown for personal use.')}</span>
+      {!inPage && (
+        <span class="ov-keys" aria-hidden="true">
+          <kbd class="key">←</kbd><kbd class="key">→</kbd><span>{zh ? '切换' : 'Switch'}</span>
+          <kbd class="key">Esc</kbd><span>{zh ? '关闭' : 'Close'}</span>
+        </span>
+      )}
+    </footer>
+  </div>
+</article>
+
+<style is:global>
+  .overview { --pad: clamp(18px, 2vw, 26px); display: grid; grid-template-columns: minmax(0, 1.36fr) minmax(0, 1fr); color: var(--fg); }
+  #paper-dialog .overview { height: min(840px, 92vh); }
+  #paper-dialog .overview.no-stage { height: auto; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); min-height: min(420px, 80vh); }
+  .overview.no-stage .ov-info { min-height: inherit; }
+
+  /* The stage. Without JS every slide is simply shown, one under the other. */
+  .ov-stage { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: #05070a; }
+  .ov-view { position: relative; flex: 1; min-height: 0; }
+  .slide-box { position: relative; aspect-ratio: 16 / 10; }
+  .ov-plate { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; width: 100%; padding: var(--pad); background: radial-gradient(90% 90% at 50% 42%, #161b23 0%, #05070a 80%); cursor: zoom-in; }
+  .ov-plate .fig { padding: clamp(6px, 1vw, 14px); background: #fff; border-radius: 4px; box-shadow: 0 30px 70px -24px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.08); }
+  .ov-plate.sheet .fig { padding: 0; border-radius: 2px; }
+  .ov-expand {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    color: var(--fg);
+    border-radius: 9px;
+    background: rgba(12, 15, 20, 0.72);
+    box-shadow: inset 0 0 0 1px var(--line);
+    opacity: 0;
+    transition: opacity var(--d-1);
+  }
+  .ov-plate:hover .ov-expand, .ov-plate:focus-visible .ov-expand { opacity: 1; }
+  .slide figcaption { flex: none; padding: 9px var(--pad) 11px; font-size: var(--t-label); line-height: 1.4; color: var(--fg-2); text-wrap: pretty; }
+  .slide figcaption .num { margin-right: 8px; color: var(--fg-3); }
+  .js .slide { position: absolute; inset: 0; display: flex; flex-direction: column; }
+  .js .slide:not(.on) { display: none; }
+  .js .slide.on { animation: slide-on 0.46s var(--ease-out); }
+  @keyframes slide-on { from { opacity: 0; transform: scale(0.992); } }
+  .js .slide-box { flex: 1; min-height: 0; aspect-ratio: auto; }
+  .ov-bar { display: none; flex: none; align-items: center; justify-content: space-between; gap: 14px; padding: 8px 12px 8px var(--pad); background: rgba(190, 205, 225, 0.025); box-shadow: 0 -1px 0 var(--line-2); }
+  .js .ov-bar { display: flex; }
+  .ov-film { display: flex; gap: 6px; min-width: 0; overflow-x: auto; padding: 2px; scrollbar-width: none; }
+  .thumb-btn { flex: none; display: block; width: 64px; height: 44px; border-radius: 7px; opacity: 0.62; transition: opacity var(--d-1), box-shadow var(--d-1); }
+  .thumb-btn .plate { height: 100%; padding: 3px; border-radius: 7px; }
+  .thumb-btn img { max-width: 100%; max-height: 100%; }
+  .thumb-btn.page .plate { background: #fff; padding: 0; align-items: flex-start; }
+  .thumb-btn.page img { width: 100%; height: auto; }
+  .thumb-btn:hover { opacity: 1; }
+  .thumb-btn[aria-selected='true'] { opacity: 1; box-shadow: 0 0 0 1.5px var(--fg); }
+  .ov-tile {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 6px;
+    flex: 1;
+    min-height: 260px;
+    padding: var(--pad);
+    background: var(--plate-bg) url('/media/sky-orbit.webp') center bottom / cover no-repeat;
+  }
+  .tile-venue { font-family: var(--f-display); font-stretch: 118%; font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem); font-weight: 200; line-height: 1.05; }
+  .tile-status { display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono); font-size: var(--t-label); color: var(--fg-2); }
+
+  /* What it is. The head and the citation stay; the abstract scrolls between them. */
+  .ov-info { display: flex; flex-direction: column; min-width: 0; min-height: 0; box-shadow: -1px 0 0 var(--line-2); }
+  .ov-head { flex: none; padding: var(--pad) var(--pad) 14px; }
+  .ov-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 12px; }
+  .ov-title { margin-top: 12px; font-size: clamp(1.25rem, 1.12rem + 0.5vw, 1.5rem); font-weight: 500; line-height: 1.24; letter-spacing: -0.02em; text-wrap: pretty; }
+  .ov-title:lang(zh) { line-height: 1.42; letter-spacing: 0; }
+  .ov-authors { margin-top: 10px; font-size: var(--t-small); line-height: 1.45; color: var(--fg-3); }
+  .ov-authors b { color: var(--fg); font-weight: 500; }
+  .ov-venue { margin-top: 2px; font-size: var(--t-small); line-height: 1.45; color: var(--fg-3); }
+  .ov-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .ov-scroll {
+    flex: 1;
+    min-height: 72px;
+    overflow-y: auto;
+    padding: 14px var(--pad) 30px;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    outline-offset: -2px;
+    /* Text fades out where the pane cuts it, so it says there is more. */
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 34px), transparent);
+  }
+  .ov-head { box-shadow: 0 1px 0 var(--line-2); }
+  .ov-stats { display: flex; gap: 28px; margin-bottom: 14px; }
+  .ov-stats dd { font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.03em; color: var(--signal-2); }
+  .ov-stats dt { margin-top: 3px; font-size: var(--t-label); line-height: 1.3; color: var(--fg-3); }
+  .ov-h { font-size: var(--t-label); font-weight: 450; }
+  .ov-abstract { margin-top: 7px; font-size: var(--t-text); line-height: 1.6; color: var(--fg-2); text-wrap: pretty; }
+  .ov-abstract:lang(zh) { line-height: 1.8; }
+  .ov-note { margin-top: 8px; }
+  .ov-cite { flex: none; padding: 11px var(--pad) 12px; box-shadow: 0 -1px 0 var(--line-2); background: rgba(190, 205, 225, 0.025); }
+  .cite-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .cite-tabs { display: inline-flex; gap: 2px; padding: 2px; border-radius: 8px; background: rgba(190, 205, 225, 0.06); box-shadow: inset 0 0 0 1px var(--line-2); }
+  .cite-tabs button { height: 24px; padding: 0 9px; font-size: var(--t-label); font-weight: 500; line-height: 1; color: var(--fg-3); border-radius: 6px; transition: color var(--d-1), background var(--d-1); }
+  .cite-tabs button:hover { color: var(--fg); }
+  .cite-tabs button[aria-selected='true'] { color: var(--fg); background: rgba(190, 205, 225, 0.14); }
+  .cite-box { position: relative; margin-top: 8px; padding-right: 76px; font-size: var(--t-label); line-height: 1.5; color: var(--fg-2); }
+  .cite-box[hidden] { display: none; }
+  .cite-box p { max-height: 7.5em; overflow-y: auto; scrollbar-width: thin; }
+  .cite-box pre { margin: 0; max-height: 7.5em; overflow: auto; font-family: var(--f-mono); font-size: var(--t-label); line-height: 1.5; white-space: pre-wrap; word-break: break-word; scrollbar-width: thin; }
+  .copy {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 28px;
+    padding: 0 9px;
+    font-size: var(--t-label);
+    font-weight: 500;
+    color: var(--fg);
+    border-radius: 7px;
+    background: rgba(190, 205, 225, 0.08);
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition: background var(--d-1), color var(--d-1);
+  }
+  .copy:hover { background: rgba(190, 205, 225, 0.15); }
+  .copy .icon-check { display: none; color: var(--ok); }
+  .copy.done .icon-copy { display: none; }
+  .copy.done .icon-check { display: block; }
+  .ov-foot { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; padding: 7px var(--pad); font-size: var(--t-label); line-height: 1.3; color: var(--fg-3); box-shadow: 0 -1px 0 var(--line-2); }
+  .ov-keys { display: inline-flex; flex: none; align-items: center; gap: 4px; }
+  .ov-keys span { margin-right: 8px; }
+  .ov-keys span:last-child { margin-right: 0; }
+  .ov-foot .key { height: 20px; min-width: 20px; }
+
+  /* On its own page the overview is part of the document. */
+  .overview.in-page { gap: clamp(20px, 3vw, 40px); align-items: start; }
+  .in-page .ov-stage { border-radius: var(--r-3); overflow: hidden; box-shadow: inset 0 0 0 1px var(--line-2); }
+  .js .in-page .ov-stage { position: sticky; top: calc(var(--bar) + 16px); height: calc(100svh - var(--bar) - 32px); max-height: 760px; }
+  .in-page .ov-info { box-shadow: none; }
+  .in-page .ov-head, .in-page .ov-foot { padding-inline: 0; }
+  .in-page .ov-head { padding-top: 0; }
+  .in-page .ov-title { font-size: clamp(1.625rem, 1.3rem + 1.1vw, 2.125rem); line-height: 1.16; letter-spacing: -0.025em; }
+  .in-page .ov-title:lang(zh) { line-height: 1.34; }
+  .in-page .ov-scroll { overflow: visible; padding-inline: 0; padding-bottom: 18px; mask-image: none; }
+  .in-page .ov-cite { padding-inline: 14px; border-radius: var(--r-2); box-shadow: inset 0 0 0 1px var(--line-2); }
+  .in-page .ov-foot { box-shadow: none; }
+  .in-page .cite-box p, .in-page .cite-box pre { max-height: none; }
+
+  /* On a short screen the whole pane scrolls, and nothing is squeezed. */
+  @media (max-height: 820px) and (min-width: 861px) {
+    #paper-dialog .ov-info { overflow-y: auto; scrollbar-width: thin; overscroll-behavior: contain; }
+    #paper-dialog .ov-scroll { flex: none; overflow: visible; padding-bottom: 16px; mask-image: none; }
+    #paper-dialog .ov-foot { position: sticky; bottom: 0; background: var(--bg-1); }
+  }
+
+  @media (max-width: 860px) {
+    .overview, .overview.in-page { display: block; }
+    #paper-dialog .overview, #paper-dialog .overview.no-stage { height: auto; min-height: 0; }
+    .ov-stage { height: auto; }
+    .js .ov-view { height: min(52svh, 92vw); flex: none; }
+    .js .in-page .ov-stage { position: relative; top: auto; height: auto; max-height: none; }
+    .ov-info { box-shadow: none; }
+    .ov-scroll { overflow: visible; padding-bottom: 18px; mask-image: none; }
+    .ov-keys { display: none; }
+    .ov-bar { flex-wrap: wrap; padding: 8px var(--pad); }
+    .ov-film { width: 100%; }
+    .ov-tile { min-height: 200px; }
+    .in-page .ov-info { margin-top: 20px; }
+    .slide figcaption { min-height: 4.2em; }
+  }
+</style>

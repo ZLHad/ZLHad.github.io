@@ -1,0 +1,179 @@
+---
+// Below the ground, the book that sits under the research. The drawing is a real
+// stratigraphic log: each bed's thickness is its number of chapters.
+import { getEntry } from 'astro:content';
+import Icon from '~/components/chrome/Icon.astro';
+import { pick, type Lang } from '~/lib/i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const zh = lang === 'zh';
+const book = (await getEntry('projects', 'wireless-theory-tutorials'))!;
+const base = book.data.homepage!;
+const beds = [
+  {
+    path: 'guide/index.html',
+    n: 6,
+    unit: { en: 'pages', zh: '页' },
+    pat: 'soil',
+    name: { en: 'Guide', zh: '导览篇 · 领域画像' },
+    body: { en: 'A map of the field, reading paths, the opening papers, timelines and standards, the eight threads through the book.', zh: '领域地图、学习路径、开篇之作、时间线与标准、贯穿全书的八条线索、方向的生命周期。' },
+  },
+  {
+    path: 'part0/index.html',
+    n: 11,
+    unit: { en: 'chapters', zh: '章' },
+    pat: 'sand',
+    name: { en: 'Prerequisites', zh: '预备篇 · 基础教程' },
+    body: { en: 'Waves and antennas, channels, digital communications, information theory, MIMO, networks, optimization, reinforcement learning, and the new ideas of 6G.', zh: '电磁波与天线、无线信道、数字通信、信息论、MIMO、无线网络、优化、强化学习，以及 6G 的新概念图景。' },
+  },
+  {
+    path: 'part1/index.html',
+    n: 10,
+    unit: { en: 'chapters', zh: '章' },
+    pat: 'shale',
+    name: { en: 'Part I. The Science of Environments', zh: '第一部 · 环境的科学' },
+    body: { en: 'Where channels come from: the map from environment to channel, statistical modelling, channel maps, effective dimension and prediction radius.', zh: '信道从哪里来：环境到信道的映射、统计建模谱系、信道地图、有效维度与预测半径。' },
+  },
+  {
+    path: 'part2/index.html',
+    n: 7,
+    unit: { en: 'chapters', zh: '章' },
+    pat: 'lime',
+    name: { en: 'Part II. Theorems of the Chain', zh: '第二部 · 链的定理' },
+    body: { en: 'How channel knowledge becomes service value: Blackwell ordering, the task-knowledge lattice, environment generalization, the cognitive loop, error budgets.', zh: '信道知识怎样变成业务价值：Blackwell 排序、任务-知识格、环境泛化、认知回路、误差预算。' },
+  },
+  {
+    path: 'part3/index.html',
+    n: 9,
+    unit: { en: 'chapters', zh: '章' },
+    pat: 'granite',
+    name: { en: 'Part III. The Optimization of Networks', zh: '第三部 · 网络的优化论' },
+    body: { en: 'The basic limits of resource allocation: nonconvex optimization, sequential decisions, the price of prediction, communication complexity, the cost of layering.', zh: '资源分配的基本限：非凸优化、时序决策、预测的价目表、通信复杂度、分层的代价。' },
+  },
+  {
+    path: 'part4/index.html',
+    n: 9,
+    unit: { en: 'chapters', zh: '章' },
+    pat: 'basalt',
+    name: { en: 'Part IV. The Decision Theory of Swarms', zh: '第四部 · 群体的决策论' },
+    body: { en: 'How many agents coordinate: team decisions, phase diagrams of information structure, the information theory of cooperation, learning dynamics, mean fields, network games.', zh: '许多智能体怎样协同：团队决策、信息结构相图、协作的信息论、学习动力学、平均场、网络博弈。' },
+  },
+];
+const chapters = beds.filter((b) => b.unit.en === 'chapters').reduce((sum, b) => sum + b.n, 0);
+const UNIT = 17;
+let depth = 0;
+const log = beds.map((b) => {
+  const top = depth;
+  depth += b.n;
+  return { ...b, top };
+});
+const copy = zh
+  ? {
+      name: book.data.nameZh,
+      h: '地面之下是地基。',
+      p: '研究做到一定程度，会发现很多结论底下没有定理。这本书就是在补这一层。全书用中文写成，公开在线。',
+      read: '开始阅读',
+      thick: '柱状图的层厚等于章节数',
+      total: '章，外加导览和三份附录',
+      honest: '每个结论都标明来历：文献定理、本书演算，或开放问题。',
+    }
+  : {
+      name: book.data.name,
+      h: 'Under the ground, the foundation.',
+      p: 'Push far enough on any of these problems and you find conclusions with no theorem under them. This book works on that layer. It is written in Chinese and open online.',
+      read: 'Start reading',
+      thick: 'Bed thickness in this log equals chapter count',
+      total: 'chapters, plus a guide and three appendices',
+      honest: 'Every claim is labelled by origin: a theorem in the literature, the book’s own derivation, or an open problem.',
+    };
+---
+<section id={book.id} class="bedrock" data-theme="bedrock">
+  <svg class="defs" width="0" height="0" aria-hidden="true">
+    <defs>
+      <pattern id="lith-soil" width="14" height="14" patternUnits="userSpaceOnUse"><circle cx="3" cy="4" r="1.1" fill="#d6b27c" /><circle cx="10" cy="10" r="1.6" fill="#d6b27c" /></pattern>
+      <pattern id="lith-sand" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".8" fill="#e0b566" /><circle cx="6.500" cy="6.500" r=".8" fill="#e0b566" /></pattern>
+      <pattern id="lith-shale" width="22" height="9" patternUnits="userSpaceOnUse"><path d="M1 3h9M12 7.500h8" fill="none" stroke="#d29a56" /></pattern>
+      <pattern id="lith-lime" width="28" height="16" patternUnits="userSpaceOnUse"><path d="M0 .5h28M0 8.500h28M7 .5v8M21 8.500v8" fill="none" stroke="#dc8c4a" /></pattern>
+      <pattern id="lith-granite" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M5 2v6M2 5h6M15 12v6M12 15h6" fill="none" stroke="#e4733c" /></pattern>
+      <pattern id="lith-basalt" width="12" height="28" patternUnits="userSpaceOnUse"><path d="M3 0v12M9 14v14M3 12l6 2" fill="none" stroke="#f0602a" /></pattern>
+    </defs>
+  </svg>
+  <div class="frame layout">
+    <header>
+      <p class="eyebrow alt"><span class="tick" aria-hidden="true"></span>{zh ? '地层' : 'Bedrock'}</p>
+      <p class="kicker"><b>{copy.name}</b> · {book.data.license}</p>
+      <h2 class="section-title">{copy.h}</h2>
+      <p class="p">{copy.p}</p>
+      <p class="p">{copy.honest}</p>
+      <p class="nums"><span class="big num" data-count={chapters}>{chapters}</span><span class="total">{copy.total}</span></p>
+      <p class="go">
+        <a class="btn primary" href={base}>{copy.read}<Icon name="go" /></a>
+        <a class="btn" href={book.data.url}><Icon name="github" />GitHub</a>
+      </p>
+    </header>
+    <div class="log">
+      <p class="eyebrow log-cap">{copy.thick}</p>
+      {log.map((b) => (
+        <a class="bed" href={`${base}${b.path}`} style={`--h:${b.n * UNIT}px`}>
+          <span class="depth num">{b.top}</span>
+          <svg class="lith" aria-hidden="true" width="100%" height="100%" preserveAspectRatio="none"><rect width="100%" height="100%" fill={`url(#lith-${b.pat})`} /></svg>
+          <span class="bed-text">
+            <span class="bed-name">{pick(b.name, lang)}</span>
+            <span class="bed-n">{b.n} {pick(b.unit, lang)}</span>
+            <span class="bed-body">{pick(b.body, lang)}</span>
+          </span>
+        </a>
+      ))}
+      <p class="depth end num">{depth}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bedrock {
+    position: relative;
+    color: var(--fg);
+    padding-block: clamp(56px, 10vh, 112px) clamp(64px, 11vh, 120px);
+    /* The page sinks into warm rock with no line where it starts. */
+    background: linear-gradient(to bottom, #07090d, #120c08 180px, #120c08 62%, #0a0705);
+  }
+  .defs { position: absolute; }
+  .layout { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(24px, 5vw, 80px); align-items: start; }
+  @media (min-width: 900px) and (min-height: 700px) {
+    header { position: sticky; top: calc(var(--bar) + 28px); }
+  }
+  .alt { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; color: var(--signal-2); }
+  .tick { display: block; width: 18px; height: 1px; background: currentColor; }
+  .kicker { font-size: var(--t-small); font-weight: 450; line-height: 1.4; color: var(--fg-3); margin-bottom: 10px; }
+  .kicker b { color: var(--fg); font-weight: 550; }
+  .p { margin-top: 14px; color: var(--fg-2); text-wrap: pretty; }
+  .nums { display: flex; align-items: baseline; gap: 12px; margin-top: 24px; }
+  .big { font-weight: 300; font-size: clamp(3rem, 2.4rem + 2.4vw, 4.5rem); line-height: 1; letter-spacing: -0.05em; }
+  .total { font-size: var(--t-small); font-weight: 450; color: var(--fg-3); }
+  .go { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .log-cap { margin-bottom: 10px; }
+  .bed {
+    display: grid;
+    grid-template-columns: 26px minmax(56px, 1.4fr) minmax(0, 8fr);
+    gap: 0 14px;
+    min-height: var(--h);
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 -1px 0 var(--line);
+  }
+  .bed:hover { color: inherit; }
+  .depth { font-size: var(--t-label); color: var(--fg-3); padding-top: 4px; text-align: right; }
+  .end { width: 26px; box-shadow: 0 -1px 0 var(--line); }
+  .lith { display: block; height: 100%; min-height: var(--h); box-shadow: inset 1px 0 0 var(--line), inset -1px 0 0 var(--line); opacity: 0.82; transition: background var(--d-2), opacity var(--d-2); }
+  .bed:hover .lith { background: rgba(255, 138, 74, 0.16); opacity: 1; }
+  .bed:hover .bed-name { color: var(--signal-2); }
+  .bed-text { padding: 7px 0 9px; display: block; }
+  .bed-name { font-size: var(--t-body); line-height: 1.3; font-weight: 500; letter-spacing: -0.008em; margin-right: 8px; transition: color var(--d-1); }
+  .bed-n { font-family: var(--f-mono); font-size: var(--t-label); color: var(--fg-3); white-space: nowrap; }
+  .bed-body { display: block; margin-top: 3px; font-size: var(--t-small); line-height: 1.45; color: var(--fg-2); text-wrap: pretty; }
+  @media (max-width: 899px) {
+    .layout { grid-template-columns: minmax(0, 1fr); }
+    .bed { grid-template-columns: 24px 36px minmax(0, 1fr); gap: 0 10px; }
+    .bed-body { display: none; }
+  }
+</style>

@@ -1,0 +1,35 @@
+---
+// Bar chart: everything quiet except the thing the sentence is about.
+interface Row { label: string; value: number; display?: string; hi?: boolean }
+interface Props { title: string; rows: Row[]; source?: string; max?: number; min?: number }
+const { title, rows, source, max, min = 0 } = Astro.props;
+const top = max ?? Math.max(...rows.map((r) => r.value));
+---
+<figure class="bars card" data-reveal>
+  <figcaption class="t">{title}</figcaption>
+  <ol>
+    {rows.map((r, i) => (
+      <li class:list={[{ hi: r.hi }]} style={`--n:${i}`}>
+        <span class="n">{r.label}</span>
+        <span class="track"><span class="bar" style={`width:${(((r.value - min) / (top - min)) * 100).toFixed(1)}%`}></span></span>
+        <span class="v num">{r.display ?? r.value}</span>
+      </li>
+    ))}
+  </ol>
+  {source && <p class="src label">{source}</p>}
+</figure>
+
+<style>
+  .bars { margin: 2em 0; padding: 16px 18px 14px; }
+  .t { font-size: var(--t-small); font-weight: 500; line-height: 1.35; margin-bottom: 12px; color: var(--fg); }
+  li { display: grid; grid-template-columns: minmax(110px, 2fr) minmax(0, 6fr) 62px; gap: 12px; align-items: center; padding: 4px 0; }
+  .n { font-size: var(--t-small); color: var(--fg-2); }
+  .track { display: block; height: 10px; border-radius: 3px; background: rgba(190, 205, 225, 0.06); overflow: hidden; }
+  .bar { display: block; height: 100%; border-radius: 3px; background: rgba(190, 205, 225, 0.34); transform-origin: left; }
+  :global(.js) .bars .bar { transform: scaleX(0); transition: transform 1s var(--ease-out) calc(var(--n) * 70ms + 200ms); }
+  :global(.js) .bars:global(.in) .bar { transform: none; }
+  .v { font-size: var(--t-label); text-align: right; color: var(--fg-2); }
+  .hi .n, .hi .v { color: var(--signal-2); font-weight: 500; }
+  .hi .bar { background: linear-gradient(90deg, rgba(255, 122, 61, 0.55), var(--signal)); }
+  .src { margin-top: 10px; }
+</style>

@@ -1,0 +1,62 @@
+---
+paper: tvt-task-prediction
+lang: zh
+headline: 预测未来几个时隙，让卸载提前决策。
+dek: 利用历史业务预测短期任务到达，多智能体联合优化用户关联、无人机轨迹和通信计算资源，让节点在负载到来之前完成协调。
+---
+import nrmse from '~/data/charts/tvt-nrmse.json';
+
+## 问题在哪
+
+地面设备会产生突发的计算任务，要由几架无人机和一颗低轨卫星来承接。现有的多智能体卸载方案都是响应式的：每架无人机只根据眼前看到的情况决策。任务类型一变、负载一涨，无人机已经飞错了地方，用户也连错了飞机。
+
+<Plate lang="zh" n="1" src="/figures/tvt-task-prediction/scenario.webp" width={1400} height={1029} alt="基于空天地网络的移动边缘计算系统" caption="系统场景：地面用户选择关联哪架无人机，任务在本地、无人机和卫星之间分配。论文图 1。" />
+
+## 关键想法
+
+任务量在时间上是相关的，所以对未来几个时隙的轻量预测可以直接进入决策回路，不需要更重的模型。Gamma 广义线性模型每次推理约 0.04 毫秒，预测结果直接追加到每架无人机的观测里。
+
+<Eq tex="\log \mathbb E[D_k(t)]=\beta_0^k+\sum_{i=1}^{p}\beta_i^k\log D_k(t-i)" note="对 Gamma 分布的任务量做对数线性自回归，把预测值反馈回去，向前预测 H 步。" />
+
+<Eq tex="o_m(t)=\{\mathbf q_m,\mathbf v_m,E_m\}\cup\{\mathbf l_k,D_k,\kappa_k\}_{k\in\mathcal K_m^{\mathrm{sens}}}\cup\{\mathbf q_n,\mathbf v_n\}_{n\in\mathcal N_m}\cup\{\hat D_k^{(h)}(t)\}_{k\in\mathcal K_m^{\mathrm{sens}},\,h=1..H}" note="每个感知到的用户多出 H 个数，追加到无人机的局部观测中。" />
+
+## 拖动预测窗口
+
+<div class="full"><ForecastWidget lang="zh" /></div>
+
+## 系统怎么运转
+
+TAMACO 耦合了三部分。Gamma-GLM 预测每个用户的任务量。每架无人机是一个用 TA-MAPPO 训练的智能体，采用集中式评论家和分散式执行，每 1 秒的时隙选择一次三维加速度。给定轨迹后，预测增强的联盟形成博弈（PA-CFG）把用户分配给无人机或本地计算，效用同时考虑当前时延和折扣后的预测时延。卸载比例和 CPU 份额由块坐标下降求解，CPU 分配有闭式解。
+
+<Eq tex="\tau_k^{\mathrm{total}}=\max\{\tau_k^{\mathrm{loc}},\tau_k^{\mathrm{uav}},\tau_k^{\mathrm{sat}}\}" note="任务分成本地、无人机和卫星三份并行执行，最慢的一支决定时延。" />
+
+<Eq tex="U_k^{\mathrm{PA}}(\mathbf s)=-z_k^{*}(\mathbf s)+\eta\,U_k^{\mathrm{pred}}(\mathbf s),\qquad U_k^{\mathrm{pred}}(\mathbf s)=-\sum_{h=1}^{H}\zeta^{\,h-1}\hat\tau_k(t+h\mid\mathbf s)" note="用户用当前最优时延加上折扣后的预测时延，来评价一种关联。" />
+
+<Plate lang="zh" wide n="2" src="/figures/tvt-task-prediction/framework.webp" width={2000} height={826} alt="TAMACO 框架" caption="TAMACO 框架：原问题分解为轨迹控制（TA-MAPPO）和关联与资源分配（PA-CFG、BCD），由 Gamma-GLM 预测器提供输入。论文图 2。" />
+
+## 结果
+
+评估是仿真：500 米见方的区域，5 架无人机、35 个用户、1 颗卫星。在论文的窗口扫描中，时延随 H 增大而下降，到 H = 3 最低，论文报告与无预测相比平均时延最多降低 19.3%；窗口再长，预测误差累积，时延回升。
+
+预测器可以单独检验。在合成的 Gamma 序列上，它的误差随窗口缓慢增长。第一步与 LSTM 持平，之后都低于 LSTM，每次推理 0.04 毫秒，LSTM 是 0.37 毫秒。
+
+<Lines
+  title="任务量预测误差随预测步数的变化"
+  x={nrmse.x.values}
+  xLabel="预测步数 h（时隙）"
+  yLabel="NRMSE"
+  yMin={0.15}
+  yMax={0.26}
+  yTicks={[0.16, 0.2, 0.24]}
+  series={[
+    { name: 'LSTM', values: nrmse.series[1].values, dy: -3 },
+    { name: '上一时刻值', values: nrmse.series[3].values, dy: 6 },
+    { name: '滑动平均', values: nrmse.series[2].values },
+    { name: 'Gamma-GLM', values: nrmse.series[0].values, hi: true },
+  ]}
+  source="论文表 II。这是在合成数据（log-AR(4)，Gamma 分布，1500 个测试时隙）上的独立预测器测试。"
+/>
+
+## 姊妹篇
+
+发表在《电子与信息学报》的《任务预测增强的空天地一体化网络分层卸载方法》，把同样的思路用到另一个问题上：在任务时延和无人机飞行能耗之间权衡，预测器换成只有两个参数的指数平滑-自回归模型，用户按最近原则关联，无人机高度 100 米，卫星高度 500 公里。

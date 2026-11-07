@@ -1,0 +1,104 @@
+---
+// Hierarchical split federated learning as a sketch rather than a result: the model's
+// shallow layers run on devices, its deep layers on a UAV, and a LEO satellite aggregates
+// above them. The cut moves because where it goes is itself a decision.
+import type { Lang } from '~/lib/i18n';
+interface Props { lang: Lang }
+const zh = Astro.props.lang === 'zh';
+const t = zh
+  ? {
+      leo: 'LEO：全局聚合',
+      deep: 'UAV：深层训练与边缘聚合',
+      shallow: '终端：浅层训练',
+      cut: '拆分层',
+      cap: '示意图，不是数据。切在哪一层，决定各层算多少、链路上传什么。',
+      aria: '一个神经网络被拆分层切开：浅层在终端，深层在无人机，低轨卫星在上方做全局聚合',
+    }
+  : {
+      leo: 'LEO: global aggregation',
+      deep: 'UAV: deep layers, edge aggregation',
+      shallow: 'Device: shallow layers',
+      cut: 'split layer',
+      cap: 'A sketch, not data. Where the cut goes sets how much each tier computes and what crosses the link.',
+      aria: 'A neural network cut at a split layer: shallow layers on the device, deep layers on the UAV, and a LEO satellite aggregating above',
+    };
+const SPAN = 56;
+const ROWS = [30, 88, 146, 204, 262, 320]; // top to bottom, in viewBox units
+const WIDTHS = [3, 5, 6, 6, 5, 3];
+const layers = ROWS.map((y, r) => Array.from({ length: WIDTHS[r] }, (_, i) => [180 + (i - (WIDTHS[r] - 1) / 2) * SPAN, y]));
+const edges = layers.slice(1).flatMap((row, r) => row.flatMap((a) => layers[r].map((b) => [a, b])));
+const sat = 'M-9-6h18v12h-18zM-9 0h-10M9 0h10M-19-7v14M-29-7h10v14h-10zM19-7h10v14h-10z';
+---
+<figure class="split" data-reveal>
+  <div class="up">
+    <span class="tier">{t.leo}</span>
+    <svg viewBox="0 0 360 70" aria-hidden="true">
+      {layers[0].map(([x]) => <line x1="180" y1="30" x2={x} y2="70" class="uplink" />)}
+      <path d={sat} transform="translate(180 18)" class="sat" />
+    </svg>
+  </div>
+  <div class="stack" role="img" aria-label={t.aria}>
+    {['deep', 'shallow'].map((k) => (
+      <svg class:list={['net', k]} viewBox="0 0 360 350" aria-hidden="true">
+        {edges.map(([a, b]) => <line x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} class="edge" />)}
+        {layers.flat().map(([x, y]) => <circle cx={x} cy={y} r="8" class="node" />)}
+      </svg>
+    ))}
+    <span class="tier top">{t.deep}</span>
+    <span class="tier bottom">{t.shallow}</span>
+    <div class="cut"><span>{t.cut}</span></div>
+  </div>
+  <figcaption>{t.cap}</figcaption>
+</figure>
+
+<style>
+  .split { width: 100%; max-width: 580px; margin-inline: auto; }
+  .up, .stack { position: relative; }
+  .up svg, .net { display: block; width: 66%; height: auto; margin-left: auto; overflow: visible; }
+  .net.shallow { position: absolute; top: 0; right: 0; }
+  .edge { stroke-width: 1; stroke-opacity: 0.2; }
+  .deep .edge { stroke: var(--air); }
+  .shallow .edge { stroke: var(--fg); }
+  .node { stroke-width: 1.25; fill: rgba(7, 9, 13, 0.9); }
+  .deep .node { stroke: var(--air); }
+  .shallow .node { stroke: var(--fg); }
+  .sat { fill: none; stroke: var(--fg); stroke-width: 1.3; }
+  .uplink { stroke: var(--air); stroke-width: 1.25; stroke-dasharray: 3 5; animation: uplink 1.8s linear infinite; }
+  @keyframes uplink { to { stroke-dashoffset: -16; } }
+  .tier { position: absolute; left: 0; width: 32%; font-size: var(--t-small); line-height: 1.36; color: var(--fg-2); }
+  .up .tier { top: 4px; color: var(--fg); }
+  .tier.top { top: 2%; }
+  .tier.bottom { bottom: 2%; }
+  /* The rows sit at 25.0, 41.6 and 58.3 percent of the way down between layers. */
+  .deep { clip-path: inset(0 0 50% 0); }
+  .shallow { clip-path: inset(50% 0 0 0); }
+  .cut { position: absolute; inset: 0; pointer-events: none; transform: translateY(50%); }
+  .cut::before { content: ''; position: absolute; inset: 0 0 auto; height: 1px; background: repeating-linear-gradient(90deg, var(--signal) 0 6px, transparent 6px 11px); }
+  .cut span { position: absolute; left: 0; top: -21px; font-family: var(--f-mono); font-size: var(--t-label); letter-spacing: -0.02em; color: var(--signal-2); }
+  figcaption { margin-top: 10px; font-size: var(--t-label); line-height: 1.5; color: var(--fg-2); }
+  @media (prefers-reduced-motion: no-preference) {
+    .deep { animation: cut-deep 12s var(--ease-in-out) infinite; }
+    .shallow { animation: cut-shallow 12s var(--ease-in-out) infinite; }
+    .cut { animation: cut-line 12s var(--ease-in-out) infinite; }
+  }
+  @keyframes cut-deep {
+    0%, 26% { clip-path: inset(0 0 33.4% 0); }
+    33%, 59% { clip-path: inset(0 0 50% 0); }
+    66%, 93% { clip-path: inset(0 0 66.6% 0); }
+    100% { clip-path: inset(0 0 33.4% 0); }
+  }
+  @keyframes cut-shallow {
+    0%, 26% { clip-path: inset(66.6% 0 0 0); }
+    33%, 59% { clip-path: inset(50% 0 0 0); }
+    66%, 93% { clip-path: inset(33.4% 0 0 0); }
+    100% { clip-path: inset(66.6% 0 0 0); }
+  }
+  @keyframes cut-line {
+    0%, 26% { transform: translateY(66.6%); }
+    33%, 59% { transform: translateY(50%); }
+    66%, 93% { transform: translateY(33.4%); }
+    100% { transform: translateY(66.6%); }
+  }
+  :global(.stop.off) .deep, :global(.stop.off) .shallow, :global(.stop.off) .cut, :global(.stop.off) .uplink { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) { .uplink { animation: none; } }
+</style>

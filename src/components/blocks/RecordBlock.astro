@@ -1,0 +1,68 @@
+---
+import { getCollection } from 'astro:content';
+import { pick, type Lang } from '~/lib/i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const zh = lang === 'zh';
+const rank = (pos: string) => {
+  const [a, b] = pos.split('/').map(Number);
+  return a + b / 100;
+};
+// The CV's rule: granted first, then by inventor position.
+const patents = (await getCollection('patents', (p) => !p.data.hidden)).sort(
+  (a, b) =>
+    Number(b.data.status === 'granted') - Number(a.data.status === 'granted') ||
+    rank(a.data.position) - rank(b.data.position),
+);
+const awards = (await getCollection('awards')).sort((a, b) => a.id.localeCompare(b.id));
+const copy = zh
+  ? { pat: '项专利', awa: '项竞赛奖项', granted: '已授权', publishedP: '公开', utility: '实用新型', inventor: '发明人' }
+  : { pat: 'patents', awa: awards.length === 1 ? 'competition award' : 'competition awards', granted: 'Granted', publishedP: 'Published', utility: 'Utility model', inventor: 'inventor' };
+---
+<div class="record">
+  <section class="col card" data-reveal style="--i:0">
+    <p class="count"><span class="num" data-count={patents.length}>{patents.length}</span>{copy.pat}</p>
+    <ul>
+      {patents.map((p) => (
+        <li>
+          <span class="what">{pick(p.data.title, lang)}</span>
+          <span class="meta">
+            <i class:list={['dot', p.data.status === 'granted' ? '' : 'early-access']}></i>
+            <span class:list={[{ on: p.data.status === 'granted' }]}>{p.data.status === 'granted' ? copy.granted : copy.publishedP}</span>
+            {p.data.kind === 'utility' && ` · ${copy.utility}`} · <span class="num">{p.data.number}</span> · {copy.inventor} <span class="num">{p.data.position}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+  </section>
+  <section class="col card" data-reveal style="--i:1">
+    <p class="count"><span class="num" data-count={awards.length}>{awards.length}</span>{copy.awa}</p>
+    <ul>
+      {awards.map((a) => (
+        <li>
+          <span class="what">{pick(a.data.title, lang)}</span>
+          <span class="meta">{pick(a.data.event, lang)} · <span class="num">{a.data.year}</span></span>
+          {a.data.work && <span class="work">{pick(a.data.work, lang)}</span>}
+        </li>
+      ))}
+    </ul>
+  </section>
+</div>
+
+<style>
+  .record { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 14px; align-items: start; }
+  .col { padding: 18px 20px 8px; }
+  .count { display: flex; align-items: baseline; gap: 10px; font-size: var(--t-small); font-weight: 450; color: var(--fg-3); }
+  .count span { font-size: 2.75rem; font-weight: 300; line-height: 1; letter-spacing: -0.05em; color: var(--fg); }
+  ul { margin-top: 14px; }
+  li { display: flex; flex-direction: column; gap: 4px; padding: 11px 0 12px; box-shadow: 0 -1px 0 var(--line-2); }
+  .what { font-size: var(--t-text); line-height: 1.4; color: var(--fg); text-wrap: pretty; }
+  .meta { font-size: var(--t-label); line-height: 1.45; color: var(--fg-3); }
+  .meta .dot { display: inline-block; margin-right: 5px; vertical-align: 0.1em; }
+  .meta .num { letter-spacing: -0.02em; }
+  .meta .on { color: var(--signal-2); }
+  .work { font-size: var(--t-small); line-height: 1.42; color: var(--fg-2); }
+  @media (max-width: 999px) {
+    .record { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

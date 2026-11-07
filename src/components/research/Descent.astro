@@ -1,0 +1,304 @@
+---
+// The top of the research page: one descent from orbit to the ground, through the layers
+// the work happens on. Each stop names one study, its tension and its trade-off, with one
+// drawing and the papers at that altitude, which are read from each paper's `stratum`.
+// Without WebGL or with reduced motion, every stop keeps its own still of the sky.
+import Icon from '~/components/chrome/Icon.astro';
+import TwoWaits from '~/components/research/art/TwoWaits.astro';
+import TwoLoops from '~/components/research/art/TwoLoops.astro';
+import GetThereFirst from '~/components/research/art/GetThereFirst.astro';
+import SplitTraining from '~/components/research/art/SplitTraining.astro';
+import { paperHref, type Lang } from '~/lib/i18n';
+import { allPapers, altitudeRange, isFirstAuthor, titleOf, type Paper } from '~/lib/papers';
+import { profile } from '~/data/profile';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const zh = lang === 'zh';
+const papers = await allPapers();
+const at = (stratum: string) => {
+  const here = papers.filter((p) => p.data.stratum === stratum);
+  const first = here.filter(isFirstAuthor);
+  return first.length ? { rows: first, chips: here.filter((p) => !isFirstAuthor(p)) } : { rows: here, chips: [] as Paper[] };
+};
+const leo = altitudeRange(papers, /(?:LEO|satellite) (\d+) km/);
+const uav = altitudeRange(papers, /UAV (\d+) m/);
+const span = (r: number[] | null, unit: string) => (r ? ` · ${r[0]}–${r[1]} ${unit}` : '');
+const copy = zh
+  ? {
+      eyebrow: '研究',
+      background: '复杂环境与应急现场缺少地面网络，低轨卫星星座互联网正与大模型服务融合。',
+      qs: [
+        ['space', '算得快', '在 UAV 还是 LEO 上推理？Token 压缩多少又快又好？'],
+        ['control', 'Agentic 大脑', '把语义意图变成数值控制，并且闭环运行。'],
+        ['air', '分得准', '异构突发任务交给终端、无人机还是卫星？'],
+        ['ground', '训得出', '终端算力弱、数据分散，模型如何协同训练与更新？'],
+      ],
+      cue: '向下',
+      rail: '下降的各层',
+      karman: '卡门线 · 100 km · 通常认为的太空边界',
+      chipsNote: '同一高度的合作工作：把 DNN 推理分到车辆、设备、无人机和卫星上协同完成。',
+    }
+  : {
+      eyebrow: 'Research',
+      background: 'Harsh environments and emergency sites lack terrestrial networks, and LEO satellite Internet is converging with large-model services.',
+      qs: [
+        ['space', 'Infer fast', 'Infer on the UAV or the LEO satellite? How much token compression is fast yet good?'],
+        ['control', 'Agentic brain', 'Turn semantic intent into numerical control, in a closed loop.'],
+        ['air', 'Offload accurately', 'Send bursty, heterogeneous tasks to the device, the UAV or the satellite?'],
+        ['ground', 'Train efficiently', 'Weak devices, scattered data: how to co-train models?'],
+      ],
+      cue: 'Descend',
+      rail: 'Layers of the descent',
+      karman: 'Kármán line · 100 km · the usual edge of space',
+      chipsNote: 'Collaborations at this altitude, on splitting DNN inference across vehicles, devices, UAVs and satellites.',
+    };
+const stops = [
+  {
+    id: 'space',
+    alt: 550,
+    still: '/media/sky-leo.webp',
+    name: zh ? '太空' : 'Space',
+    eyebrow: (zh ? '太空 · 低轨卫星' : 'Space · LEO') + span(leo, 'km'),
+    h: zh ? '算得快' : 'Infer fast',
+    tension: zh ? '压缩 Token 可以降时延，却同时损失生成质量。' : 'Compressing tokens cuts latency, but degrades generation quality.',
+    p: zh
+      ? '用输入、视觉和输出 Token 刻画多模态推理工作量，把通算协同从任务级细化到 Token 级。系统联合选择语义压缩、推理层与通信计算资源：慢时标配置无人机位置与模型缓存，快时标根据链路和负载完成调度。'
+      : 'Input, visual and output tokens describe the workload of a multimodal request, which takes communication-computing design from the task level down to the token level. The system jointly selects semantic compression, serving tier and resources: slow-timescale planning sets UAV positions and model caches, and fast-timescale scheduling follows current links and loads.',
+    trade: zh ? '权衡 · 压缩比 η：以质量换时延' : 'Trade-off · compression ratio η: quality for latency',
+    Art: TwoWaits,
+    ...at('space'),
+  },
+  {
+    id: 'control',
+    alt: 100,
+    still: '/media/sky-control.webp',
+    name: zh ? '控制面' : 'Control',
+    eyebrow: zh ? '控制面 · Agentic AI' : 'Control plane · Agentic AI',
+    h: zh ? 'Agentic 大脑' : 'Agentic brain',
+    tension: zh ? '业务意图是语义的，网络控制是数值的。' : 'Service intent is semantic. Network control is numerical.',
+    p: zh
+      ? '语义资源感知智能体汇聚链路、负载与能量状态，意图驱动编排智能体把业务需求转化为工具调用和资源决策，反馈学习智能体依据执行结果更新知识与策略，三者构成 MAPE-K 闭环。'
+      : 'Semantic resource perceivers interpret link, load and energy conditions. Intent-driven orchestrators translate service requirements into tool calls and resource decisions. Adaptive learners update knowledge and policies from execution feedback. Together they close a MAPE-K loop.',
+    trade: zh ? '多时间尺度分离：大模型慢尺度规划，强化学习快尺度调度' : 'Multi-timescale separation: LLMs plan at the slow timescale, RL schedules at the fast timescale',
+    Art: TwoLoops,
+    ...at('control'),
+  },
+  {
+    id: 'air',
+    alt: 14,
+    still: '/media/sky-air.webp',
+    name: zh ? '空中' : 'Air',
+    eyebrow: (zh ? '空中 · 无人机' : 'Air · UAVs') + span(uav, 'm'),
+    h: zh ? '分得准' : 'Offload accurately',
+    tension: zh ? '业务异构且突发，卸载既要满足可行约束，又要提前决策。' : 'Bursty, heterogeneous services need offloading that is both feasible and proactive.',
+    p: zh
+      ? '无人机轨迹、用户关联和资源分配强耦合，传统多智能体强化学习又缺乏前瞻性。利用历史业务预测短期任务到达，让节点提前协调，降低动态负载下的任务完成时延。'
+      : 'UAV trajectories, user association and resource allocation are strongly coupled, and conventional multi-agent learning has no foresight. Short-horizon task forecasts guide the agents, so nodes coordinate before workloads arrive and task completion delay falls under changing loads.',
+    trade: zh ? '权衡 · 卸载比例：以传输换算力' : 'Trade-off · offloading ratio: transmission for computing',
+    Art: GetThereFirst,
+    ...at('air'),
+  },
+  {
+    id: 'ground',
+    alt: 3.4,
+    still: '',
+    name: zh ? '地面' : 'Ground',
+    eyebrow: zh ? '地面 · 0 m' : 'Ground · 0 m',
+    h: zh ? '训得出' : 'Train efficiently',
+    tension: zh ? '终端算不动完整模型，拆分训练又抬高收敛误差上界。' : 'Devices cannot run full models, yet split training raises the convergence error bound.',
+    p: zh
+      ? '端侧完成浅层训练，无人机承担深层训练与边缘聚合，卫星进行全局聚合。联合配置模型拆分层、设备关联、带宽与算力，使模型更新适应空天地资源差异。在工厂里，设备还可以通过直连互相帮助上传模型，让学习能承受丢包和服务器故障。'
+      : 'Devices train shallow layers, UAVs train deeper layers and aggregate locally, and satellites aggregate globally. Model splits, device association, bandwidth and computing are decided jointly, so model updates fit the tiers they run on. On a factory floor, devices can also help each other upload over direct links, so learning survives packet errors and server failures.',
+    trade: zh ? '权衡 · 拆分层：以精度换训练时延' : 'Trade-off · split layer: accuracy for training latency',
+    Art: SplitTraining,
+    ...at('ground'),
+  },
+];
+const rail = [{ id: 'orbit', name: zh ? '轨道' : 'Orbit' }, ...stops.map((s) => ({ id: s.id, name: s.name }))];
+---
+<div class="descent" data-descent>
+  <div class="rail-holder">
+    <nav class="rail" data-rail aria-label={copy.rail}>
+      <ol>
+        {rail.map((r) => <li><a href={`#${r.id}`}><span>{r.name}</span><i aria-hidden="true"></i></a></li>)}
+      </ol>
+    </nav>
+  </div>
+  <div class="stage" data-stage aria-hidden="true">
+    <canvas data-sky></canvas>
+    <canvas data-orbits></canvas>
+    <span class="scrim"></span>
+  </div>
+
+  <section class="stop orbit" id="orbit" data-alt="1200" style="--still:url('/media/sky-orbit.webp')">
+    <div class="frame">
+      <p class="eyebrow mark"><span class="tick" aria-hidden="true"></span>{copy.eyebrow}</p>
+      <h1 class="page-title lede">{profile.thesis[lang][0]}</h1>
+      <p class="lede-p">{copy.background} {profile.question[lang]}</p>
+      <ol class="qs">
+        {copy.qs.map(([id, q, d]) => (
+          <li><a href={`#${id}`}><h2 class="q">{q}</h2><p>{d}</p></a></li>
+        ))}
+      </ol>
+    </div>
+    <a class="cue" href="#space"><span>{copy.cue}</span><Icon name="next" /></a>
+  </section>
+
+  {stops.map((s) => {
+    const Art = s.Art;
+    return (
+      <section
+        class:list={['stop', s.id]}
+        id={s.id}
+        data-alt={s.alt}
+        data-sky-end={s.id === 'ground' ? '' : undefined}
+        style={s.still ? `--still:url('${s.still}')` : undefined}
+      >
+        {s.id === 'control' && <div class="karman"><span class="eyebrow">{copy.karman}</span></div>}
+        <div class="frame stop-grid">
+          <div class="text" data-reveal>
+            <p class="eyebrow mark"><span class="tick" aria-hidden="true"></span>{s.eyebrow}</p>
+            <h2 class="claim">{s.h}</h2>
+            <p class="tension">{s.tension}</p>
+            <p class="body">{s.p}</p>
+            <p class="trade">{s.trade}</p>
+            <ul class="papers">
+              {s.rows.map((p) => (
+                <li>
+                  <a href={paperHref(lang, p.id)} data-open-paper={p.id}>
+                    <span class="meta num">{p.data.venueShort} {p.data.year}</span>
+                    <span class="t" lang={zh && !p.data.titleZh ? 'en' : undefined}>{titleOf(p, lang)}</span>
+                    <Icon name="expand" size={14} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+            {s.chips.length > 0 && (
+              <div class="also">
+                <p>{copy.chipsNote}</p>
+                <ul>
+                  {s.chips.map((p) => (
+                    <li><a class="num" href={paperHref(lang, p.id)} data-open-paper={p.id} data-tip-head={`${p.data.venueShort} ${p.data.year}`} data-tip={titleOf(p, lang)}>{p.data.venueShort} {p.data.year}</a></li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+          <div class="art"><Art lang={lang} /></div>
+        </div>
+      </section>
+    );
+  })}
+</div>
+
+<script>
+  import { startDescent } from '~/scripts/descent';
+  const root = document.querySelector<HTMLElement>('[data-descent]');
+  if (root) startDescent(root);
+</script>
+
+<style>
+  .descent { position: relative; isolation: isolate; overflow: clip; margin-top: calc(-1 * var(--bar)); --fg-2: #c6ced8; --fg-3: #98a2ae; --line-3: rgba(214, 226, 240, 0.34); }
+
+  /* The sky holds still behind the page for the whole descent. */
+  .stage { display: none; position: sticky; top: 0; z-index: -1; height: 100svh; margin-bottom: -100svh; overflow: hidden; background: var(--bg) url('/media/sky-orbit.webp') center bottom / cover no-repeat; }
+  .descent:global(.live) .stage { display: block; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
+  [data-sky] { opacity: 0; transition: opacity 1.2s ease-out; }
+  .stage:global(.sky-ready) [data-sky] { opacity: 1; }
+  .scrim { position: absolute; inset: 0; background: linear-gradient(270deg, rgba(7, 9, 13, 0.45), rgba(7, 9, 13, 0) 15%), linear-gradient(90deg, rgba(7, 9, 13, 0.8), rgba(7, 9, 13, 0.62) 38%, rgba(7, 9, 13, 0.08) 66%); }
+
+  /* Without the live sky each stop carries its own still, and its own scrim. */
+  .stop { position: relative; display: flex; align-items: center; min-height: 118svh; padding-block: calc(var(--bar) + 32px) 48px; }
+  .descent:not(:global(.live)) .stop[style]::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, rgba(7, 9, 13, 0.8), rgba(7, 9, 13, 0.55)), var(--still) center / cover no-repeat;
+    mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
+  }
+
+  /* Where you are on the way down. */
+  .rail-holder { position: sticky; top: 0; z-index: 4; height: 0; }
+  .rail { position: absolute; top: 50svh; right: max(var(--gutter), calc((100% - var(--page)) / 2)); transform: translateY(-50%); }
+  .rail ol { display: grid; gap: 2px; }
+  .rail a { display: flex; align-items: center; justify-content: flex-end; gap: 10px; height: 30px; font-family: var(--f-mono); font-size: var(--t-label); color: var(--fg-3); text-decoration: none; text-shadow: 0 0 10px rgba(7, 9, 13, 0.9); transition: color var(--d-1); }
+  .rail i { display: block; flex: none; width: 14px; height: 1px; background: currentColor; box-shadow: 0 0 6px rgba(7, 9, 13, 0.6); transition: width var(--d-3) var(--ease-out), background var(--d-1); }
+  .rail a:hover { color: var(--fg); }
+  .rail a[aria-current] { color: var(--fg); }
+  .rail a[aria-current] i { width: 30px; background: var(--signal); }
+
+  /* The first screen. */
+  .orbit { min-height: 100svh; align-items: flex-start; padding-block: calc(var(--bar) + clamp(16px, 7.5vh, 88px)) 72px; }
+  .mark { display: flex; align-items: center; gap: 8px; color: var(--signal-2); }
+  .tick { display: block; flex: none; width: 18px; height: 1px; background: currentColor; }
+  .lede { margin-top: 14px; max-width: 18em; font-size: clamp(2.125rem, 1.3rem + 2.9vw, 3.875rem); line-height: 1.07; text-wrap: balance; }
+  .lede-p { margin-top: 18px; max-width: 72ch; color: var(--fg-2); text-wrap: pretty; }
+  .qs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px); margin-top: clamp(22px, 4.5vh, 48px); padding-right: 130px; }
+  .qs a { display: block; height: 100%; padding-top: 12px; color: inherit; text-decoration: none; box-shadow: 0 -1px 0 var(--line-3); transition: box-shadow var(--d-2); }
+  .qs a:hover { box-shadow: 0 -1px 0 var(--signal); }
+  .q { font-size: var(--t-title); font-weight: 500; line-height: 1.25; letter-spacing: -0.014em; }
+  .qs p { margin-top: 6px; font-size: var(--t-small); line-height: 1.5; color: var(--fg-2); text-wrap: pretty; }
+  .cue { display: none; position: absolute; left: max(var(--gutter), calc((100% - var(--page)) / 2)); bottom: clamp(16px, 3.4vh, 32px); align-items: center; gap: 8px; font-size: var(--t-small); font-weight: 500; color: var(--fg-2); text-decoration: none; }
+  :global(.js) .cue { display: inline-flex; }
+  .cue:hover { color: var(--fg); }
+  .cue :global(.icon) { transform: rotate(90deg); animation: cue 2.4s var(--ease-in-out) infinite; }
+  @keyframes cue { 50% { transform: rotate(90deg) translateX(5px); } }
+
+  /* A stop: one study, its tension, one drawing, the papers at this altitude. */
+  .stop-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(24px, 4vw, 64px); align-items: center; }
+  .art { min-width: 0; padding-right: 130px; }
+  .claim { margin-top: 12px; font-family: var(--f-display); font-stretch: 110%; font-weight: 300; font-size: clamp(2.25rem, 1.45rem + 2.2vw, 3.5rem); line-height: 1.04; letter-spacing: -0.02em; }
+  .claim:lang(zh), :global(:lang(zh)) .claim { font-weight: 400; letter-spacing: 0.02em; line-height: 1.16; }
+  .tension { margin-top: 12px; max-width: 30em; font-size: var(--t-title); font-weight: 450; line-height: 1.32; letter-spacing: -0.012em; color: var(--fg); text-wrap: balance; }
+  .body { margin-top: 10px; max-width: 60ch; font-size: var(--t-text); line-height: 1.58; color: var(--fg-2); text-wrap: pretty; }
+  .trade { margin-top: 12px; font-family: var(--f-mono); font-size: var(--t-label); line-height: 1.5; letter-spacing: -0.02em; color: var(--signal-2); }
+  .papers { margin-top: 14px; box-shadow: 0 -1px 0 var(--line-3); }
+  .papers a { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; padding: 8px 0 9px; color: var(--fg); text-decoration: none; box-shadow: 0 1px 0 var(--line); transition: padding-left var(--d-2) var(--ease-out); }
+  .papers a:hover { padding-left: 6px; color: #fff; }
+  .meta { grid-column: 1; font-size: var(--t-label); color: var(--fg-3); }
+  .t { grid-column: 1; font-size: var(--t-small); line-height: 1.34; text-wrap: pretty; }
+  .papers :global(.icon) { grid-column: 2; grid-row: 1 / span 2; align-self: center; color: var(--fg-3); transition: color var(--d-1); }
+  .papers a:hover :global(.icon) { color: var(--fg); }
+  .also { margin-top: 12px; }
+  .also p { font-size: var(--t-small); line-height: 1.45; color: var(--fg-2); text-wrap: pretty; }
+  .also ul { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .also a { display: inline-block; padding: 3px 8px; font-size: var(--t-label); color: var(--fg); text-decoration: none; border-radius: 6px; background: rgba(7, 9, 13, 0.34); box-shadow: inset 0 0 0 1px var(--line-3); transition: background var(--d-1); }
+  .also a:hover { color: #fff; background: rgba(7, 9, 13, 0.6); }
+
+  /* The usual edge of space passes through the page. */
+  .karman { position: absolute; inset: 0 0 auto; height: 1px; background: linear-gradient(90deg, rgba(255, 122, 61, 0.9), rgba(255, 122, 61, 0.5) 60%, transparent); }
+  .karman span { position: absolute; left: max(var(--gutter), calc((100% - var(--page)) / 2)); top: 10px; color: var(--signal-2); }
+
+  /* On the ground the sky is gone. Contour lines take over. */
+  .ground { min-height: 110svh; }
+  .ground::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: url('/media/contours.svg') center 40% / max(1200px, 96vw) auto no-repeat;
+    filter: invert(1);
+    opacity: 0.16;
+    mask-image: linear-gradient(to bottom, transparent, #000 34%, #000 70%, transparent);
+    pointer-events: none;
+  }
+
+  @media (max-width: 1239px) {
+    .rail span { display: none; }
+    .art { padding-right: 44px; }
+    .qs { padding-right: 44px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 899px) {
+    .scrim { background: rgba(7, 9, 13, 0.62); }
+    .rail { display: none; }
+    .stop { min-height: 0; padding-block: clamp(72px, 16vh, 120px); }
+    .orbit { min-height: 100svh; padding-block: calc(var(--bar) + 20px) 68px; }
+    .stop-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .art { padding-right: 0; }
+    .qs { grid-template-columns: minmax(0, 1fr); padding-right: 0; }
+    .descent:not(:global(.live)) .stop[style]::before { background: linear-gradient(rgba(7, 9, 13, 0.7), rgba(7, 9, 13, 0.7)), var(--still) center / cover no-repeat; }
+  }
+  @media print { .stage, .rail-holder { display: none; } .stop { min-height: 0; } }
+</style>

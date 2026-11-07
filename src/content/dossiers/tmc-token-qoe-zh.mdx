@@ -1,0 +1,86 @@
+---
+paper: tmc-token-qoe
+lang: zh
+headline: 把通算协同从任务级细化到 Token 级。
+dek: 面向跨无人机和低轨卫星的多模态请求，建立基于 TTFT 和 TPOT 的 Token 级时延模型，并在此基础上设计双时间尺度调度器。
+---
+import overall from '~/data/charts/tmc-overall.json';
+import ablation from '~/data/charts/tmc-ablation.json';
+import storage from '~/data/charts/tmc-storage.json';
+
+## 问题在哪
+
+生成式 AI 的回答是一个 token 一个 token 产生的，所以用户感受到两种时延：第一个 token 什么时候出现（TTFT），后面每个 token 要等多久（TPOT）。多数卸载研究把请求当作比特流，只做本地还是远端的选择，这样就看不到提示词长度如何同时影响两种时延，也看不到一段很长的图像或视频提示里有多少是冗余的。
+
+在没有基站的偏远地区，这个选择很实际。无人机上的小模型回答快，质量偏低；低轨卫星上的完整基础模型回答好，但更晚；而一架无人机只能缓存少数几个模型。
+
+<Plate lang="zh" n="1" src="/figures/tmc-token-qoe/scenario.webp" width={1400} height={1188} alt="面向多模态 AIGC 推理的三层空天地架构" caption="三层架构：完整基础模型在轨，轻量模型和语义编码器缓存在无人机上，多模态请求来自地面。论文图 1。" />
+
+## 关键想法
+
+把一切都看成 token。一个连续的比率 η 压缩整段输入，因此它同时决定上行负载和 prefill 工作量，也就决定了 TTFT。压缩有质量代价，调度器可以给这个代价定价。
+
+<Eq tex="\tilde n_u^{\rm in}=\eta_u\,(n_u^{\rm txt}+n_u^{\rm vis}),\qquad \eta_u\in[\eta_{\min},1]" note="一个比率压缩全部输入，同时决定链路上的负载和 prefill 的工作量。" />
+
+第一个 token 要串行穿过整条链路。后面的 token 以流水线方式传输，速度取决于最慢的一环。
+
+<Eq tex="\mathrm{TTFT}_u=T^{\rm G2A}_{u\to k}+T^{\rm A2G}_{k\to u}+(1-x_u)\mathrm{TTFT}^{\rm UAV}_u+x_u\left[T^{\rm A2S}+T^{{\rm ISL},\uparrow}+\mathrm{TTFT}^{\rm sat}_u+T^{{\rm ISL},\downarrow}+T^{\rm S2A}\right]" />
+
+<Eq tex="\mathrm{TPOT}_u=\begin{cases}\max\{\overline{\mathrm{TPOT}}^{\rm UAV}_u,\;T^{\rm A2G}_{k\to u}\}&x_u=0\\ \max\{\overline{\mathrm{TPOT}}^{\rm sat}_u,\;T^{{\rm ISL},\downarrow},\;T^{\rm S2A},\;T^{\rm A2G}\}&x_u=1\end{cases}" note="首 token 时延是串行求和，逐 token 时延是流水线瓶颈。" />
+
+<Eq tex="\mathrm{QoE}_u=w_q\ln(1+Q_u)-w_1\,\mathrm{TTFT}_u-w_2\,\mathrm{TPOT}_u" note="质量收益是凹函数，边际递减，再减去两种时延的惩罚。" />
+
+<Plate lang="zh" wide n="2" src="/figures/tmc-token-qoe/latency.webp" width={2000} height={1228} alt="推理流水线与端到端流式时延模型" caption="推理流水线与端到端流式时延模型，分别对应无人机侧和卫星侧推理。论文图 2。" />
+
+## 动手算一算
+
+<div class="full"><TokenRace lang="zh" /></div>
+
+## 系统怎么运转
+
+三层网络，两个时间尺度。每 120 秒，知识驱动的规划器根据近期需求提出无人机部署和模型缓存的候选方案，用快速调度器推演打分，再做交替搜索。每个 2.4 秒的时隙，条件扩散 TD3 调度器（CD-TD3）为每个用户选择卸载层和压缩率，带宽和算力由闭式规则分配。
+
+<Plate lang="zh" wide n="3" src="/figures/tmc-token-qoe/framework.webp" width={2200} height={1154} alt="双时间尺度优化框架" caption="快时间尺度的 CD-TD3 调度器（左）和慢时间尺度的知识驱动规划器（右），通过配置下发和价值反馈耦合。论文图 3。" />
+
+## 结果
+
+评估是仿真：5 架无人机、30 个用户、6 颗卫星、10 个无人机侧模型，解码开销按 NVIDIA Jetson AGX Thor 的速率设定，质量系数来自模型卡。结果在 30 个留出配置上统计。所提框架的人均 QoE 最高，**比 TD3 高 31.9%，比 Greedy 启发式高 69.2%**。
+
+<Bars
+  title="人均 QoE"
+  rows={overall.x.values.map((n, i) => ({ label: n === 'Proposed' ? '本文方案' : n, value: overall.series[0].values[i], display: overall.series[0].values[i].toFixed(3), hi: i === 0 }))}
+  source="数据来自论文表 III 对应的评估文件。"
+/>
+
+<Table3 lang="zh" />
+
+增益的来源在表里看得见。相比固定配置的变体，所提方案把 TTFT 从 1.225 秒降到 0.873 秒。从学到的行为看，已缓存模型的请求里仍有 35.7% 主动发往卫星，发往卫星的视觉输入被压缩到 η ≈ 0.44。
+
+每次去掉一个组件，就能看出什么在起作用：逐用户分解影响最大，其次是扩散 actor，然后是压缩。
+
+<Bars
+  title="去掉单个组件后的 QoE 损失"
+  rows={ablation.x.values.slice(1).map((n, i) => ({ label: n, value: -ablation.series[1].values[i + 1], display: `−${(-ablation.series[1].values[i + 1]).toFixed(1)}%` })).sort((a, b) => b.value - a.value).map((r, i) => ({ ...r, hi: i === 0 }))}
+  source="重新训练的变体，数据来自论文图 7 对应的评估文件。"
+/>
+
+资源越紧，优势越大。无人机存储只有 10 GB 时，所提方案比 Greedy 高 67.3%；到 30 GB 时收窄到 37.7%。
+
+<Lines
+  title="时隙总 QoE 随无人机存储容量的变化"
+  x={storage.x.values}
+  xLabel="无人机存储容量 (GB)"
+  yLabel="QoE"
+  yMin={10}
+  yMax={40}
+  yTicks={[10, 20, 30, 40]}
+  series={[
+    { name: '本文方案', values: storage.series[0].values, hi: true },
+    { name: 'Greedy', values: storage.series[3].values, dy: -5 },
+    { name: 'TD3', values: storage.series[1].values, dy: 3 },
+    { name: 'PPO', values: storage.series[2].values, dy: 5 },
+  ]}
+  source="数据来自论文图 8(b) 对应的灵敏度扫描。"
+/>
+
+调度器足够轻，可以实时运行。在单个 CPU 核（Apple M3 Max，PyTorch）上，为全部 30 个用户做一次决策平均耗时 0.67 毫秒，99 分位为 0.93 毫秒。

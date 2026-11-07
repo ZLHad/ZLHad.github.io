@@ -1,0 +1,47 @@
+---
+// A paper's main figure, as cropped from the PDF. `dark` is for the home page's cards only.
+// A paper with no figure yet gets a tile of the orbital sky with its venue, never a blank box.
+import { thumbOf, type Paper } from '~/lib/papers';
+import { pick, ui, type Lang } from '~/lib/i18n';
+interface Props { paper: Paper; lang: Lang; dark?: boolean }
+const { paper: p, lang, dark = false } = Astro.props;
+const s = ui(lang);
+const t = thumbOf(p, dark);
+// The figure's real number in the paper, read from its caption.
+const figNo = dark && t ? t.caption.en.match(/Fig\.\s*\d+/)?.[0] : undefined;
+---
+{t ? (
+  <span class:list={['plate', 'pthumb', { dark }]} data-thumb>
+    <img class="fig" src={t.src} alt={pick(t.caption, lang)} width={t.width} height={t.height} loading="lazy" decoding="async" />
+    {figNo && <span class="fig-no">{figNo}</span>}
+  </span>
+) : (
+  <span class="ptile" data-thumb>
+    <span class="tile-venue">{p.data.venueShort}</span>
+    <span class="tile-status"><i class={`dot ${p.data.status}`}></i>{s.status[p.data.status]}</span>
+  </span>
+)}
+
+<style>
+  .pthumb, .ptile { aspect-ratio: var(--thumb-ar, 16 / 10); }
+  .pthumb { padding: var(--thumb-pad, 12px); }
+  :global(.has-thumb:hover) .fig { transform: scale(1.035); }
+  :global(.has-thumb:hover) .pthumb.dark { box-shadow: inset 0 0 0 1px var(--line); }
+  .fig-no { position: absolute; left: 8px; bottom: 8px; padding: 4px 6px; font-family: var(--f-mono); font-size: var(--t-label); line-height: 1; letter-spacing: -0.01em; color: var(--fg-2); text-transform: uppercase; border-radius: 5px; background: rgba(10, 13, 18, 0.82); }
+  .ptile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 4px;
+    width: 100%;
+    padding: 14px 16px;
+    overflow: hidden;
+    color: var(--fg);
+    border-radius: var(--r-2);
+    background: var(--plate-bg) url('/media/sky-orbit.webp') center bottom / cover no-repeat;
+    box-shadow: inset 0 0 0 1px var(--line-2);
+  }
+  .tile-venue { font-family: var(--f-display); font-stretch: 118%; font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem); font-weight: 200; line-height: 1.1; letter-spacing: 0.01em; }
+  .tile-status { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-mono); font-size: var(--t-label); color: var(--fg-2); }
+</style>

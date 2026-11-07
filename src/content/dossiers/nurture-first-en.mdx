@@ -1,0 +1,31 @@
+---
+paper: nurture-first
+lang: en
+look: ground
+headline: Don't build an expert agent. Raise one.
+dek: A development paradigm in which an agent starts with minimal scaffolding and grows through structured conversation with the person who uses it.
+---
+
+## What breaks
+
+Most domain agents are built in one of two ways. Code-first development embeds expertise in deterministic pipelines. Prompt-first development captures it in a long system prompt. Both treat construction as a phase that ends before deployment.
+
+That assumption does not fit how expertise works. It is substantially tacit, personal and still changing, so it resists being written down in advance.
+
+## The idea
+
+Make development and deployment concurrent. The agent begins small and grows through daily use. The central mechanism is the Knowledge Crystallization Cycle: fragments of knowledge in everyday dialogue are periodically consolidated into structured, reusable assets, which then shape the next round of conversations.
+
+<Plate lang="en" wide n="1" src="/figures/nurture-first/overview.webp" width={1800} height={1344} alt="The integrated Nurture-First Development framework" caption="The framework: a three-layer knowledge architecture inside a four-phase crystallization cycle, with two workspaces and a spiral over time." />
+
+## The architecture
+
+Knowledge is organized by how often it changes and how personal it is. A Constitutional layer holds identity and rules, and loads in every session. A Skill layer holds modules and references, and loads on demand. An Experiential layer holds logs and cases, and is searched semantically.
+
+<Plate lang="en" n="2" src="/figures/nurture-first/architecture.webp" width={1500} height={1120} alt="Three-layer cognitive architecture" caption="The three layers, with crystallization moving knowledge upward and grounding moving it back down." />
+
+Two operating patterns follow. A Dual-Workspace Pattern separates a surgical workspace for batch changes from a nurturing workspace for daily conversation, over one shared file system. A Spiral Development Model alternates scaffolding, nurturing and crystallization.
+
+## How far to trust it
+
+This is a framework paper. Its case study, a financial research agent for U.S. equity analysis, is illustrative: one user, no control group, and a subjective usefulness measure. The paper says so itself. One of my open repositories sits close to this idea: [personal-knowledge-wiki](https://github.com/ZLHad/personal-knowledge-wiki).

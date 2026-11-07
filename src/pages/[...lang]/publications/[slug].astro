@@ -1,0 +1,217 @@
+---
+// A paper's own page: the same overview as the popup, then the deep dive if there is
+// one. The haze at the top is the sky at the altitude the paper acts at.
+import 'katex/dist/katex.min.css';
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/chrome/Icon.astro';
+import PaperOverview from '~/components/papers/PaperOverview.astro';
+import PaperThumb from '~/components/papers/PaperThumb.astro';
+import Plate from '~/components/dossier/Plate.astro';
+import Eq from '~/components/dossier/Eq.astro';
+import Bars from '~/components/dossier/Bars.astro';
+import Lines from '~/components/dossier/Lines.astro';
+import Table3 from '~/components/dossier/Table3.astro';
+import TokenRace from '~/components/widgets/TokenRace.astro';
+import MapeLoop from '~/components/widgets/MapeLoop.astro';
+import ForecastWidget from '~/components/widgets/ForecastWidget.astro';
+import SplitTraining from '~/components/research/art/SplitTraining.astro';
+import { href, paperHref, ui, toLang, type Lang } from '~/lib/i18n';
+import { allPapers, authorsOf, scholarlyArticle, titleOf } from '~/lib/papers';
+
+export async function getStaticPaths() {
+  const papers = await getCollection('papers', (p) => !p.data.hidden);
+  return papers.flatMap((p) => [
+    { params: { lang: undefined, slug: p.id } },
+    { params: { lang: 'zh', slug: p.id } },
+  ]);
+}
+
+const lang: Lang = toLang(Astro.params.lang);
+const s = ui(lang);
+const zh = lang === 'zh';
+const paper = (await getEntry('papers', Astro.params.slug!))!;
+const d = paper.data;
+const dossier = d.dossier ? (await getEntry('dossiers', `${paper.id}-${lang}`))! : null;
+const rendered = dossier ? await render(dossier) : null;
+const Content = rendered?.Content ?? null;
+const toc = rendered?.headings.filter((h) => h.depth === 2) ?? [];
+
+const look = dossier?.data.look ?? d.stratum;
+const sky = { space: '/media/sky-leo.webp', control: '/media/sky-control.webp', air: '/media/sky-air.webp', ground: '' }[look];
+
+const others = (await allPapers()).filter((p) => p.data.dossier && p.id !== paper.id);
+const name = zh ? '张凌豪' : 'Linghao Zhang';
+const pdf = d.links?.pdf;
+---
+<Base
+  lang={lang}
+  title={`${dossier?.data.headline ?? titleOf(paper, lang)} — ${name}`}
+  description={dossier?.data.dek ?? (zh ? d.summary.zh : d.summary.en)}
+  jsonld={{ '@context': 'https://schema.org', ...scholarlyArticle(paper) }}
+>
+  <Fragment slot="head">
+    <meta name="citation_title" content={d.title} />
+    {d.authors.map((a) => <meta name="citation_author" content={a} />)}
+    <meta name="citation_publication_date" content={d.date.toISOString().slice(0, 10).replaceAll('-', '/')} />
+    <meta name={d.kind === 'conference' ? 'citation_conference_title' : 'citation_journal_title'} content={d.venue} />
+    {d.volume && <meta name="citation_volume" content={d.volume} />}
+    {d.number && <meta name="citation_issue" content={d.number} />}
+    {d.doi && <meta name="citation_doi" content={d.doi} />}
+    {pdf && <meta name="citation_pdf_url" content={pdf} />}
+  </Fragment>
+  <main>
+    <div class="haze" style={sky ? `--sky:url('${sky}')` : undefined} aria-hidden="true"></div>
+    <div class="frame crumbs">
+      <a class="back" href={href(lang, '/publications/')}><Icon name="back" />{s.backHome}</a>
+      {d.altitudes && <span class="eyebrow">{d.altitudes}</span>}
+    </div>
+    <div class="frame paper">
+      <PaperOverview paper={paper} lang={lang} inPage />
+    </div>
+
+    {dossier && Content && (
+      <section id="deep-dive" class="frame deep">
+        <p class="eyebrow kicker"><span class="tick" aria-hidden="true"></span>{s.deepDive}</p>
+        <h2 class="page-title headline">{dossier.data.headline}</h2>
+        <p class="dek">{dossier.data.dek}</p>
+        <div class="deep-body">
+          <article class="prose">
+            <Content components={{ Plate, Eq, Bars, Lines, Table3, TokenRace, MapeLoop, ForecastWidget, SplitTraining }} />
+          </article>
+          {toc.length > 2 && (
+            <nav class="toc" data-toc aria-label={zh ? '本文目录' : 'On this page'}>
+              <p class="eyebrow">{zh ? '本文目录' : 'On this page'}</p>
+              <ol>
+                {toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+              </ol>
+            </nav>
+          )}
+        </div>
+      </section>
+    )}
+
+    {others.length > 0 && (
+      <nav class="frame next" aria-label={zh ? '其他深入解读' : 'Other deep dives'}>
+        <p class="eyebrow next-h">{zh ? '其他深入解读' : 'Other deep dives'}</p>
+        <ul>
+          {others.map((p, i) => (
+            <li class="has-thumb o card spot" data-spot data-reveal style={`--i:${i}`}>
+              <a href={`${paperHref(lang, p.id)}#deep-dive`}>
+                <PaperThumb paper={p} lang={lang} />
+                <span class="o-text">
+                  <span class="chip venue">{p.data.venueShort}</span>
+                  <span class="t">{titleOf(p, lang)}</span>
+                  <span class="a">{authorsOf(p, lang).slice(0, 3).join(zh && p.data.authorsZh ? '，' : ', ')}{p.data.authors.length > 3 && (zh ? ' 等' : ' et al.')}</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+  </main>
+</Base>
+
+<script>
+  // The contents rail marks where you are, and steps aside for full-width figures.
+  const toc = document.querySelector<HTMLElement>('[data-toc]');
+  if (toc) {
+    const links = [...toc.querySelectorAll('a')];
+    const heads = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))));
+    const wide = [...document.querySelectorAll('.prose .full, .prose .wide')];
+    let queued = false;
+    const update = () => {
+      queued = false;
+      let current = -1;
+      heads.forEach((h, i) => {
+        if (h && h.getBoundingClientRect().top < innerHeight * 0.4) current = i;
+      });
+      links.forEach((a, i) => a.classList.toggle('on', i === current));
+      const t = toc.getBoundingClientRect();
+      toc.classList.toggle('away', wide.some((el) => {
+        const r = el.getBoundingClientRect();
+        return r.top < t.bottom + 12 && r.bottom > t.top - 12;
+      }));
+    };
+    addEventListener('scroll', () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    }, { passive: true });
+    update();
+  }
+</script>
+
+<style is:global>
+  .katex { font-size: 1.05em; }
+  .prose h2 {
+    font-size: var(--t-h3);
+    font-weight: 500;
+    line-height: 1.22;
+    margin: 2.4em 0 0.6em;
+    letter-spacing: -0.016em;
+  }
+  .prose h2:lang(zh) { letter-spacing: 0; line-height: 1.4; }
+  .prose h2:first-child { margin-top: 0; }
+  .prose p { margin: 0.9em 0; color: var(--fg-2); }
+  .prose strong { font-weight: 550; color: var(--fg); }
+  .prose a { color: var(--fg); }
+  .prose a:hover { color: var(--signal-2); }
+  /* Dense figures and the interactive models get the whole width of the page. */
+  .prose .full { margin-block: 2em; width: min(var(--page), 100vw - 2 * var(--gutter)); }
+  .prose ul { margin: 0.9em 0; padding-left: 1.1em; list-style: disc; color: var(--fg-2); }
+  .prose li { margin: 0.3em 0; }
+  .prose li::marker { color: var(--fg-3); }
+  .prose code { font-family: var(--f-mono); font-size: 0.88em; color: var(--fg); }
+</style>
+
+<style>
+  .haze {
+    position: absolute;
+    inset: 0 0 auto;
+    height: clamp(280px, 46vh, 460px);
+    z-index: -1;
+    background: var(--sky, none) center 78% / cover no-repeat;
+    opacity: 0.55;
+    mask-image: linear-gradient(to bottom, #000 30%, transparent);
+    pointer-events: none;
+  }
+  .crumbs { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-block: clamp(14px, 3vh, 28px) 14px; }
+  .back { display: inline-flex; align-items: center; gap: 6px; font-size: var(--t-small); font-weight: 500; color: var(--fg-2); text-decoration: none; }
+  .back:hover { color: var(--fg); }
+  .back :global(.icon) { transition: transform var(--d-2) var(--ease-out); }
+  .back:hover :global(.icon) { transform: translateX(-3px); }
+  .deep { margin-top: clamp(64px, 12vh, 128px); }
+  .kicker { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; color: var(--signal-2); }
+  .tick { display: block; width: 18px; height: 1px; background: currentColor; }
+  .headline { font-size: clamp(2.125rem, 1.4rem + 2.6vw, 3.75rem); max-width: 22ch; }
+  .dek { margin-top: 16px; font-size: var(--t-lead); line-height: 1.42; max-width: 38em; color: var(--fg-2); text-wrap: pretty; }
+  .dek:lang(zh) { line-height: 1.7; }
+  .deep-body { display: grid; grid-template-columns: minmax(0, 800px) 230px; justify-content: space-between; gap: 40px; margin-top: 40px; }
+  .prose { min-width: 0; }
+  .toc { position: sticky; top: calc(var(--bar) + 28px); align-self: start; transition: opacity var(--d-2); }
+  .toc:global(.away) { opacity: 0; pointer-events: none; }
+  .toc ol { margin-top: 10px; box-shadow: -1px 0 0 var(--line); }
+  .toc a { position: relative; display: block; padding: 5px 0 5px 12px; font-size: var(--t-small); line-height: 1.35; color: var(--fg-3); text-decoration: none; transition: color var(--d-1); }
+  .toc a:hover { color: var(--fg); }
+  .toc a:global(.on) { color: var(--fg); }
+  .toc a:global(.on)::before { content: ''; position: absolute; left: -1px; top: 4px; bottom: 4px; width: 1px; background: var(--signal); box-shadow: 0 0 6px var(--signal); }
+  @media (max-width: 1160px) {
+    .deep-body { display: block; }
+    .toc { display: none; }
+  }
+  .next { margin-top: clamp(64px, 11vh, 120px); padding-bottom: clamp(56px, 10vh, 112px); }
+  .next ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+  .o { overflow: hidden; --thumb-pad: 14px; --thumb-ar: 16 / 9.6; }
+  .o :global(.plate), .o :global(.ptile) { border-radius: 0; box-shadow: 0 1px 0 var(--line-2); }
+  .o a { display: block; text-decoration: none; color: inherit; }
+  .o a:hover { color: inherit; }
+  .o-text { display: block; padding: 14px 18px 16px; }
+  .t { display: block; margin-top: 8px; font-size: var(--t-body); font-weight: 500; line-height: 1.34; letter-spacing: -0.012em; text-wrap: pretty; }
+  .a { display: block; margin-top: 5px; font-size: var(--t-small); line-height: 1.4; color: var(--fg-3); }
+  main { position: relative; isolation: isolate; }
+  @media (max-width: 760px) {
+    .next ul { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

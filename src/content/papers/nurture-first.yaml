@@ -1,0 +1,37 @@
+title: "Nurture-First Agent Development: Building Domain-Expert AI Agents Through Conversational Knowledge Crystallization"
+authors: [Linghao Zhang]
+venue: arXiv preprint
+venueZh: arXiv 预印本
+venueShort: arXiv
+kind: preprint
+status: preprint
+date: 2026-03-11
+year: 2026
+arxiv: "2603.10808"
+url: https://arxiv.org/abs/2603.10808
+tiers: []
+stratum: control
+mechanism: control
+summary:
+  en: Expert knowledge is tacit and keeps changing, so this essay proposes growing an agent through everyday conversation with its user and periodically distilling those conversations into reusable knowledge.
+  zh: 专家知识大多是隐性的，而且一直在变。本文提出让智能体在与使用者的日常对话中逐步养成，并定期把对话沉淀为可复用的知识资产。
+links:
+  pdf: https://arxiv.org/pdf/2603.10808v1
+dossier: true
+abstract:
+  en: "The emergence of large language model (LLM)-based agent frameworks has shifted the primary challenge in building domain-expert AI agents from raw capability to effective encoding of domain expertise. Two dominant paradigms—code-first development, which embeds expertise in deterministic pipelines, and prompt-first development, which captures expertise in static system prompts—both treat agent construction as a discrete engineering phase preceding deployment. We argue that this sequential assumption creates a fundamental mismatch with the nature of domain expertise, which is substantially tacit, deeply personal, and continuously evolving. We propose Nurture-First Development (NFD), a paradigm in which agents are initialized with minimal scaffolding and progressively grown through structured conversational interaction with domain practitioners. The central mechanism is the Knowledge Crystallization Cycle, whereby fragmented knowledge embedded in operational dialogue is periodically consolidated into structured, reusable knowledge assets. We formalize NFD through: (1) a Three-Layer Cognitive Architecture organizing agent knowledge by volatility and personalization degree; (2) the Knowledge Crystallization Cycle with formal definitions of crystallization operations and efficiency metrics; and (3) an operational framework comprising a Dual-Workspace Pattern and Spiral Development Model. We illustrate the paradigm through a detailed case study on building a financial research agent for U.S. equity analysis and discuss the conditions, limitations, and broader implications of NFD for human-agent co-evolution."
+firstPage: true
+figures:
+  - file: overview.webp
+    width: 1800
+    height: 1344
+    caption:
+      en: "The integrated Nurture-First Development framework."
+      zh: "养成优先开发的整体框架。"
+  - file: architecture.webp
+    width: 1500
+    height: 1120
+    caption:
+      en: "The three-layer cognitive architecture."
+      zh: "三层认知架构。"
+selected: 5

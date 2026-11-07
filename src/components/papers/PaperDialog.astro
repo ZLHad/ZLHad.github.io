@@ -1,0 +1,78 @@
+---
+// The popup. Each paper's overview sits in an inert <template> until it is opened,
+// so its images load only on demand and the list pages stay light.
+import Icon from '~/components/chrome/Icon.astro';
+import PaperOverview from '~/components/papers/PaperOverview.astro';
+import { allPapers } from '~/lib/papers';
+import { ui, type Lang } from '~/lib/i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = ui(lang);
+const zh = lang === 'zh';
+const papers = await allPapers();
+---
+<dialog id="paper-dialog" aria-label={s.overview}>
+  <div class="dlg-ctrl">
+    <button type="button" data-step-paper="-1" aria-label={zh ? '上一篇' : 'Previous paper'} title={zh ? '上一篇（←）' : 'Previous (←)'}><Icon name="left" /></button>
+    <button type="button" data-step-paper="1" aria-label={zh ? '下一篇' : 'Next paper'} title={zh ? '下一篇（→）' : 'Next (→)'}><Icon name="right" /></button>
+    <span class="sep" aria-hidden="true"></span>
+    <button type="button" data-close-paper aria-label={s.close} title={zh ? '关闭（Esc）' : 'Close (Esc)'}><Icon name="close" /></button>
+  </div>
+  <div class="panel" tabindex="-1" autofocus><div data-paper-body></div></div>
+</dialog>
+{papers.map((p) => (
+  <template id={`paper-${p.id}`}>
+    <PaperOverview paper={p} lang={lang} />
+  </template>
+))}
+
+<style is:global>
+  #paper-dialog {
+    width: min(1300px, 96vw);
+    max-width: none;
+    max-height: 92vh;
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-4);
+    background: var(--bg-1);
+    overflow: hidden;
+    box-shadow: 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 50px 140px -30px rgba(0, 0, 0, 0.9);
+  }
+  #paper-dialog[open] { display: block; }
+  /* Without view transitions the panel still arrives gently. */
+  html:not(.has-vt) #paper-dialog[open] { animation: dlg-in 0.34s var(--ease-out); }
+  @keyframes dlg-in { from { opacity: 0; transform: translateY(16px) scale(0.985); } }
+  #paper-dialog::backdrop { background: rgba(3, 5, 8, 0.72); backdrop-filter: blur(16px) saturate(1.2); }
+  #paper-dialog .panel { max-height: 92vh; overflow: hidden; outline: none; }
+  [data-paper-body].step-next { animation: step-next 0.36s var(--ease-out); }
+  [data-paper-body].step-prev { animation: step-prev 0.36s var(--ease-out); }
+  @keyframes step-next { from { opacity: 0; transform: translateX(22px); } }
+  @keyframes step-prev { from { opacity: 0; transform: translateX(-22px); } }
+
+  .dlg-ctrl {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 12px;
+    background: rgba(18, 22, 28, 0.86);
+    backdrop-filter: blur(10px);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .dlg-ctrl button { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; color: var(--fg-2); border-radius: 9px; transition: color var(--d-1), background var(--d-1); }
+  .dlg-ctrl button:hover { color: var(--fg); background: rgba(190, 205, 225, 0.14); }
+  .dlg-ctrl .sep { width: 1px; height: 16px; margin-inline: 2px; background: var(--line); }
+  #paper-dialog .ov-meta { padding-right: 124px; min-height: 30px; align-items: center; }
+  @media (max-width: 860px) {
+    #paper-dialog { width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; border-radius: 0; box-shadow: none; }
+    #paper-dialog .panel { height: 100dvh; max-height: 100dvh; padding-top: 50px; overflow-y: auto; overscroll-behavior: contain; }
+    #paper-dialog .ov-meta { padding-right: 0; }
+    /* On a phone the controls get their own bar instead of sitting on the figure. */
+    .dlg-ctrl { top: 0; left: 0; right: 0; justify-content: flex-end; height: 50px; padding: 6px 8px; border-radius: 0; background: var(--bg-1); backdrop-filter: none; box-shadow: 0 1px 0 var(--line-2); }
+    .dlg-ctrl button { width: 38px; height: 38px; }
+  }
+</style>

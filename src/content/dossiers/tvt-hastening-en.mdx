@@ -1,0 +1,47 @@
+---
+paper: tvt-hastening
+lang: en
+look: air
+headline: Association is a submodular problem, so it can be solved greedily.
+dek: Co-inference across ground devices, base stations, UAVs and a satellite. Splitting, association, computing units and bandwidth are optimized in turn to cut total inference latency.
+---
+
+## What breaks
+
+In a space-air-ground network, inference latency depends on the links, the computing at each tier and the co-inference decisions all at once. DNNs keep growing while the spectrum for exchanging intermediate features stays scarce, so computing and transmission delays both build up. Most co-inference work stays inside terrestrial networks. Earlier submodular methods also miss two things this setting needs: a split decision that changes computing and communication costs layer by layer, and a second phase that redistributes the satellite's computing.
+
+## The idea
+
+Break the joint problem into three parts and solve them in turn. Bandwidth has a closed form, because its sub-problem is convex. The split point comes from a search over the layers. Device association and the assignment of computing units are cast as maximizing a latency reduction that is monotone submodular over a matroid, so they can be built up greedily, one action at a time. The satellite stays out of that step. A final redistribution pass moves UAV-served devices onto satellite computing units whenever that lowers latency.
+
+<Plate lang="en" n="1" src="/figures/tvt-hastening/architecture.webp" width={836} height={693} alt="The architecture of SAGIN with co-inference" caption="Ground devices offload part of a split DNN to base stations, UAVs or, through a UAV, the satellite. Fig. 1 of the paper." />
+
+## The system
+
+Ground devices share the area with base stations, each holding N computing units, and with UAVs hovering overhead, each holding L. One satellite above them has M units. A device can run its whole model, or split it at a layer and send that layer's output to a base station, to a UAV, or through a UAV to the satellite.
+
+<Eq tex="\widehat{t}^{u,\mathrm{comp}}_j=\frac{\alpha_j\widehat{A}^{\widehat{i}^u_j}}{\xi_j}+\frac{\alpha_j\widehat{A}^{I-\widehat{i}^u_j}}{\widehat{\xi}_u\sum_{n\in\mathcal{N}}\widehat{z}^{u,n}_j}" note="With a split at layer i, the device computes the first part and base station u the rest, on the computing units it assigns to that device." />
+
+<Eq tex="t^{\mathrm{off}}_j=\widehat{w}^u_j\big(\widehat{t}^{u,\mathrm{comm}}_j+\widehat{t}^{u,\mathrm{comp}}_j\big)+\overline{w}^k_j\big(\overline{t}^{k,\mathrm{comm}}_j+\overline{t}^{k,\mathrm{comp}}_j\big)+\tilde{w}^{k,s}_j\big(\tilde{t}^{s,\mathrm{comp}}_j+\overline{t}^{k,\mathrm{comm}}_j+\tilde{t}^{s,\mathrm{comm}}_k\big)" note="Offloading latency for whichever partner the device uses. Through the satellite it adds the UAV relay and the satellite's computing." />
+
+<Eq tex="\min_{\mathcal Z,\,\mathcal W,\,\mathcal I}\;\sum_{j\in\mathcal J}T_j" note="Total inference latency, over computing units and bandwidth (Z), association (W) and split points (I)." />
+
+<Plate lang="en" n="2" src="/figures/tvt-hastening/framework.webp" width={836} height={655} alt="A diagram of the proposed solutions" caption="The problem splits into bandwidth allocation, joint device association and computing allocation, and model splitting, followed by resource redistribution. Fig. 2 of the paper." />
+
+The submodular step works on the latency reduction against a larger reference latency T₀.
+
+<Eq tex="D=\sum_{j\in\mathcal J}D_j,\qquad D_j=T_0-T_j" note="The paper proves that D is monotone submodular over a matroid built from the association and computing-unit constraints." />
+
+Adding a computing unit or an association lowers latency, and by less when more are already in place. So the algorithm repeatedly adds the action with the largest marginal gain, with bandwidth taken from the closed form, and drops the actions that now conflict. Its cost grows polynomially with the numbers of devices, base stations and UAVs, where an exhaustive search would grow exponentially. None of the three steps worsens the objective, which is bounded below, so the alternation converges.
+
+## What it found
+
+The simulation covers 500 m by 500 m with 5 base stations, 5 UAVs at 50 m and one satellite at 600 km, running VGG16 and AlexNet. Four baselines are compared: base stations only, base stations and UAVs without the satellite, random partners, and equal bandwidth.
+
+<Plate lang="en" n="3" src="/figures/tvt-hastening/convergence.webp" width={844} height={671} alt="Convergence of different schemes under the VGG16 model" caption="Total latency over iterations with VGG16. The proposed scheme follows the no-satellite version for the first 25 iterations, then keeps falling once the satellite redistribution starts. Fig. 3 of the paper." />
+
+With both models, the proposed scheme has the lowest latency at every computing power, bandwidth and split point the paper tests. More UAVs or satellites help more as the number of devices grows. With 50 devices, going from 5 to 9 UAVs, or from 1 to 3 satellites, cuts latency by about 10%.
+
+## What is left
+
+The model has one satellite, assumes that UAVs and the satellite have enough energy, and leaves out the return of results, which are small. The paper names early exit and batching as future work.

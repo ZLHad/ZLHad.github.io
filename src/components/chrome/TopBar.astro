@@ -1,0 +1,250 @@
+---
+// The site's navigation: always visible, always in the same place. Clear over the top
+// of the page, then frosted once there is content under it. A pill glides to the link
+// under the pointer, and the active pill slides across when the page changes.
+import Icon from '~/components/chrome/Icon.astro';
+import { href, otherLangPath, ui, type Lang } from '~/lib/i18n';
+import { profile } from '~/data/profile';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = ui(lang);
+const zh = lang === 'zh';
+const path = Astro.url.pathname.replace(/^\/zh(?=\/|$)/, '') || '/';
+const items = [
+  { to: '/', label: s.home },
+  { to: '/publications/', label: s.publications },
+  { to: '/research/', label: s.research },
+  { to: '/projects/', label: s.projects },
+  { to: '/cv/', label: s.cv },
+];
+const isActive = (to: string) => (to === '/' ? path === '/' : path.startsWith(to));
+const langHref = otherLangPath(lang, Astro.url.pathname);
+---
+<div class="stuck-sentinel" data-bar-sentinel aria-hidden="true"></div>
+<header class="topbar" data-topbar>
+  <div class="frame bar">
+    <a class="mark" href={href(lang, '/')} aria-label={profile.name[lang]}>
+      <svg class="logo" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M1.5 19.5a15.5 15.5 0 0 1 21 0" fill="none" stroke="var(--signal)" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M5 12.5a10.5 10.5 0 0 1 14 0" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="1" stroke-linecap="round" />
+        <circle cx="15.4" cy="6" r="1.7" fill="currentColor" />
+      </svg>
+      <span class="mark-name">{profile.name[lang]}</span>
+      <span class="alt-name" lang={zh ? 'en' : 'zh-CN'}>{zh ? profile.name.en : profile.name.zh}</span>
+    </a>
+    <nav id="site-nav" aria-label={zh ? '主导航' : 'Main'}>
+      <ul data-nav>
+        <li class="glide" data-glide aria-hidden="true"></li>
+        {items.map((it) => (
+          <li><a href={href(lang, it.to)} aria-current={isActive(it.to) ? 'page' : undefined}>{it.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <div class="tools">
+      <button type="button" class="cmdk" data-palette-open aria-label={zh ? '搜索' : 'Search'}>
+        <Icon name="search" />
+        <span class="cmdk-text">{zh ? '搜索' : 'Search'}</span>
+        <kbd class="key" data-cmd-key>⌘K</kbd>
+      </button>
+      <a class="lang" href={langHref} aria-label={s.switchLangLabel} lang={zh ? 'en' : 'zh-CN'}>{s.switchLang}</a>
+      <button type="button" class="menu" data-menu aria-expanded="false" aria-controls="site-nav">
+        <span class="visually-hidden">{zh ? '菜单' : 'Menu'}</span>
+        <span class="burger" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+  <span class="progress" aria-hidden="true"></span>
+</header>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-topbar]')!;
+  const menu = bar.querySelector<HTMLButtonElement>('[data-menu]')!;
+  menu.addEventListener('click', () => {
+    const open = bar.classList.toggle('open');
+    menu.setAttribute('aria-expanded', String(open));
+    document.documentElement.classList.toggle('menu-open', open);
+  });
+  new IntersectionObserver(([e]) => bar.classList.toggle('stuck', !e.isIntersecting)).observe(
+    document.querySelector('[data-bar-sentinel]')!,
+  );
+  const list = bar.querySelector<HTMLElement>('[data-nav]')!;
+  const glide = bar.querySelector<HTMLElement>('[data-glide]')!;
+  list.querySelectorAll<HTMLElement>('a').forEach((a) => {
+    const show = () => {
+      glide.style.width = `${a.offsetWidth}px`;
+      glide.style.transform = `translateX(${a.offsetLeft}px)`;
+      glide.classList.add('on');
+    };
+    a.addEventListener('pointerenter', show);
+    a.addEventListener('focus', show);
+  });
+  list.addEventListener('pointerleave', () => glide.classList.remove('on'));
+  if (!/Mac|iPhone|iPad/.test(navigator.platform)) bar.querySelector('[data-cmd-key]')!.textContent = 'Ctrl K';
+</script>
+
+<style>
+  .stuck-sentinel { position: absolute; top: 0; left: 0; width: 1px; height: 8px; }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    color: var(--fg);
+    view-transition-name: topbar;
+    box-shadow: 0 1px 0 transparent;
+    transition: background var(--d-2), box-shadow var(--d-2);
+  }
+  /* Only the standard property: with both, the CSS minifier keeps just the prefixed one. */
+  .topbar.stuck {
+    background: rgba(7, 9, 13, 0.84);
+    backdrop-filter: blur(20px) saturate(1.4);
+    box-shadow: 0 1px 0 var(--line-2);
+  }
+  .bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 20px; height: var(--bar); }
+  .mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9375rem;
+    font-weight: 550;
+    letter-spacing: -0.012em;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap;
+  }
+  .mark:hover { color: inherit; }
+  .logo { flex: none; transition: transform var(--d-3) var(--ease-out); }
+  .mark:hover .logo { transform: translateY(-1px) rotate(-6deg); }
+  .alt-name { font-weight: 400; font-size: var(--t-label); color: var(--fg-3); letter-spacing: 0; }
+
+  nav { position: absolute; left: 50%; transform: translateX(-50%); }
+  nav ul { position: relative; display: flex; align-items: center; gap: 2px; padding: 3px; border-radius: 12px; background: rgba(190, 205, 225, 0.05); box-shadow: inset 0 0 0 1px var(--line-2); }
+  nav li:not(.glide) { position: relative; z-index: 1; }
+  nav a {
+    position: relative;
+    display: block;
+    padding: 0 14px;
+    height: 32px;
+    line-height: 32px;
+    font-size: var(--t-small);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    color: var(--fg-2);
+    text-decoration: none;
+    white-space: nowrap;
+    border-radius: 9px;
+    transition: color var(--d-1);
+  }
+  nav a:hover { color: var(--fg); }
+  nav a[aria-current='page'] { color: var(--fg); }
+  nav a[aria-current='page']::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: rgba(190, 205, 225, 0.13);
+    box-shadow: inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    view-transition-name: nav-active;
+  }
+  .glide {
+    position: absolute;
+    left: 0;
+    top: 3px;
+    height: 32px;
+    width: 0;
+    border-radius: 9px;
+    background: rgba(190, 205, 225, 0.08);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.34s var(--ease-out), width 0.34s var(--ease-out), opacity var(--d-1);
+  }
+  .glide:global(.on) { opacity: 1; }
+
+  .tools { display: flex; align-items: center; gap: 8px; }
+  .cmdk {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 6px 0 10px;
+    font-size: var(--t-small);
+    color: var(--fg-3);
+    border-radius: 10px;
+    background: rgba(190, 205, 225, 0.05);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    transition: color var(--d-1), box-shadow var(--d-1);
+  }
+  :global(.js) .cmdk { display: inline-flex; }
+  .cmdk:hover { color: var(--fg); box-shadow: inset 0 0 0 1px var(--line); }
+  .lang {
+    display: inline-flex;
+    align-items: center;
+    height: 34px;
+    padding: 0 11px;
+    font-size: var(--t-label);
+    font-weight: 500;
+    color: var(--fg-2);
+    text-decoration: none;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    transition: color var(--d-1), box-shadow var(--d-1);
+  }
+  .lang:hover { color: var(--fg); box-shadow: inset 0 0 0 1px var(--line); }
+
+  .progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255, 122, 61, 0), rgba(255, 122, 61, 0.8));
+    transform-origin: left;
+    transform: scaleX(0);
+    animation: bar-progress linear both;
+    animation-timeline: scroll(root);
+  }
+  @keyframes bar-progress { to { transform: scaleX(1); } }
+
+  .menu { display: none; width: 40px; height: 40px; margin-right: -8px; align-items: center; justify-content: center; }
+  .burger, .burger::before, .burger::after { display: block; width: 18px; height: 1.5px; background: currentColor; border-radius: 1px; transition: transform var(--d-2) var(--ease-out), background var(--d-1); }
+  .burger { position: relative; }
+  .burger::before, .burger::after { content: ''; position: absolute; left: 0; }
+  .burger::before { top: -5.5px; }
+  .burger::after { top: 5.5px; }
+  .open .burger { background: transparent; }
+  .open .burger::before { transform: translateY(5.5px) rotate(45deg); }
+  .open .burger::after { transform: translateY(-5.5px) rotate(-45deg); }
+
+  @media (max-width: 1080px) {
+    .cmdk-text, .cmdk .key { display: none; }
+    .cmdk { padding: 0 9px; }
+  }
+  @media (max-width: 860px) {
+    .menu { display: flex; }
+    .alt-name { display: none; }
+    nav {
+      display: none;
+      position: fixed;
+      inset: var(--bar) 0 0 0;
+      left: 0;
+      transform: none;
+      height: calc(100dvh - var(--bar));
+      padding: 12px var(--gutter);
+      background: var(--bg);
+    }
+    .open nav { display: block; }
+    nav ul { flex-direction: column; align-items: stretch; gap: 0; padding: 0; background: none; box-shadow: none; }
+    .glide { display: none; }
+    nav li { animation: menu-in 0.5s var(--ease-out) both; }
+    nav li:nth-child(3) { animation-delay: 40ms; }
+    nav li:nth-child(4) { animation-delay: 80ms; }
+    nav li:nth-child(5) { animation-delay: 120ms; }
+    nav li:nth-child(6) { animation-delay: 160ms; }
+    nav a { height: auto; padding: 14px 0; font-family: var(--f-display); font-stretch: 110%; font-size: 1.75rem; font-weight: 300; line-height: 1.2; color: var(--fg-2); border-radius: 0; box-shadow: 0 1px 0 var(--line-2); }
+    nav a[aria-current='page'] { color: var(--signal-2); }
+    nav a[aria-current='page']::before { display: none; }
+  }
+  @keyframes menu-in { from { opacity: 0; transform: translateY(10px); } }
+  :global(html.menu-open) { overflow: hidden; }
+  @media print { .topbar { display: none; } }
+</style>

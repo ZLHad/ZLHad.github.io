@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zlhad.top/sitemap-index.xml

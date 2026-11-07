@@ -1,0 +1,26 @@
+title: D2D-Assisted High-Reliability Wireless Federated Learning for Industrial Internet of Things
+authors: [Hongqi Sun, Haitao Zhao, Bo Xu, Jinlong Sun, Linghao Zhang]
+venue: 2025 IEEE/CIC International Conference on Communications in China (ICCC)
+venueShort: IEEE/CIC ICCC
+kind: conference
+status: published
+date: 2025-08-10
+year: 2025
+pages: 1-6
+doi: 10.1109/ICCC65529.2025.11148909
+tiers: [ground]
+stratum: ground
+mechanism: train
+summary:
+  en: Factory devices help each other upload models over device-to-device links, and several edge servers aggregate them, so federated learning survives packet errors and server failures.
+  zh: 工厂设备通过设备直连互相帮助上传模型，多个边缘服务器共同聚合，使联邦学习能承受丢包和服务器故障。
+abstract:
+  en: "The rapid advancement of the Industrial Internet of Things (IIoT) demands distributed machine learning frameworks with enhanced communication reliability and data privacy. To address the limitations of conventional federated learning (FL) in single-server architectures, such as restricted device participation and single-point failure risks, we propose a device-to-device (D2D) assisted semi-decentralized FL framework (D2D-SD-FL). The framework leverages D2D communication to expand device participation and employs a multi-server aggregation mechanism to improve training efficiency. During intra-cluster aggregation, D2D pairs transmit local models through coordinated device interactions, mitigating the impact of packet error rate (PER) caused by unreliable wireless channels. Multi-server coordination ensures global model consensus for inter-cluster aggregation, preventing training interruptions due to server or link failures. Through convergence analysis, we formulate an optimization problem to minimize global training loss and propose a multiphase optimization scheme of D2D pairing and scheduling among multiple edge servers. Experimental results on MNIST, FashionMNIST, and CIFAR-10 datasets demonstrate that the proposed framework achieves superior test accuracy and reduces training loss compared to baseline methods."
+firstPage: true
+figures:
+  - file: pairing.webp
+    width: 827
+    height: 678
+    caption:
+      en: "An example of the pairing and scheduling under Algorithm 1 (Fig. 1)."
+      zh: "算法 1 下的配对与调度示例（图 1）。"

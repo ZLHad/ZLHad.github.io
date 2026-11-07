@@ -1,0 +1,162 @@
+---
+import type { Lang } from '~/lib/i18n';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const zh = lang === 'zh';
+const strings = zh
+  ? {
+      uav: '无人机',
+      leo: '卫星',
+      uavMid: '无人机',
+      leoMid: '卫星',
+      first: '{tier}的第一个 token 早到 {dt} 秒。',
+      finish: '{tier}先写完全部回答，快 {dt} 秒。',
+      both: '{tier}从头到尾都更快。',
+      qoe: '按论文的 QoE 权重，{tier}的体验更好。',
+      best: '当前条件下的最优压缩率：无人机 η = {u}，卫星 η = {l}。',
+    }
+  : {
+      uav: 'The UAV',
+      leo: 'The satellite',
+      uavMid: 'the UAV',
+      leoMid: 'the satellite',
+      first: '{tier} shows its first token {dt} s sooner.',
+      finish: '{tier} finishes the answer {dt} s sooner.',
+      both: '{tier} is faster from start to finish.',
+      qoe: 'At the paper’s QoE weights, {tier} gives the better experience.',
+      best: 'Best compression for these settings: UAV η = {u}, satellite η = {l}.',
+    };
+const t = zh
+  ? {
+      title: '同一个请求，同时发给两层',
+      again: '再发一次',
+      req: '请求类型',
+      model: '无人机模型',
+      eta: '压缩率 η',
+      rho: '卫星负载 ρ',
+      f: '分到的无人机算力',
+      uav: '无人机 · 150 m',
+      leo: '低轨卫星 · 550 km',
+      ttft: '首 token',
+      tpot: '每 token',
+      q: '质量',
+      qoe: 'QoE',
+      note: '这里实时计算的是论文的解析模型，参数取自论文表 I、表 II 和补充材料（各类请求取 token 范围的中值）。为便于演示，只算一个用户，信道取均值，链路速率取名义值，不含星间路由。它不是学习到的调度器，这里的数字也不是论文结果。论文仿真里的调度器把发往卫星的视觉输入压到 η ≈ 0.44。',
+      reqs: [['text', '文本生成'], ['summary', '摘要'], ['caption', '图像描述'], ['vqa', '视觉问答'], ['chat', '多模态对话']],
+    }
+  : {
+      title: 'Send one request to both tiers',
+      again: 'Send again',
+      req: 'Request',
+      model: 'UAV model',
+      eta: 'Compression η',
+      rho: 'Satellite load ρ',
+      f: 'UAV compute share',
+      uav: 'UAV · 150 m',
+      leo: 'LEO · 550 km',
+      ttft: 'First token',
+      tpot: 'Per token',
+      q: 'Quality',
+      qoe: 'QoE',
+      note: 'This runs the paper’s analytic model live, with parameters from its Tables I and II and supplement (each request type uses the midpoint of its token range). To keep the demo honest and simple it covers one user, with a mean channel, nominal link rates and no inter-satellite routing. It is not the learned scheduler, and these numbers are not results from the paper. In the paper’s simulation the scheduler compresses satellite-bound vision inputs to about η = 0.44.',
+      reqs: [['text', 'Text generation'], ['summary', 'Summarization'], ['caption', 'Image captioning'], ['vqa', 'Visual Q&A'], ['chat', 'Multimodal chat']],
+    };
+---
+<figure class="race card" data-token-race data-strings={JSON.stringify(strings)}>
+  <figcaption class="head">
+    <h3 class="title">{t.title}</h3>
+    <button type="button" class="btn small" data-run>{t.again}</button>
+  </figcaption>
+
+  <div class="controls">
+    <label class="ctl">
+      <span class="label">{t.req}</span>
+      <select data-req>
+        {t.reqs.map(([v, n]) => <option value={v} selected={v === 'vqa'}>{n}</option>)}
+      </select>
+    </label>
+    <label class="ctl">
+      <span class="label">{t.model}</span>
+      <select data-model>
+        <option value="9b">Qwen3.5-9B</option>
+        <option value="4b" selected>Qwen3.5-4B</option>
+        <option value="2b">Qwen3.5-2B</option>
+      </select>
+    </label>
+    <label class="ctl">
+      <span class="label">{t.eta} <output data-eta-out></output></span>
+      <input type="range" min="0.1" max="1" step="0.01" value="0.6" data-eta />
+    </label>
+    <label class="ctl">
+      <span class="label">{t.rho} <output data-rho-out></output></span>
+      <input type="range" min="0" max="0.95" step="0.01" value="0.3" data-rho />
+    </label>
+    <label class="ctl">
+      <span class="label">{t.f} <output data-f-out></output></span>
+      <input type="range" min="0.5" max="5" step="0.1" value="2" data-f />
+    </label>
+  </div>
+
+  <div class="stage">
+    <div class="lanes">
+      {[['uav', t.uav], ['leo', t.leo]].map(([key, name]) => (
+        <div class="lane" data-lane={key}>
+          <p class="lane-name label"><b>{name}</b></p>
+          <dl>
+            <div><dt class="label">{t.ttft}</dt><dd data-ttft></dd></div>
+            <div><dt class="label">{t.tpot}</dt><dd data-tpot></dd></div>
+            <div><dt class="label">{t.q}</dt><dd data-q></dd></div>
+            <div class="qoe"><dt class="label">{t.qoe}</dt><dd data-qoe></dd></div>
+          </dl>
+        </div>
+      ))}
+    </div>
+    <canvas aria-hidden="true"></canvas>
+  </div>
+
+  <p class="verdict" data-verdict aria-live="polite"></p>
+  <p class="best label" data-best></p>
+  <p class="note">{t.note}</p>
+</figure>
+
+<script>
+  import '~/scripts/widgets/token-race';
+</script>
+
+<style>
+  .race { padding: clamp(16px, 2.2vw, 26px); }
+  .head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .title { font-size: var(--t-title); font-weight: 500; line-height: 1.25; letter-spacing: -0.016em; }
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+    gap: 16px clamp(16px, 2.4vw, 32px);
+    margin-top: 20px;
+    padding-bottom: 20px;
+    box-shadow: 0 1px 0 var(--line-2);
+  }
+  .ctl { display: flex; flex-direction: column; gap: 8px; }
+  .ctl .label { display: flex; justify-content: space-between; gap: 8px; }
+  output { font-family: var(--f-mono); color: var(--fg); letter-spacing: -0.02em; }
+  .stage {
+    display: grid;
+    grid-template-columns: minmax(290px, 4fr) minmax(0, 8fr);
+    gap: clamp(12px, 2vw, 32px);
+    margin-top: 20px;
+  }
+  .lanes { display: grid; grid-template-rows: 1fr 1fr; padding-bottom: 26px; }
+  .lane { display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+  .lane dl { display: grid; grid-template-columns: repeat(4, auto); gap: 0 14px; justify-content: start; }
+  .lane dd { font-family: var(--f-mono); font-size: var(--t-small); letter-spacing: -0.02em; white-space: nowrap; }
+  .lane.win .qoe dd { color: var(--signal-2); }
+  canvas { width: 100%; height: 188px; }
+  .verdict { margin-top: 18px; font-size: var(--t-lead); line-height: 1.34; letter-spacing: -0.01em; max-width: 56ch; min-height: 2.6em; }
+  .best { margin-top: 10px; color: var(--fg-2); }
+  .note { margin-top: 14px; padding-top: 12px; font-size: var(--t-label); line-height: 1.55; color: var(--fg-3); max-width: 96ch; box-shadow: 0 -1px 0 var(--line-2); }
+  @media (max-width: 760px) {
+    .stage { grid-template-columns: 1fr; }
+    .lanes { grid-template-rows: auto; grid-template-columns: 1fr; gap: 10px; padding-bottom: 0; }
+    canvas { height: 150px; }
+    .lane dl { gap: 0 12px; }
+  }
+</style>

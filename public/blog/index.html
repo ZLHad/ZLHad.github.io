@@ -1,0 +1,451 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta name="robots" content="noindex"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ZLH's Blog</title><meta name="keywords" content="Blog, Zhanglinghao, SAST, NJUPT"><meta name="author" content="Zhang ling hao"><meta name="copyright" content="Zhang ling hao"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta property="og:type" content="website">
+<meta property="og:title" content="ZLH&#39;s Blog">
+<meta property="og:url" content="https://zlhad.top/blog/index.html">
+<meta property="og:site_name" content="ZLH&#39;s Blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201125000839.jpg">
+<meta property="article:author" content="Zhang ling hao">
+<meta property="article:tag" content="Blog, Zhanglinghao, SAST, NJUPT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201125000839.jpg"><link rel="shortcut icon" href="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201124235459.png"><link rel="canonical" href="https://zlhad.top/blog/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/blog/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/blog/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-right"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2022-07-17 09:59:54'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201125000839.jpg" onerror="onerror=null;src='/blog/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/blog/archives/"><div class="headline">文章</div><div class="length-num">19</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/blog/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/blog/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/blog/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/blog/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/blog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/blog/smalltalk/"><i class="fa-fw far fa-comments"></i><span> SmallTalk</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/blog/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/blog/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/blog/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/blog/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div id="body-wrap"><header class="full_page" id="page-header" style="background-image: url(https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201124235544.png)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/blog/">ZLH's Blog</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/blog/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/blog/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/blog/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/blog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/blog/smalltalk/"><i class="fa-fw far fa-comments"></i><span> SmallTalk</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/blog/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/blog/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/blog/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/blog/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="site-info"><h1 id="site-title">ZLH's Blog</h1><div id="site-subtitle"><span id="subtitle"></span></div><div id="site_social_icons"><a class="social-icon" href="https://github.com/ZLHad" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left_radius"><a href="/blog/2022/07/17/5G%E6%A0%B8%E5%BF%83%E7%BD%91%E6%9E%B6%E6%9E%84%E5%92%8C%E6%9C%AA%E6%9D%A5%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B%E8%B6%8B%E5%8A%BF/" title="5G核心网架构和未来网络架构演进趋势">     <img class="post_bg" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/%E5%9B%BE%E7%89%871.png" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="5G核心网架构和未来网络架构演进趋势"></a></div><div class="recent-post-info"><a class="article-title" href="/blog/2022/07/17/5G%E6%A0%B8%E5%BF%83%E7%BD%91%E6%9E%B6%E6%9E%84%E5%92%8C%E6%9C%AA%E6%9D%A5%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B%E8%B6%8B%E5%8A%BF/" title="5G核心网架构和未来网络架构演进趋势">5G核心网架构和未来网络架构演进趋势</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-07-17T04:09:12.000Z" title="发表于 2022-07-17 12:09:12">2022-07-17</time><span class="article-meta__separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-07-17T01:58:38.593Z" title="更新于 2022-07-17 09:58:38">2022-07-17</time></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fas fa-tag article-meta__icon"></i><a class="article-meta__tags" href="/blog/tags/%E9%80%9A%E4%BF%A1/">通信</a></span></div><div class="content"> 5G核心网架构和未来核心网演进趋势
+了不起的阿斗
+NJUPT一只小小的菜鸡
+移动通信已经融入到了家家户户的日常生活之中，为了适应更高带宽需求、超高流量密度、超低时延需求，第五代移动通信标准（5G）逐渐成型并已经进入商业化使用阶段。5G已经成为家喻户晓的名词，但是5G网络结构究竟有什么不同？是哪些因素影响了网络结构的演进？未来的新一代移动通信网络结构又会是什么样子？本文将重点调研这几个问题，将从移动通信发展历程开始研究，探索5G核心网架构的组成和设计理念，研究其主要网元功能和接口协议，并根据网络演进发展需求探讨3GPP标准下5G-Advanced的新特性和新趋势，最后讨论未来6G网络的性能需求和网络架构。
+关键词： 5G，6G，核心网，通信
+引言
+移动通信的发展是业务和技术的双重驱动是贯穿本文全部调研内容的核心思想。具体来说，根据不断衍生的业务场景需求，基于已有和可以达到的技术基础，逐渐实 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/blog/2021/12/31/2021%E6%AF%9B%E6%A6%82%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B2/" title="2021毛概期末考试复习大纲">     <img class="post_bg" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20211231041646.png" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="2021毛概期末考试复习大纲"></a></div><div class="recent-post-info"><a class="article-title" href="/blog/2021/12/31/2021%E6%AF%9B%E6%A6%82%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B2/" title="2021毛概期末考试复习大纲">2021毛概期末考试复习大纲</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-12-30T20:23:43.000Z" title="发表于 2021-12-31 04:23:43">2021-12-31</time><span class="article-meta__separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-01-02T09:18:03.183Z" title="更新于 2022-01-02 17:18:03">2022-01-02</time></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fas fa-tag article-meta__icon"></i><a class="article-meta__tags" href="/blog/tags/%E5%AD%A6%E4%B9%A0/">学习</a></span></div><div class="content"> 毛概期末复习
+——By ZLH
+习大大保佑！！！
+
+ 分值设置
+
+单选题：20个1分=20分
+名词解释：4个5分=20分
+简答题：4个10分=40分
+材料分析题：1个20分=20分
+
+ 名词解释
+ 1、毛泽东思想——p27
+
+毛泽东思想是马克思主义中国化的第一个重大理论成果，是马克思列宁主义在中国的运用和发展。
+是被实践证明了的关于中国革命和建设的正确的理论原则和经验总结。
+是中国共产党的集体智慧的结晶，是党必须长期坚持的指导思想。
+
+ 2、实事求是——p20
+
+实事求是，就是一切从实际出发，理论联系实际，坚持在实践中检验和发展真理。
+【或】：“实事”就是客观存在的一切事物；“是”就是客观事物的内部联系，即规律性；“求”就是我么去研究。
+
+ 3、群众路线——p21
+
+群众路线就是一切为了群众，一切依靠群众，从群众中来，到群众中去，把党的正确主张变为群众的自觉行动。
+
+ 4、独立自主——p ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/blog/2021/04/19/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E9%9A%8F%E6%9C%BA%E5%8F%98%E9%87%8F%E5%8F%8A%E5%85%B6%E5%88%86%E5%B8%83/" title="概率论-随机变量及其分布">     <img class="post_bg" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210416172517.png" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="概率论-随机变量及其分布"></a></div><div class="recent-post-info"><a class="article-title" href="/blog/2021/04/19/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E9%9A%8F%E6%9C%BA%E5%8F%98%E9%87%8F%E5%8F%8A%E5%85%B6%E5%88%86%E5%B8%83/" title="概率论-随机变量及其分布">概率论-随机变量及其分布</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-04-19T09:12:00.000Z" title="发表于 2021-04-19 17:12:00">2021-04-19</time><span class="article-meta__separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-19T13:55:26.377Z" title="更新于 2021-04-19 21:55:26">2021-04-19</time></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fas fa-tag article-meta__icon"></i><a class="article-meta__tags" href="/blog/tags/%E5%AD%A6%E4%B9%A0/">学习</a></span></div><div class="content"> 概率论-随机变量与概率分布
+Wirten by ZLH ©️
+
+ 2.1 随机变量
+ 随机变量的定义
+▶️ 设 EEE 是随机试验，它的样本空间是 S={e}\boldsymbol{S}=\{\boldsymbol{e}\}S={e} 如果对于 每一个 e∈Se \in Se∈S, 有一个实数 X(e)X(e)X(e) 与之对应,这样就得到 个定义在 S\boldsymbol{S}S 上的单值实值函数 X(e)\boldsymbol{X}(\boldsymbol{e})X(e)。称 X(e)\boldsymbol{X}(\boldsymbol{e})X(e) 为随机变量。
+随机变量常用 X,Y,ZX, Y, ZX,Y,Z 等表示，对应取值相应的用 x,y,zx, y, zx,y,z 等表示。
+
+👀注意 : 随机变量是定义在样本空间的实值集函数,它与普通的实函数有本质的区别。一方面它的取 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/blog/2021/04/11/CDN%E6%A6%82%E5%BF%B5%E7%BB%BC%E8%BF%B0/" title="CDN基本原理">     <img class="post_bg" src="https://tse3-mm.cn.bing.net/th/id/OIP.RhRnxBahpUcd8F4-vgNe6wHaDr?pid=ImgDet&amp;rs=1" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="CDN基本原理"></a></div><div class="recent-post-info"><a class="article-title" href="/blog/2021/04/11/CDN%E6%A6%82%E5%BF%B5%E7%BB%BC%E8%BF%B0/" title="CDN基本原理">CDN基本原理</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-04-11T05:23:43.000Z" title="发表于 2021-04-11 13:23:43">2021-04-11</time><span class="article-meta__separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-11T07:00:37.808Z" title="更新于 2021-04-11 15:00:37">2021-04-11</time></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fas fa-tag article-meta__icon"></i><a class="article-meta__tags" href="/blog/tags/SAST/">SAST</a><span class="article-meta__link">•</span><a class="article-meta__tags" href="/blog/tags/Web%E5%89%8D%E7%AB%AF/">Web前端</a><span class="article-meta__link">•</span><a class="article-meta__tags" href="/blog/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a></span></div><div class="content">
+ CDN基本原理
+CDN（Content Delivery Network）即内容分发网络，是一种网络加速技术。其目的是使用户可就近取得所需内容，解决 Internet网络拥挤的状况，提高用户访问网站的响应速度。CDN依靠部署在各地的边缘服务器，通过中心平台的负载均衡、内容分发、调度等功能模块，使用户就近获取所需内容，降低网络拥塞，提高用户访问响应速度和命中率。
+
+ 为什么要用CDN
+
+假设一个位于杭州的用户，要访问源站在北京的网络服务，那么每一次请求都需要经历从杭州到北京再到杭州的完整链路。如果用户访问的是图片、视频类的网站，那么在较高并发的情况下，大量的静态资源I/O会给服务器造成不小的压力，且客户端加载速度缓慢也容易造成用户流失。
+如果能将服务器源站的静态资源，如图片、视频、css、js等文件缓存到位于上海（或者更近）的cdn服务器中，那么用户就不必从每次都从北京获取数据，而是访问 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/blog/2021/04/03/%E6%BC%AB%E8%B0%88WebSocket/" title="漫谈WebSocket">     <img class="post_bg" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210403172539.png" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="漫谈WebSocket"></a></div><div class="recent-post-info"><a class="article-title" href="/blog/2021/04/03/%E6%BC%AB%E8%B0%88WebSocket/" title="漫谈WebSocket">漫谈WebSocket</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-04-03T15:33:21.000Z" title="发表于 2021-04-03 23:33:21">2021-04-03</time><span class="article-meta__separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-04-03T16:23:06.914Z" title="更新于 2021-04-04 00:23:06">2021-04-04</time></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fas fa-tag article-meta__icon"></i><a class="article-meta__tags" href="/blog/tags/SAST/">SAST</a><span class="article-meta__link">•</span><a class="article-meta__tags" href="/blog/tags/Web%E5%89%8D%E7%AB%AF/">Web前端</a><span class="article-meta__link">•</span><a class="article-meta__tags" href="/blog/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a></span></div><div class="content"> 漫谈WebSocket
+ 写在前面
+想到重新再去了解下WebSocket这个概念，其实是出于对某脚手架进行Network分析时偶然留意到的。
+
+于是乎就突然想到了去年新柚杯的考试系统在生产使用中遇到的一个问题，就想再回过头来吧WebSocket重新深入理解一下。
+ Server&amp;client
+众所周知，在校科协每年的招新题中，几乎每年都会出一个计网方向的题目，去年（大概是前年？）我记得就是解释TCP/IP的三次握手和四次挥手的具体过程。而去年的话，似乎硬硬的Web基础部分洛天依还是我也出了道问WebSocket协议的题目。
+在说WebSocket之前，简单说一下HTTP通信的基本原理吧~（学过计网的人都懂吧）
+目前的web应用的通讯过程，其实还是基于HTTP1.0的基础协议，一个Request 一个Response。也就是客户端通过浏览器向服务器发送一个http请求，其中会包括H ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/blog/2021/03/24/%E5%89%8D%E7%AB%AF%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%9E%B6%E6%9E%84/" title="前端应用开发架构">     <img class="post_bg" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="前端应用开发架构"></a></div><div class="recent-post-info"><a class="article-title" href="/blog/2021/03/24/%E5%89%8D%E7%AB%AF%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E6%9E%B6%E6%9E%84/" title="前端应用开发架构">前端应用开发架构</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-03-24T11:55:22.000Z" title="发表于 2021-03-24 19:55:22">2021-03-24</time><span class="article-meta__separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-03-24T12:50:43.498Z" title="更新于 2021-03-24 20:50:43">2021-03-24</time></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fas fa-tag article-meta__icon"></i><a class="article-meta__tags" href="/blog/tags/SAST/">SAST</a><span class="article-meta__link">•</span><a class="article-meta__tags" href="/blog/tags/Web%E5%89%8D%E7%AB%AF/">Web前端</a></span></div><div class="content"> 前端应用开发架构
+内容尚待补全
+——参考自sahadev
+ 项目创建
+ 脚手架
+
+
+IDE脚手架
+IDE或社区提供的脚手架
+
+
+业务型脚手架
+根据业务特点通过Node写的工具，用于降低高频手写操作
+
+
+ 通用组件
+
+
+Element UI
+
+
+Echart
+
+
+IView
+
+
+项目分层组件
+
+
+错误数据采集
+
+
+业务代码与运行时框架隔离
+
+安全性兼容: setData
+API访问缓冲: setData
+
+
+
+网络访问封装与管理
+
+访问主机运行时变更
+
+
+
+数据存储封装与管理
+
+
+日志统一收集
+
+
+
+
+社区推荐组件
+https://ice.work/docs/guide/resource/npms
+
+
+ 极速构建
+
+
+飞冰
+极速构建企业级中后台前端应用
+https://ice.work/
+海量物料
+优势在于拥有强大的物料：
+涵盖：模板、区块、业务组件、基础组件
+可以通过拖拽快速组合各种页面 ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/blog/2021/03/22/SAST2020.WOC%E4%BC%98%E7%A7%80%E4%BD%9C%E5%93%81%E5%B1%95%E7%A4%BA/" title="SAST2020.WOC优秀作品展示">     <img class="post_bg" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210322215853.jpg" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="SAST2020.WOC优秀作品展示"></a></div><div class="recent-post-info"><a class="article-title" href="/blog/2021/03/22/SAST2020.WOC%E4%BC%98%E7%A7%80%E4%BD%9C%E5%93%81%E5%B1%95%E7%A4%BA/" title="SAST2020.WOC优秀作品展示">SAST2020.WOC优秀作品展示</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-03-22T04:11:00.000Z" title="发表于 2021-03-22 12:11:00">2021-03-22</time><span class="article-meta__separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-03-22T14:01:59.330Z" title="更新于 2021-03-22 22:01:59">2021-03-22</time></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fas fa-tag article-meta__icon"></i><a class="article-meta__tags" href="/blog/tags/SAST/">SAST</a><span class="article-meta__link">•</span><a class="article-meta__tags" href="/blog/tags/Web%E5%89%8D%E7%AB%AF/">Web前端</a></span></div><div class="content"> SAST2020.WOC优秀作品展示
+ 活动要求
+SAST2020-F2E前端组WOC：
+经过一个学期的前端学习，相信你已经迫不及待想上手做一些简单的项目了。
+本次前端组的WOC将分为两个部分——第一部分你可以自行选择一个技术方向开发一个小Demo（比如天气预报Web页面，微信电商小程序平台），第二部分将与后端、Java组一起，开发“新柚杯”考试系统和AtSAST人事管理系统。前者将作为今后的”新柚杯“计算机基础知识竞赛的考试平台以及其他赛事活动的考试系统，后者将作为校科协的人事管理、授课信息、科技节活动公告等的平台。在第二阶段里，我们将体验到一个完整的Web项目的开发流程，你将会学习到前后端分离技术，一些前端框架，前端组件化技术，项目管理、代码管理的一些规范，以及一些web项目测试部署的相关知识。
+期待有更多对web开发感兴趣的同学来参加！
+以下是具体的WOC内容。
+
+SAST2020 ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/blog/2021/03/19/Web%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/" title="Web前端路由">     <img class="post_bg" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319143004.png" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="Web前端路由"></a></div><div class="recent-post-info"><a class="article-title" href="/blog/2021/03/19/Web%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/" title="Web前端路由">Web前端路由</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-03-19T08:33:03.000Z" title="发表于 2021-03-19 16:33:03">2021-03-19</time><span class="article-meta__separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-03-19T07:20:02.081Z" title="更新于 2021-03-19 15:20:02">2021-03-19</time></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fas fa-tag article-meta__icon"></i><a class="article-meta__tags" href="/blog/tags/JavaScript/">JavaScript</a><span class="article-meta__link">•</span><a class="article-meta__tags" href="/blog/tags/JavaScript%E6%95%99%E7%A8%8B/">JavaScript教程</a><span class="article-meta__link">•</span><a class="article-meta__tags" href="/blog/tags/SAST/">SAST</a><span class="article-meta__link">•</span><a class="article-meta__tags" href="/blog/tags/Web%E5%89%8D%E7%AB%AF/">Web前端</a><span class="article-meta__link">•</span><a class="article-meta__tags" href="/blog/tags/React/">React</a></span></div><div class="content"> Web前端路由
+ SPA和MPA
+
+
+SPA：单页面应用
+
+
+MPA：多页面应用
+
+
+ 关于单页面应用和多页面应用的区别：
+
+简而言之，传统的网站大多都是MPA，每个页面独立开发，页面直接的切换往往通过超链接来打开一个新的页面，每次打开新的页面都需要重新加载；与之相对应的SPA单页面应用，主要是在组件化和模块化开发成为潮流之后诞生的，往往是在一个页面内通过加载不同的组件来实现类似于页面的切换，这里不需要打开新的标签页，也就是说很多网页资源不必重复加载。
+当然，目前还有一种微前端开发模式，可以在一个前端框架中嵌套其他的开发框架，可以实现完全不同的多个页面嵌套。
+ 路由原理
+单页面应用的一个核心就是要利用浏览器的url机制来判断用户当前的访问路由，来控制网页组件的渲染，同时也能使浏览器在不打开新的标签页或者不刷新页面的前提下进行页面、组件的切换和判别。
+ 原理一：基于Hash实现
+
+hash ...</div></div></div><div class="recent-post-item"><div class="post_cover left_radius"><a href="/blog/2021/03/19/Web%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%A6%82%E8%BF%B0/" title="Web前端开发概述">     <img class="post_bg" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210319142636.png" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="Web前端开发概述"></a></div><div class="recent-post-info"><a class="article-title" href="/blog/2021/03/19/Web%E5%89%8D%E7%AB%AF%E5%BC%80%E5%8F%91%E6%A6%82%E8%BF%B0/" title="Web前端开发概述">Web前端开发概述</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-03-19T05:11:12.000Z" title="发表于 2021-03-19 13:11:12">2021-03-19</time><span class="article-meta__separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-03-19T07:19:48.536Z" title="更新于 2021-03-19 15:19:48">2021-03-19</time></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fas fa-tag article-meta__icon"></i><a class="article-meta__tags" href="/blog/tags/JavaScript/">JavaScript</a><span class="article-meta__link">•</span><a class="article-meta__tags" href="/blog/tags/JavaScript%E6%95%99%E7%A8%8B/">JavaScript教程</a><span class="article-meta__link">•</span><a class="article-meta__tags" href="/blog/tags/SAST/">SAST</a><span class="article-meta__link">•</span><a class="article-meta__tags" href="/blog/tags/Web%E5%89%8D%E7%AB%AF/">Web前端</a><span class="article-meta__link">•</span><a class="article-meta__tags" href="/blog/tags/React/">React</a></span></div><div class="content"> Web前端开发概述
+这一块将给大家介绍一下目前web前端开发的相关情况
+ 常见的web项目
+目前的web前端项目（不考虑移动端的话），一般分为两种，一种是面向企业用户的B端，一种是面向广大个人用户的C端，这两种项目类型有着不同的特点。
+对于B端用户，往往是一些内部管理系统、OA、CRUD数据管理等等，这一块的界面相对简单，UI交互相对固定，各个组件有着很强的可复用性，例如header组件、footer组件、form组件等。
+对于C端的项目，比如各类的电商网站、公司官网、以及各种功能性网站，这些网站都有独特的逻辑和交互，往往需要从最底层的架构开始开发，可复用性低，带有很高的创意性，需要大量的时间和精力去开发UI，开发交互和逻辑。
+
+ Web项目的开发阶段
+很多初学Web前端开发的同学主要都是着重于开发这一阶段，具体点说主要关心的只是代码的编写，甚至开发之前都没有对这个项目有一个整体上的UI ...</div></div></div><div class="recent-post-item"><div class="post_cover right_radius"><a href="/blog/2020/12/27/%E7%94%B5%E5%B7%A5%E7%94%B5%E5%AD%90%E5%AE%9E%E9%AA%8C%E5%A4%8D%E4%B9%A0/" title="电工电子实验复习">     <img class="post_bg" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201224164045.png" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="电工电子实验复习"></a></div><div class="recent-post-info"><a class="article-title" href="/blog/2020/12/27/%E7%94%B5%E5%B7%A5%E7%94%B5%E5%AD%90%E5%AE%9E%E9%AA%8C%E5%A4%8D%E4%B9%A0/" title="电工电子实验复习">电工电子实验复习</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-12-27T11:33:00.000Z" title="发表于 2020-12-27 19:33:00">2020-12-27</time><span class="article-meta__separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-12-28T15:39:32.077Z" title="更新于 2020-12-28 23:39:32">2020-12-28</time></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fas fa-tag article-meta__icon"></i><a class="article-meta__tags" href="/blog/tags/%E5%AD%A6%E4%B9%A0/">学习</a></span></div><div class="content"> 电工电子实验复习
+——电工电子实验一要掌握的基础知识和技能
+
+ 1. 理解各种仪表(万用表、示波器等）的测量值。
+如:幅值、峰峰值、有效值。
+
+
+ 2. 掌握各种仪表的使用方法。
+ 万用表操作
+ 便携式万用表：
+
+ 台式万用表：
+
+ 常用电子仪器的使用-P41
+
+
+掌握交流毫伏表、函数信号发生器、双踪示波器的使用方法。
+
+
+理解电平的概念。
+
+
+初步掌握使用示波器观测交流信号基本参数的方法。
+
+
+了解使用万用表测量争先交流信号的适用范围。
+
+
+考点：
+
+
+示波器触发源的选择（观测单踪和双踪信号稳定显示波形的方法步骤)、
+
+
+示波器的输入信号的耦合方式（DC耦合、AC耦合，两种耦合方式显示波形的区别);
+
+
+函数发生器如何产生一定频率和幅值的正弦波、三角波、方波;
+
+
+方波占空比的概念、调整函数发生器的占空比的方法;
+
+
+
+电平的概念：
+
+常用电子仪器的使用实验-P41：
+
+
+P43-1、 ...</div></div></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/blog/page/2/">2</a><a class="extend next" rel="next" href="/blog/page/2/"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201125000839.jpg" onerror="this.onerror=null;this.src='/blog/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Zhang ling hao</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/blog/archives/"><div class="headline">文章</div><div class="length-num">19</div></a></div><div class="card-info-data-item is-center"><a href="/blog/tags/"><div class="headline">标签</div><div class="length-num">12</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ZLHad"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ZLHad" target="_blank" title="Github"><i class="fab fa-github"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/blog/2022/07/17/5G%E6%A0%B8%E5%BF%83%E7%BD%91%E6%9E%B6%E6%9E%84%E5%92%8C%E6%9C%AA%E6%9D%A5%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B%E8%B6%8B%E5%8A%BF/" title="5G核心网架构和未来网络架构演进趋势"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/%E5%9B%BE%E7%89%871.png" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="5G核心网架构和未来网络架构演进趋势"/></a><div class="content"><a class="title" href="/blog/2022/07/17/5G%E6%A0%B8%E5%BF%83%E7%BD%91%E6%9E%B6%E6%9E%84%E5%92%8C%E6%9C%AA%E6%9D%A5%E7%BD%91%E7%BB%9C%E6%9E%B6%E6%9E%84%E6%BC%94%E8%BF%9B%E8%B6%8B%E5%8A%BF/" title="5G核心网架构和未来网络架构演进趋势">5G核心网架构和未来网络架构演进趋势</a><time datetime="2022-07-17T04:09:12.000Z" title="发表于 2022-07-17 12:09:12">2022-07-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/blog/2021/12/31/2021%E6%AF%9B%E6%A6%82%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B2/" title="2021毛概期末考试复习大纲"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20211231041646.png" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="2021毛概期末考试复习大纲"/></a><div class="content"><a class="title" href="/blog/2021/12/31/2021%E6%AF%9B%E6%A6%82%E8%80%83%E8%AF%95%E5%A4%A7%E7%BA%B2/" title="2021毛概期末考试复习大纲">2021毛概期末考试复习大纲</a><time datetime="2021-12-30T20:23:43.000Z" title="发表于 2021-12-31 04:23:43">2021-12-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/blog/2021/04/19/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E9%9A%8F%E6%9C%BA%E5%8F%98%E9%87%8F%E5%8F%8A%E5%85%B6%E5%88%86%E5%B8%83/" title="概率论-随机变量及其分布"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210416172517.png" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="概率论-随机变量及其分布"/></a><div class="content"><a class="title" href="/blog/2021/04/19/%E7%AC%AC%E4%BA%8C%E7%AB%A0%20%E9%9A%8F%E6%9C%BA%E5%8F%98%E9%87%8F%E5%8F%8A%E5%85%B6%E5%88%86%E5%B8%83/" title="概率论-随机变量及其分布">概率论-随机变量及其分布</a><time datetime="2021-04-19T09:12:00.000Z" title="发表于 2021-04-19 17:12:00">2021-04-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/blog/2021/04/11/CDN%E6%A6%82%E5%BF%B5%E7%BB%BC%E8%BF%B0/" title="CDN基本原理"><img src="https://tse3-mm.cn.bing.net/th/id/OIP.RhRnxBahpUcd8F4-vgNe6wHaDr?pid=ImgDet&amp;rs=1" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="CDN基本原理"/></a><div class="content"><a class="title" href="/blog/2021/04/11/CDN%E6%A6%82%E5%BF%B5%E7%BB%BC%E8%BF%B0/" title="CDN基本原理">CDN基本原理</a><time datetime="2021-04-11T05:23:43.000Z" title="发表于 2021-04-11 13:23:43">2021-04-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/blog/2021/04/03/%E6%BC%AB%E8%B0%88WebSocket/" title="漫谈WebSocket"><img src="https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20210403172539.png" onerror="this.onerror=null;this.src='/blog/img/404.jpg'" alt="漫谈WebSocket"/></a><div class="content"><a class="title" href="/blog/2021/04/03/%E6%BC%AB%E8%B0%88WebSocket/" title="漫谈WebSocket">漫谈WebSocket</a><time datetime="2021-04-03T15:33:21.000Z" title="发表于 2021-04-03 23:33:21">2021-04-03</time></div></div></div></div></div><div class="card-widget" id="card-newest-comments"><div class="card-content"><div class="item-headline"><i class="fas fa-bolt"></i><span>最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="card-widget card-tags"><div class="card-content"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/blog/tags/Hexo/" style="font-size: 1.2em; color: #999da3">Hexo</a> <a href="/blog/tags/JavaScript/" style="font-size: 1.4em; color: #99a5b6">JavaScript</a> <a href="/blog/tags/JavaScript%E6%95%99%E7%A8%8B/" style="font-size: 1.4em; color: #99a5b6">JavaScript教程</a> <a href="/blog/tags/React/" style="font-size: 1.2em; color: #999da3">React</a> <a href="/blog/tags/SAST/" style="font-size: 1.5em; color: #99a9bf">SAST</a> <a href="/blog/tags/Web%E5%89%8D%E7%AB%AF/" style="font-size: 1.5em; color: #99a9bf">Web前端</a> <a href="/blog/tags/philosophy/" style="font-size: 1.1em; color: #999">philosophy</a> <a href="/blog/tags/%E5%AD%A6%E4%B9%A0/" style="font-size: 1.3em; color: #99a1ac">学习</a> <a href="/blog/tags/%E5%B0%8F%E8%AF%B4/" style="font-size: 1.1em; color: #999">小说</a> <a href="/blog/tags/%E6%96%87%E5%AD%A6/" style="font-size: 1.1em; color: #999">文学</a> <a href="/blog/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 1.2em; color: #999da3">计算机网络</a> <a href="/blog/tags/%E9%80%9A%E4%BF%A1/" style="font-size: 1.1em; color: #999">通信</a></div></div></div><div class="card-widget card-archives"><div class="card-content"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blog/archives/2022/07/"><span class="card-archive-list-date">七月 2022</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blog/archives/2021/12/"><span class="card-archive-list-date">十二月 2021</span><span class="card-archive-list-count">1</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blog/archives/2021/04/"><span class="card-archive-list-date">四月 2021</span><span class="card-archive-list-count">3</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blog/archives/2021/03/"><span class="card-archive-list-date">三月 2021</span><span class="card-archive-list-count">4</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blog/archives/2020/12/"><span class="card-archive-list-date">十二月 2020</span><span class="card-archive-list-count">3</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blog/archives/2020/11/"><span class="card-archive-list-date">十一月 2020</span><span class="card-archive-list-count">4</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/blog/archives/2020/10/"><span class="card-archive-list-date">十月 2020</span><span class="card-archive-list-count">3</span></a></li></ul></div></div><div class="card-widget card-webinfo"><div class="card-content"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">19</div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">80.7k</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2022-07-17T01:59:54.377Z"></div></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(https://zlhad.oss-cn-shanghai.aliyuncs.com/img/20201124235544.png)"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2022 By Zhang ling hao</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">To be best, to be helpful!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/blog/js/utils.js"></script><script src="/blog/js/main.js"></script><script src="/blog/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>function subtitleType () {
+  if (true) { 
+    var typed = new Typed("#subtitle", {
+      strings: "ZLH's Blog,了不起的阿斗".split(","),
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: false,
+      backSpeed: 50
+    })
+  } else {
+    document.getElementById("subtitle").innerHTML = 'ZLH's Blog'
+  }
+}
+
+if (true) {
+  if (typeof Typed === 'function') subtitleType()
+  else $.getScript('https://cdn.jsdelivr.net/npm/typed.js/lib/typed.min.js', subtitleType)
+} else {
+  subtitleType()
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script>window.addEventListener('load', () => {
+  const changeContent = (content) => {
+    if (content === '') return content
+
+    content = content.replace(/<[^>]+>/g,"") // remove html tag
+    content = content.replace(/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png|webp)/g, '') // remove image link
+    content = content.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi, '') // remove url
+
+    if (content.length > 150) {
+      content = content.substring(0,150) + '...'
+    }
+    return content
+  }
+
+  const getGithubIssues = () => {
+    let githubArray = []
+    $.getJSON('https://api.github.com/repos/ZLHad/ZLHad.github.io/issues/comments?sort=updated&direction=desc&per_page=8&page=1', (data) => { 
+      $.each(data, (index, item) => {
+        githubArray.push({
+          'avatar': item.user.avatar_url,
+          'content': changeContent(item.body),
+          'nick': item.user.login,
+          'url': item.html_url,
+          'date': item.updated_at
+        })
+      })
+      saveToLocal.set('github-newest-comments', JSON.stringify(githubArray), 10/(60*24))
+      generateHtml(githubArray)
+    }).fail(()=>{
+      const $dom = document.querySelector('#card-newest-comments .aside-list')
+      $dom.innerHTML= "无法获取资料，请确认相关配置是否正确"
+    })
+  }
+
+  const generateHtml = array => {
+    let result = ''
+
+    for (let i = 0; i < array.length; i++) {
+      result += '<div class=\'aside-list-item\'>'
+
+      if (true) {
+        result += `<a href='${array[i].url}' class="thumbnail"><img src='${array[i].avatar}' alt='${array[i].nick}'></a>`
+      }
+
+      result += `<div class='content'>
+      <a class='comment' href='${array[i].url}'>${array[i].content}</a>
+      <div class='name'><span>${array[i].nick}</span><time> / ${btf.diffDate(array[i].date, true)}</time></div>
+      </div></div>`
+    }
+
+    let $dom = document.querySelector('#card-newest-comments .aside-list')
+    $dom.innerHTML= result
+    window.pjax && window.pjax.refresh($dom)
+  }
+
+  const newestCommentInit = () => {
+    if (document.querySelector('#card-newest-comments .aside-list')) {
+      const data = saveToLocal.get('github-newest-comments')
+      if (data) {
+        generateHtml(JSON.parse(data))
+      } else {
+        getGithubIssues()
+      }
+    }
+  }
+
+  newestCommentInit()
+  document.addEventListener('pjax:complete', newestCommentInit)
+})</script><script id="canvas_nest" defer="defer" color="255,140,0" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script></div></body></html>

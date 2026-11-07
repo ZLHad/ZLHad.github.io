@@ -1,0 +1,58 @@
+{
+ "title": "Sensitivity to UAV storage capacity (Fig. 8b): aggregate slot QoE",
+ "source": "results/commfix/train_final_v4/sweep.json",
+ "x": {
+  "label": "UAV storage capacity",
+  "unit": "GB",
+  "values": [
+   10,
+   15,
+   20,
+   25,
+   30
+  ]
+ },
+ "series": [
+  {
+   "name": "Proposed (CD-TD3)",
+   "values": [
+    28.422601953523344,
+    31.736415188264647,
+    35.49176374586392,
+    36.76933958271968,
+    36.7680242700879
+   ]
+  },
+  {
+   "name": "TD3",
+   "values": [
+    16.238208496268395,
+    19.801110919629963,
+    23.495544794140994,
+    25.119515256030564,
+    25.586552339737366
+   ]
+  },
+  {
+   "name": "PPO",
+   "values": [
+    14.045310755506728,
+    16.833396990654965,
+    20.17702164408003,
+    22.10145941603548,
+    23.667453511426306
+   ]
+  },
+  {
+   "name": "Greedy",
+   "values": [
+    16.991711996876568,
+    19.61034614301319,
+    22.8545874243051,
+    24.736933777202818,
+    26.699931692387263
+   ]
+  }
+ ],
+ "notes": "Sum of QoE over all users in one slot, scheduler trained at default scale, no replanning. Matches text: +67.3% over Greedy at 10 GB, +37.7% at 30 GB (verified)."
+}

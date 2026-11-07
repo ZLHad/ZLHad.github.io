@@ -1,0 +1,70 @@
+---
+// The top of an inner page. The vertical section survives as the art behind each head:
+// the orbital sky on publications, contour lines on the ground for projects. Both dissolve
+// into the page below.
+interface Props {
+  title: string;
+  dek?: string;
+  band: 'orbit' | 'ground';
+  alt?: string; // the small altitude line above the title
+}
+const { title, dek, band, alt } = Astro.props;
+const hasArt = Astro.slots.has('art');
+---
+<header class:list={['page-head', band]}>
+  <div class:list={['frame', 'inner', { 'has-art': hasArt }]}>
+    <div class="text">
+      {alt && <p class="eyebrow alt"><span class="tick" aria-hidden="true"></span>{alt}</p>}
+      <h1 class="page-title">{title}</h1>
+      {dek && <p class="dek">{dek}</p>}
+      <slot />
+    </div>
+    {hasArt && <div class="art"><slot name="art" /></div>}
+  </div>
+</header>
+
+<style>
+  .page-head {
+    position: relative;
+    isolation: isolate;
+    margin-top: calc(-1 * var(--bar));
+    padding-top: var(--bar);
+    color: var(--fg);
+    overflow: hidden;
+  }
+  .page-head::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
+  }
+  .inner { position: relative; padding-block: clamp(28px, 5vh, 56px) clamp(20px, 3vh, 32px); animation: head-in 0.9s var(--ease-out) both; }
+  @keyframes head-in { from { opacity: 0; transform: translateY(14px); } }
+  .inner.has-art { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(24px, 4vw, 64px); align-items: end; }
+  .alt { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; color: var(--signal-2); }
+  .tick { display: block; width: 18px; height: 1px; background: currentColor; }
+  .dek { margin-top: 16px; font-size: var(--t-lead); line-height: 1.42; max-width: 36em; color: var(--fg-2); text-wrap: pretty; }
+  .dek:lang(zh) { line-height: 1.7; }
+
+  .orbit::before { background-image: url('/media/sky-orbit.webp'); background-size: cover; background-position: center 72%; opacity: 0.9; }
+  .ground::before {
+    background-image: url('/media/contours.svg');
+    background-size: max(1100px, 80vw) auto;
+    background-position: right 22%;
+    filter: invert(1);
+    opacity: 0.2;
+    mask-image: linear-gradient(to right, transparent 26%, #000 80%);
+  }
+  @media (max-width: 899px) {
+    .inner.has-art { grid-template-columns: minmax(0, 1fr); }
+    .art { max-width: 460px; }
+  }
+  @media print {
+    .page-head { margin: 0; padding: 0; }
+    .page-head::before { display: none; }
+    .inner { animation: none; }
+  }
+</style>

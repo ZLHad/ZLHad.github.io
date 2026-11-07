@@ -1,0 +1,62 @@
+---
+paper: tvt-task-prediction
+lang: en
+headline: Predict the next few slots, and offloading becomes proactive.
+dek: Short-horizon task forecasts guide multi-agent decisions on user association, UAV trajectories and resources, so nodes coordinate before workloads arrive.
+---
+import nrmse from '~/data/charts/tvt-nrmse.json';
+
+## What breaks
+
+Ground devices generate bursty computing tasks, and a handful of UAVs plus one LEO satellite have to absorb them. Existing multi-agent offloading schemes are reactive: each UAV decides from what it sees right now. When a task type switches and the load surges, the UAVs are already in the wrong place and users are attached to the wrong aircraft.
+
+<Plate lang="en" n="1" src="/figures/tvt-task-prediction/scenario.webp" width={1400} height={1029} alt="SAGIN-based MEC system" caption="The system: ground users choose which UAV to associate with, and tasks split across local, UAV and satellite computing. Fig. 1 of the paper." />
+
+## The idea
+
+Task sizes are correlated over time, so a very cheap forecast of the next few slots can go straight into the decision loop. There is no need for a heavier model. A Gamma generalized linear model takes about 0.04 ms per inference, and its forecasts are simply appended to what each UAV observes.
+
+<Eq tex="\log \mathbb E[D_k(t)]=\beta_0^k+\sum_{i=1}^{p}\beta_i^k\log D_k(t-i)" note="A log-linear autoregression on Gamma-distributed task sizes. Predicted values are fed back to forecast H steps ahead." />
+
+<Eq tex="o_m(t)=\{\mathbf q_m,\mathbf v_m,E_m\}\cup\{\mathbf l_k,D_k,\kappa_k\}_{k\in\mathcal K_m^{\mathrm{sens}}}\cup\{\mathbf q_n,\mathbf v_n\}_{n\in\mathcal N_m}\cup\{\hat D_k^{(h)}(t)\}_{k\in\mathcal K_m^{\mathrm{sens}},\,h=1..H}" note="H extra numbers per sensed user are appended to the UAV's local observation." />
+
+## Slide the horizon
+
+<div class="full"><ForecastWidget lang="en" /></div>
+
+## The system
+
+TAMACO couples three parts. The Gamma-GLM predicts each user's task size. Each UAV is an agent trained with TA-MAPPO, with a centralized critic and decentralized actors, and picks its 3-D acceleration every 1 s slot. Given the trajectories, a prediction-augmented coalition formation game (PA-CFG) assigns users to UAVs or to local computing, with a utility that mixes current and discounted predicted delay. Offloading ratios and CPU shares are solved by block coordinate descent, with a closed-form CPU split.
+
+<Eq tex="\tau_k^{\mathrm{total}}=\max\{\tau_k^{\mathrm{loc}},\tau_k^{\mathrm{uav}},\tau_k^{\mathrm{sat}}\}" note="A task is split into local, UAV and satellite shares that run in parallel, so the slowest branch sets the delay." />
+
+<Eq tex="U_k^{\mathrm{PA}}(\mathbf s)=-z_k^{*}(\mathbf s)+\eta\,U_k^{\mathrm{pred}}(\mathbf s),\qquad U_k^{\mathrm{pred}}(\mathbf s)=-\sum_{h=1}^{H}\zeta^{\,h-1}\hat\tau_k(t+h\mid\mathbf s)" note="A user scores an association by its current optimal delay plus discounted forecast delay." />
+
+<Plate lang="en" wide n="2" src="/figures/tvt-task-prediction/framework.webp" width={2000} height={826} alt="The framework of TAMACO" caption="The TAMACO framework: the original problem decomposes into trajectory control (TA-MAPPO) and association with resource allocation (PA-CFG, BCD), fed by the Gamma-GLM predictor. Fig. 2 of the paper." />
+
+## What it found
+
+The evaluation is a simulation on a 500 m by 500 m area with 5 UAVs, 35 users and one satellite. In the paper's horizon sweep, delay falls up to H = 3, where the paper reports up to 19.3% lower average delay than with no prediction. Beyond that, forecast error accumulates and delay rises again.
+
+The predictor can be checked on its own. On a synthetic Gamma series its error grows slowly with the horizon. It ties an LSTM at the first step and beats it after that, at 0.04 ms per inference against 0.37 ms.
+
+<Lines
+  title="Task-size prediction error against forecast step"
+  x={nrmse.x.values}
+  xLabel="Prediction step h (slots)"
+  yLabel="NRMSE"
+  yMin={0.15}
+  yMax={0.26}
+  yTicks={[0.16, 0.2, 0.24]}
+  series={[
+    { name: 'LSTM', values: nrmse.series[1].values, dy: -3 },
+    { name: 'Last value', values: nrmse.series[3].values, dy: 6 },
+    { name: 'Moving avg', values: nrmse.series[2].values },
+    { name: 'Gamma-GLM', values: nrmse.series[0].values, hi: true },
+  ]}
+  source="The paper's Table II. A stand-alone predictor test on synthetic data (log-AR(4), Gamma-distributed), 1500 test slots."
+/>
+
+## A sister paper
+
+*任务预测增强的空天地一体化网络分层卸载方法*, in the Journal of Electronics & Information Technology, applies the same idea to a different problem. It trades task delay against UAV flight energy, uses a two-parameter smoothing-plus-autoregressive predictor, attaches users to the nearest UAV, and sets UAVs at 100 m and the satellite at 500 km.

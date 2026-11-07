@@ -1,0 +1,116 @@
+---
+// One square per paper on the site. Everything here is counted from the paper records,
+// so the chart can only ever say what the list says. Each square opens its paper.
+import { paperHref, pick, type Lang, ui } from '~/lib/i18n';
+import { mechanisms } from '~/data/mechanisms';
+import { allPapers, isFirstAuthor, titleOf, type Paper } from '~/lib/papers';
+interface Props { lang: Lang; all?: boolean } // `all` adds the other two groupings beside the years
+const { lang, all = false } = Astro.props;
+const zh = lang === 'zh';
+const s = ui(lang);
+const papers = await allPapers();
+const rank = (p: Paper) => (p.data.status === 'preprint' ? 2 : isFirstAuthor(p) ? 0 : 1);
+const sorted = (list: Paper[]) => [...list].sort((a, b) => rank(a) - rank(b));
+const cls = (p: Paper) => (p.data.status === 'preprint' ? 'pre' : isFirstAuthor(p) ? 'first' : 'co');
+
+const yearsDesc = [...new Set(papers.map((p) => p.data.date.getUTCFullYear()))].sort((a, b) => b - a);
+const mechs = [['control', zh ? 'Agentic 大脑' : 'Agentic brain'], ...mechanisms.map((m) => [m.key, pick(m.name, lang)])];
+const tiers = [['space', s.tiers.space], ['air', s.tiers.air], ['ground', s.tiers.ground]] as const;
+const views = [
+  {
+    key: 'year',
+    label: zh ? '按年份' : 'By year',
+    rows: yearsDesc.map((y) => ({ k: String(y), mono: true, items: sorted(papers.filter((p) => p.data.date.getUTCFullYear() === y)) })),
+  },
+  ...(all
+    ? [
+        {
+          key: 'mech',
+          label: zh ? '按研究' : 'By study',
+          rows: mechs.map(([m, name]) => ({ k: name, mono: false, items: sorted(papers.filter((p) => p.data.mechanism === m)) })),
+        },
+        {
+          key: 'tier',
+          label: zh ? '按网络层' : 'By network tier',
+          rows: tiers.map(([t, name]) => ({ k: name, mono: false, items: sorted(papers.filter((p) => p.data.tiers.includes(t))) })),
+        },
+      ]
+    : []),
+];
+const key = [
+  ['first', s.firstAuthor],
+  ['co', zh ? '合作' : 'Co-author'],
+  ['pre', s.status.preprint],
+];
+---
+<figure class:list={['output', { all }]} data-reveal aria-label={zh ? '论文的分布' : 'How the papers are distributed'}>
+  <div class="views">
+    {views.map((v) => (
+      <section class="view">
+        {all && <h3 class="eyebrow">{v.label}</h3>}
+        <ol class="rows">
+          {v.rows.map((r, ri) => (
+            <li style={`--r:${ri}`}>
+              <span class:list={['y', { num: r.mono }]}>{r.k}</span>
+              <span class="cells">
+                {r.items.map((p, i) => (
+                  <a
+                    class:list={['cell', cls(p)]}
+                    href={paperHref(lang, p.id)}
+                    data-open-paper={p.id}
+                    data-tip-head={`${p.data.venueShort} ${p.data.year}`}
+                    data-tip={titleOf(p, lang)}
+                    aria-label={`${p.data.venueShort} ${p.data.year}: ${titleOf(p, lang)}`}
+                    style={`--i:${i}`}
+                  ></a>
+                ))}
+              </span>
+              <span class="n num">{r.items.length}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+  </div>
+  <figcaption class="legend">
+    {key.map(([c, label]) => <span><i class:list={['cell', 'k', c]}></i>{label}</span>)}
+  </figcaption>
+</figure>
+
+<style>
+  .views { display: grid; gap: 22px clamp(20px, 3vw, 44px); }
+  .all .views { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .all .view + .view { position: relative; }
+  .all .view + .view::before { content: ''; position: absolute; top: 0; bottom: 0; left: calc(-1 * clamp(10px, 1.5vw, 22px)); width: 1px; background: var(--line-2); }
+  .all .rows { margin-top: 12px; }
+  /* Each view sizes its label column to its own longest label. */
+  .rows { display: grid; grid-template-columns: max-content minmax(0, 1fr) 24px; align-items: center; gap: 10px; }
+  li { display: contents; }
+  .y { font-size: var(--t-label); color: var(--fg-3); white-space: nowrap; }
+  .n { font-size: var(--t-label); color: var(--fg-2); text-align: right; }
+  .cells { display: flex; flex-wrap: wrap; gap: 5px; }
+  .cell {
+    display: block;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    transition: transform var(--d-2) var(--ease-out), background var(--d-1), box-shadow var(--d-1);
+  }
+  a.cell:hover, a.cell:focus-visible { transform: scale(1.2); }
+  /* The squares land one at a time. */
+  :global(.js) .output:not(:global(.in)) a.cell { opacity: 0; }
+  :global(.js) .output:global(.in) a.cell { animation: cell-in 0.6s var(--ease-out) backwards; animation-delay: calc(var(--r) * 70ms + var(--i) * 34ms); }
+  @keyframes cell-in { from { opacity: 0; transform: scale(0.4); } }
+  .first { background: var(--signal); }
+  a.first:hover { background: var(--signal-2); }
+  .co { background: rgba(190, 205, 225, 0.32); }
+  a.co:hover { background: rgba(190, 205, 225, 0.55); }
+  .pre { background: rgba(169, 155, 255, 0.22); box-shadow: inset 0 0 0 1px var(--violet); }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 16px; font-size: var(--t-label); color: var(--fg-3); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .k { width: 11px; height: 11px; border-radius: 3px; }
+  @media (max-width: 860px) {
+    .all .views { grid-template-columns: minmax(0, 1fr); }
+    .all .view + .view::before { display: none; }
+  }
+</style>

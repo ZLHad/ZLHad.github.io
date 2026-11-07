@@ -1,0 +1,30 @@
+title: Convergence Analysis and Resource Allocation for Hierarchical Split Federated Learning Over Space-Air-Ground Integrated Networks
+authors: [Haitao Zhao, Xiaoyu Tang, Bo Xu, Jinlong Sun, Linghao Zhang]
+venue: IEEE Signal Processing Letters
+venueShort: IEEE SPL
+kind: letter
+status: published
+date: 2026-04-08
+year: 2026
+volume: "33"
+pages: 1571-1575
+doi: 10.1109/LSP.2026.3682189
+tiers: [space, air, ground]
+stratum: ground
+mechanism: train
+altitudes: LEO 800 km
+summary:
+  en: Devices train shallow layers, UAVs train deeper layers and aggregate locally, and satellites aggregate globally. The letter derives a convergence bound that accounts for satellite handoff, and jointly chooses association, split layer and resources.
+  zh: 端侧完成浅层训练，无人机承担深层训练与边缘聚合，卫星进行全局聚合。推导考虑卫星切换的收敛上界，并联合优化设备关联、拆分层和资源分配。
+abstract:
+  en: "Federated Learning (FL) confronts challenges such as resource constraints and unbalanced data distribution in the Space-Air-Ground Integrated Network (SAGIN). This paper proposes a Hierarchical Split Federated Learning (HSFL) framework considering satellite handoff and derives its upper bound of loss function affected by model splitting and data distribution. To minimize the weighted sum of training loss and latency, we formulate a joint optimization problem that integrates device association, model split layer selection, and resource allocation. We decompose the original problem into several subproblems, where an iterative optimization algorithm incorporating closed-form solutions and brute-force split point search is proposed. Simulation results demonstrate that the proposed algorithm can balance training efficiency and model accuracy for FL in SAGIN."
+firstPage: true
+figures:
+  - file: results.webp
+    width: 926
+    height: 285
+    caption:
+      en: "Learning performance of AlexNet on CIFAR-10 (Fig. 1)."
+      zh: "AlexNet 在 CIFAR-10 上的学习性能（图 1）。"
+dossier: true
+selected: 6

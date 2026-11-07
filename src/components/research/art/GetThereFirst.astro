@@ -1,0 +1,77 @@
+---
+// The idea behind the forecast papers, as a sketch rather than a result: task sizes over
+// time, the next few slots forecast, and a drone that moves before the peak arrives.
+import type { Lang } from '~/lib/i18n';
+interface Props { lang: Lang }
+const zh = Astro.props.lang === 'zh';
+const t = zh
+  ? { past: '历史到达', next: '预测窗口 H', now: '此刻', cap: '示意图，不是数据。', aria: '任务量随时间变化，后几个时隙是预测值，无人机在高峰到来之前已经飞到位' }
+  : { past: 'historical arrivals', next: 'prediction window H', now: 'now', cap: 'A sketch, not data.', aria: 'Task sizes over time, with the next slots forecast. The drone is in place before the peak arrives' };
+const observed = [0.3, 0.42, 0.36, 0.28, 0.34, 0.46, 0.4, 0.32, 0.38, 0.5, 0.44, 0.36, 0.42, 0.52, 0.48];
+const forecast = [0.6, 0.78, 0.96, 0.72];
+const W = 28;
+const BASE = 330;
+const H = 190;
+const nowX = observed.length * W + 4;
+const startX = nowX - W * 3;
+const endX = nowX + W * 2 + 10;
+const FLY = 118;
+const drone = 'M-24 0h48M-24-8v16M24-8v16M-34-8h20M14-8h20M-8 0v8h16v-8';
+---
+<figure class="first" data-reveal style={`--dx:${endX - startX}px`}>
+  <svg viewBox="0 0 560 380" role="img" aria-label={t.aria}>
+    <line x1="0" x2="560" y1={BASE} y2={BASE} class="base" />
+    {observed.map((v, i) => <rect x={i * W + 2} y={BASE - v * H} width={W - 6} height={v * H} class="bar" />)}
+    {forecast.map((v, i) => (
+      <Fragment>
+        <rect x={nowX + i * W + 4} y={BASE - v * H} width={W - 6} height={v * H} class="fc" />
+        <rect x={nowX + i * W + 4} y={BASE - v * H} width={W - 6} height={v * H} class="load" style={`--i:${i}`} />
+      </Fragment>
+    ))}
+    <line x1={nowX} x2={nowX} y1="52" y2={BASE + 8} class="now" />
+    <text x={nowX} y="40" text-anchor="middle" class="label strong">{t.now}</text>
+    <text x="2" y={BASE + 28} class="label">{t.past}</text>
+    <text x={nowX + 4} y={BASE + 28} class="label signal">{t.next}</text>
+
+    <path d={`M${startX} ${FLY + 18}Q${(startX + endX) / 2} ${FLY - 26} ${endX} ${FLY + 18}`} class="path" />
+    <g class="drone-move" style={`transform-origin:${startX}px ${FLY}px`}>
+      <g transform={`translate(${startX} ${FLY})`}><path d={drone} class="drone" /></g>
+    </g>
+  </svg>
+  <figcaption>{t.cap}</figcaption>
+</figure>
+
+<style>
+  .first { width: 100%; max-width: 580px; margin-inline: auto; }
+  svg { width: 100%; height: auto; overflow: visible; }
+  .base { stroke: var(--fg); stroke-opacity: 0.6; }
+  .bar { fill: var(--fg); fill-opacity: 0.55; }
+  .fc { fill: rgba(7, 9, 13, 0.25); stroke: var(--signal); stroke-width: 1.25; stroke-dasharray: 3 3; }
+  .load { fill: var(--signal); transform-box: fill-box; transform-origin: bottom; animation: load 8s var(--ease-out) infinite; }
+  .now { stroke: var(--signal); stroke-width: 1.25; }
+  .path { fill: none; stroke: var(--fg); stroke-opacity: 0.6; stroke-dasharray: 2 5; }
+  .drone { fill: none; stroke: var(--fg); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .drone-move { animation: fly 8s var(--ease-in-out) infinite; }
+  text { font-family: var(--f-sans); font-size: 14px; font-weight: 450; }
+  .label { fill: var(--fg-2); }
+  .label.strong { fill: var(--fg); font-weight: 500; }
+  .label.signal { fill: var(--signal-2); }
+  figcaption { margin-top: 2px; font-size: var(--t-label); color: var(--fg-2); }
+  @keyframes fly {
+    0%, 14% { transform: translateX(0); }
+    52%, 100% { transform: translateX(var(--dx)); }
+  }
+  @keyframes load {
+    0%, 62% { transform: scaleY(0); opacity: 1; }
+    78%, 94% { transform: scaleY(1); opacity: 1; }
+    100% { transform: scaleY(1); opacity: 0; }
+  }
+  :global(.stop.off) .load, :global(.stop.off) .drone-move { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) {
+    .drone-move { animation: none; transform: translateX(var(--dx)); }
+    .load { animation: none; }
+  }
+  /* Sizes are in viewBox units; each step holds about 13px on screen at that width. */
+  @media (min-width: 900px) and (max-width: 1080px) { text { font-size: 17px; } }
+  @media (max-width: 560px) { text { font-size: 21px; } }
+</style>

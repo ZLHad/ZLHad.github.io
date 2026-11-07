@@ -1,0 +1,36 @@
+title: Task-Prediction-Augmented Multi-Agent Collaborative Offloading in Space-Air-Ground Integrated Network
+authors: [Linghao Zhang, Bo Xu, Haitao Zhao, Suyao Huang, Qin Wang, Hongbo Zhu]
+venue: IEEE Transactions on Vehicular Technology
+venueShort: IEEE TVT
+kind: journal
+status: published
+date: 2026-03-20
+year: 2026
+volume: "75"
+number: "8"
+pages: 18175-18191
+doi: 10.1109/TVT.2026.3676287
+tiers: [space, air, ground]
+stratum: air
+mechanism: offload
+summary:
+  en: UAV trajectories, user association and resources are strongly coupled, and conventional multi-agent learning has no foresight. Short-horizon task forecasts guide the agents, so nodes coordinate before workloads arrive.
+  zh: 无人机轨迹、用户关联和资源分配强耦合，传统多智能体强化学习缺乏前瞻性。利用历史业务预测短期任务到达，让节点在负载到来之前完成协调，降低动态负载下的任务完成时延。
+dossier: true
+abstract:
+  en: "The space-air-ground integrated network (SAGIN) can provide a promising architecture for computation-intensive mobile applications through the complementary advantages of unmanned aerial vehicles (UAVs) and low Earth orbit (LEO) satellites. However, efficient task offloading remains challenging due to the strong coupling among UAV trajectories, user association, and resource allocation, especially with dynamic and uncertain task workloads. In this paper, we aim to minimize the average task completion delay by enabling UAVs and satellites to cooperatively assist users in executing complex computational tasks. We formulate the joint optimization problem as a decentralized partially observable Markov decision process (DEC-POMDP), where task workload prediction is incorporated to enhance foresight and coordination among agents. Then, a task-prediction-augmented multi-agent collaborative offloading (TAMACO) framework is proposed, which integrates task-prediction-augmented multi-agent proximal policy optimization (TA-MAPPO) for UAV trajectory control. Meanwhile, a prediction-augmented coalition formation game (PA-CFG) algorithm embedded into TA-MAPPO is proposed to solve the joint problem of user association and computing resource allocation. Simulation results demonstrate that the proposed TAMACO framework achieves up to 19.3% reduction in average task completion delay compared to non-predictive baselines, validating its effectiveness for real-time task offloading in dynamic SAGIN."
+firstPage: true
+figures:
+  - file: scenario.webp
+    width: 1400
+    height: 1029
+    caption:
+      en: "The SAGIN-based MEC system (Fig. 1)."
+      zh: "基于空天地网络的移动边缘计算系统（图 1）。"
+  - file: framework.webp
+    width: 2000
+    height: 826
+    caption:
+      en: "The TAMACO framework (Fig. 2)."
+      zh: "TAMACO 框架（图 2）。"
+selected: 3

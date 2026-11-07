@@ -1,0 +1,41 @@
+{
+ "title": "Ablation: QoE when each component is removed (Fig. 7)",
+ "source": "results/commfix/train_final_v4/ablation.json",
+ "x": {
+  "label": "Variant",
+  "unit": null,
+  "values": [
+   "Proposed",
+   "w/o Compression",
+   "w/o Per-User",
+   "w/o ConfigGen",
+   "w/o Diffusion",
+   "w/o Refinement"
+  ]
+ },
+ "series": [
+  {
+   "name": "Per-user QoE",
+   "values": [
+    1.8037086542860448,
+    1.6383386292456867,
+    1.3923430876895948,
+    1.786733177604006,
+    1.5185168130865918,
+    1.7204547653688371
+   ]
+  },
+  {
+   "name": "Relative drop vs Proposed (%) [computed]",
+   "values": [
+    0.0,
+    -9.2,
+    -22.8,
+    -0.9,
+    -15.8,
+    -4.6
+   ]
+  }
+ ],
+ "notes": "QoE from ablation.json (seed 42, planner protocol). Its Proposed value 1.8037 differs slightly from Table III's 1.798 (different run/protocol); drops 22.8/15.8/9.2/4.6/0.9 % match the paper text."
+}

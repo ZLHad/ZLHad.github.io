@@ -1,0 +1,43 @@
+title: "Hastening Co-Inference in Space-Air-Ground Integrated Networks: A Submodular Optimization Based Task Offloading Approach"
+authors: [Haitao Zhao, Suyao Huang, Bo Xu, Linghao Zhang, Mengru Wu, Jinlong Sun]
+venue: IEEE Transactions on Vehicular Technology
+venueShort: IEEE TVT
+kind: journal
+status: published
+date: 2026-04-02
+year: 2026
+volume: "75"
+number: "9"
+pages: 20912-20925
+doi: 10.1109/TVT.2026.3681626
+tiers: [space, air, ground]
+stratum: air
+mechanism: infer
+altitudes: UAV 50 m · satellite 600 km
+summary:
+  en: Neural-network inference is split across ground devices, UAVs and a satellite, and a submodular-optimization algorithm picks the split points, associations and resources.
+  zh: 把神经网络推理分割到地面设备、无人机和卫星上，用子模优化算法选择分割点、设备关联和资源分配。
+abstract:
+  en: "Space-Air-Ground Integrated Networks (SAGINs) play a crucial role in the 6G system, offering global coverage and ultra-wide-area broadband access. Meanwhile, advancements in artificial intelligence (AI) have led to a significant increase in model inference demands with stringent latency requirements. In this paper, considering the intelligent services in SAGINs, we explore task offloading for the co-inference problem and improve the inference efficiency by performing model splitting, device association, and resource allocation. This problem is solved iteratively by decomposing it into multiple sub-problems. In particular, the bandwidth allocation problem is solved using convex optimization techniques to obtain a closed-form solution, and the model splitting problem is addressed by systematically searching for the optimal split points. Besides, the joint device association and computing resource allocation problem is reformulated into a monotone submodular function without the satellite, and a low-complexity submodular optimization algorithm is proposed. To further utilize the computing power of the satellite, we introduce a resource reallocation algorithm based on the existing optimization results. These sub-problems iterate alternately until the optimization goal converges. The simulation results show that the proposed algorithm can achieve better latency performance in several inference tasks."
+firstPage: true
+figures:
+  - file: architecture.webp
+    width: 836
+    height: 693
+    caption:
+      en: "The architecture of SAGIN with co-inference (Fig. 1)."
+      zh: "支持协同推理的 SAGIN 架构（图 1）。"
+  - file: framework.webp
+    width: 836
+    height: 655
+    caption:
+      en: "A diagram of the proposed solutions (Fig. 2)."
+      zh: "所提求解方案示意图（图 2）。"
+  - file: convergence.webp
+    width: 844
+    height: 671
+    caption:
+      en: "Convergence of different schemes under the VGG16 model (Fig. 3)."
+      zh: "VGG16 模型下不同方案的收敛情况（图 3）。"
+dossier: true
+selected: 8

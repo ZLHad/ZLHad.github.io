@@ -1,0 +1,19 @@
+order: 3
+name: Personal Knowledge Wiki
+nameZh: 个人知识库框架
+tagline:
+  en: A Markdown knowledge base that an agent maintains for you.
+  zh: 由智能体替你维护的 Markdown 知识库。
+body:
+  en: You add sources and ask questions. Claude Code summarizes, cross-links, files and checks them. One interactive script, five skills, no database. Inspired by the LLM Wiki idea and Obsidian.
+  zh: 你负责放入资料和提问，Claude Code 负责摘要、交叉链接、归档和质检。一个交互式安装脚本，五个技能，不需要数据库。灵感来自 LLM Wiki 的思路和 Obsidian。
+repo: ZLHad/personal-knowledge-wiki
+url: https://github.com/ZLHad/personal-knowledge-wiki
+homepage: https://zlhad.github.io/personal-knowledge-wiki/
+license: MIT
+facts:
+  - value: "5"
+    label: { en: skills, zh: 个技能 }
+  - value: "8"
+    label: { en: lint rules, zh: 条体检规则 }
+cover: /media/wiki-cover.webp

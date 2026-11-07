@@ -1,0 +1,19 @@
+---
+// Equations are rendered to HTML at build time, so the page ships no math runtime.
+import katex from 'katex';
+interface Props { tex: string; note?: string }
+const { tex, note } = Astro.props;
+const html = katex.renderToString(tex, { displayMode: true, throwOnError: true, output: 'html' });
+---
+<figure class="eq">
+  <div class="math" set:html={html} />
+  {note && <figcaption>{note}</figcaption>}
+</figure>
+
+<style>
+  .eq { margin: 1.6em 0; padding: 4px 0 4px 16px; box-shadow: -1px 0 0 var(--line-3); }
+  .math { overflow-x: auto; overflow-y: hidden; padding-block: 2px; color: var(--fg); }
+  .math :global(.katex-display) { margin: 0.6em 0; text-align: left; }
+  .math :global(.katex-display > .katex) { text-align: left; }
+  figcaption { margin-top: 2px; font-size: var(--t-small); line-height: 1.5; color: var(--fg-3); }
+</style>

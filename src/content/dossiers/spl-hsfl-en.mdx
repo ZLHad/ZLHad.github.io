@@ -1,0 +1,69 @@
+---
+paper: spl-hsfl
+lang: en
+look: ground
+headline: Where the model is cut sets both the latency and the bound.
+dek: Hierarchical split federated learning across devices, UAVs and LEO satellites, with a convergence bound that depends on the split layer and on device association.
+---
+
+## What breaks
+
+Federated learning in a space-air-ground network meets two limits at once. Mobile devices have too little computing to train a whole DNN, so computation latency piles up. Their data are also unevenly distributed, and aggregating models trained on such data adds error that slows convergence. Split federated learning eases the first limit by keeping only the front layers on the device. The letter notes that it had not been brought into SAGIN, and that earlier work had not considered unbalanced data.
+
+## The idea
+
+Run split federated learning across three tiers. Devices train the shallow layers and upload features and labels. UAVs train the deep layers and aggregate them at the edge. An LEO satellite aggregates globally, and hands the model to a neighbouring satellite when its service window is too short for the round.
+
+<SplitTraining lang="en" />
+
+A convergence bound then says what the split costs. Cutting at a higher layer leaves fewer parameters to aggregate, and a larger mismatch between a UAV's devices and the global class distribution loosens the bound as well. The part of the bound that the optimizer can act on is:
+
+<Eq tex="P=\ell Z^2+\tfrac{1}{n_k}(L-\ell)Z^2+\ell\sigma^2+\tfrac{1}{n_k}(L-\ell)\sigma^2+\tfrac{1}{n_k}\sum_{c}\Big(\sum_{n\in\mathcal N_k}a_{n,k}\big\|p^n(c)-p(c)\big\|\Big)" note="The first four terms grow with the split layer ℓ. The last grows with how far each UAV's devices are from the global class distribution, which association controls." />
+
+## The system
+
+Each round has four stages. The satellite first checks whether its service window covers the expected round latency, and migrates the model to an adjacent satellite if it does not. Devices then run their front layers and upload features over the air-to-ground link. UAVs finish the forward and backward passes, return the split-layer gradient, and aggregate after E local iterations. Finally the satellite aggregates the edge models and sends the global model back down.
+
+<Eq tex="T=t_d+t_u+t_s+N_{\rm sw}\,\tau_s" note="Round latency: device computing and upload, UAV computing, the UAV-to-satellite upload, and the satellite handovers the round needs." />
+
+<Eq tex="\min_{\ell,\,a_{n,k},\,l_{n,k},\,B_k,\,f_{n,k}}\;(1-\theta)\,T+\theta P" note="One objective weighs latency against the bound, over the split layer, device association, bandwidth and UAV computing." />
+
+The split layer is an integer, association is binary and the resources are continuous, so the problem is a mixed-integer nonlinear program. The letter takes it apart. For each candidate split layer, bandwidth has a closed form whose one unknown is found by bisection, UAV computing is shared in proportion to each device's workload, and devices are associated by a rule from Lagrangian relaxation. The split layer itself comes from an exhaustive search. It runs rarely, and on UAVs or satellites rather than on devices.
+
+<Eq tex="f^{*}_{n,k}=\frac{C^{\ell}_{n,k}\,f_k}{\sum_{n\in\mathcal N_k}C^{\ell}_{n,k}}" note="A UAV shares its computing in proportion to the work each device's deep layers need." />
+
+The whole procedure costs O(L·T<sub>iter</sub>·N·K), linear in the numbers of devices and UAVs.
+
+## What it found
+
+The simulation has 50 devices, 4 UAVs at 500 m and a Walker Star constellation of 80 LEO satellites in 10 orbits at 800 km. The model is AlexNet on CIFAR-10, and each device holds 4 of the 10 classes. Four baselines are compared: random association, equal resource allocation, hierarchical federated learning without splitting, and association by data distribution alone. The paper reports higher test accuracy at lower latency than all four.
+
+<Plate lang="en" n="1" src="/figures/spl-hsfl/results.webp" width={926} height={285} alt="Learning performance of AlexNet on CIFAR-10" caption="Test accuracy and training loss against latency, for the proposed scheme and the four baselines. Fig. 1 of the paper." />
+
+Table I shows the trade-off the bound predicts. The higher split layer gives the lowest latency but the worst objective, because the bound loosens. The optimal layer balances the two.
+
+<Bars
+  title="System latency by split layer (s)"
+  rows={[
+    { label: 'Lower', value: 24.77, display: '24.77' },
+    { label: 'Optimal', value: 13.78, display: '13.78', hi: true },
+    { label: 'Higher', value: 11.52, display: '11.52' },
+  ]}
+  source="The paper's Table I."
+/>
+
+<Bars
+  title="Optimization objective by split layer, lower is better"
+  rows={[
+    { label: 'Lower', value: 6.18, display: '6.18' },
+    { label: 'Optimal', value: 5.83, display: '5.83', hi: true },
+    { label: 'Higher', value: 7.07, display: '7.07' },
+  ]}
+  source="The paper's Table I."
+/>
+
+Less heterogeneity helps too. With 8 local classes per device instead of 4, latency falls from 13.78 s to 13.08 s and the objective from 5.83 to 5.66. Over 50 Monte Carlo runs, the optimal objective has a standard deviation of ±0.09.
+
+## What is left
+
+This is a letter, and the complete proof of the bound is in the companion preprint, [arXiv:2601.13817](https://arxiv.org/abs/2601.13817). The paper names its next steps, adjusting the split layer dynamically and aggregating over the air. It also lists the difficulties at high mobility: mismatched submodels, real-time complexity, deep fading and synchronization.

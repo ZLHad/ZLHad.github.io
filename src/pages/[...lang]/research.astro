@@ -1,0 +1,66 @@
+---
+// Designed by hand, unlike the paper pages. The page goes down through the layers the work
+// happens on, then looks back: the timeline shows how the work grew across them, and the
+// drawing shows how it fits together.
+import Base from '~/layouts/Base.astro';
+import Descent from '~/components/research/Descent.astro';
+import SystemMatrix from '~/components/widgets/SystemMatrix.astro';
+import Trajectory from '~/components/widgets/Trajectory.astro';
+import { langPaths, toLang, ui } from '~/lib/i18n';
+import { mechanisms } from '~/data/mechanisms';
+
+export const getStaticPaths = langPaths;
+const lang = toLang(Astro.params.lang);
+const s = ui(lang);
+const zh = lang === 'zh';
+const count = zh
+  ? ['', '一', '两', '三', '四', '五', '六'][mechanisms.length]
+  : ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six'][mechanisms.length];
+const copy = zh
+  ? {
+      from: '从一层',
+      to: '到三层。',
+      trajD: '最早的论文在地面，做工业雾网络。到 2026 年，工作已经跨过无人机和低轨卫星，服务多模态 AI。',
+      sysH: `${count}项研究，一个 Agentic 大脑。`,
+      sysD: '每项研究都在天、空、地上处理各自的矛盾。Agentic AI 在上方统筹，理论书在下方打地基。橙色是第一作者工作，点开可看概览。',
+    }
+  : {
+      from: 'From one tier',
+      to: 'to three.',
+      trajD: 'The earliest paper stays on the ground, in an industrial fog network. By 2026 the work spans UAVs and LEO satellites serving multimodal AI.',
+      sysH: `${count} studies, one agentic brain.`,
+      sysD: 'Each study takes its tension across space, air and ground. Agentic AI orchestrates them from above, and a theory book lays the foundation below. First-author work is in orange. Open any paper for its overview.',
+    };
+---
+<Base lang={lang} papers title={`${s.research} — ${zh ? '张凌豪' : 'Linghao Zhang'}`}>
+  <main>
+    <Descent lang={lang} />
+    <div class="frame after">
+      <section class="landing">
+        <h2 class="statement" data-reveal>
+          <span>{copy.from}</span>
+          <span class="up">{copy.to}</span>
+        </h2>
+        <p class="dek" data-reveal>{copy.trajD}</p>
+        <Trajectory lang={lang} />
+      </section>
+
+      <section class="sec">
+        <h2 class="section-title" data-reveal>{copy.sysH}</h2>
+        <p class="dek" data-reveal>{copy.sysD}</p>
+        <SystemMatrix lang={lang} />
+      </section>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .after { padding-bottom: clamp(64px, 12vh, 128px); }
+  .landing { padding-top: clamp(32px, 7vh, 72px); }
+  .statement { font-family: var(--f-display); font-stretch: 112%; font-weight: 250; font-size: clamp(2.75rem, 1.2rem + 6.2vw, 7.5rem); line-height: 1.02; letter-spacing: -0.03em; }
+  .statement span { display: block; }
+  .statement .up { padding-left: clamp(0px, 9vw, 170px); color: var(--signal-2); }
+  .statement:lang(zh), :global(:lang(zh)) .statement { font-weight: 300; letter-spacing: 0.01em; line-height: 1.14; }
+  .landing .dek { margin-top: clamp(20px, 3.5vh, 36px); }
+  .dek { margin-top: 12px; margin-bottom: 26px; max-width: var(--measure); color: var(--fg-2); text-wrap: pretty; }
+</style>

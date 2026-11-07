@@ -1,0 +1,29 @@
+---
+import Base from '~/layouts/Base.astro';
+---
+<Base title="Signal lost — Linghao Zhang">
+  <Fragment slot="head">
+    <script is:inline>
+      // The old blog moved to /blog/. Links to its old addresses still arrive.
+      if (/^\/(20\d\d|archives|categories|link|page|smallTalk|tags)(\/|$)/.test(location.pathname)) {
+        location.replace('/blog' + location.pathname + location.search + location.hash);
+      }
+    </script>
+  </Fragment>
+  <main class="lost">
+    <div class="frame inner">
+      <p class="eyebrow"><span class="dot warn"></span>404 · Signal lost · 信号丢失</p>
+      <h1 class="page-title">This page is below the horizon.</h1>
+      <p class="p">The link may be from an older version of this site. <a href="/">Return to orbit</a> or open the <a href="/publications/">publications</a>.</p>
+      <p class="p">这个页面在地平线以下。<a href="/zh/">返回轨道</a>，或者看<a href="/zh/publications/">论文列表</a>。</p>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .lost { margin-top: calc(-1 * var(--bar)); padding-top: var(--bar); min-height: 86svh; display: flex; align-items: center; background: var(--bg) url('/media/sky-orbit.webp') center bottom / cover no-repeat; }
+  .inner { display: flex; flex-direction: column; gap: 14px; padding-block: 40px; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; }
+  h1 { max-width: 16ch; }
+  .p { color: var(--fg-2); max-width: var(--measure); }
+</style>

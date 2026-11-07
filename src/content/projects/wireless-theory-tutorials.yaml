@@ -1,0 +1,18 @@
+order: 2
+name: Theory Foundations
+nameZh: 理论地基·四部曲
+tagline:
+  en: An open book on the theory missing under AI-native wireless networks.
+  zh: 一本开放的电子书，写无线智能网络底下还缺的那层理论。
+body:
+  en: Written in Chinese for senior undergraduates and graduate students. A prerequisite part, then four parts that follow one line from environment to channel, task, network and swarm. Each topic states the classical theory first, then what the AI-native setting still lacks, and every claim is labelled as an established theorem, my own derivation, or an open problem.
+  zh: 写给高年级本科生和研究生。预备篇之后，四部沿着环境、信道、任务、网络、群体这条线展开。每个主题先讲清经典理论，再指出 AI 原生网络还缺什么；每个结论都标明来历：文献定理、本书演算，或开放问题。
+repo: ZLHad/wireless-theory-tutorials
+url: https://github.com/ZLHad/wireless-theory-tutorials
+homepage: https://zlhad.top/wireless-theory-tutorials/
+license: CC BY-NC-SA 4.0
+facts:
+  - value: "46"
+    label: { en: chapters, zh: 章 }
+  - value: "4+1"
+    label: { en: parts, zh: 部 }

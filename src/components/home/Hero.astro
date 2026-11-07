@@ -1,0 +1,170 @@
+---
+// The name set across the sky above Singapore. A still of the same render sits behind the
+// canvases, so the band looks right before the shader is ready and on devices without WebGL.
+import Icon from '~/components/chrome/Icon.astro';
+import { href, ui, type Lang } from '~/lib/i18n';
+import { profile } from '~/data/profile';
+import { SHELL } from '~/scripts/sky/orbits';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = ui(lang);
+const zh = lang === 'zh';
+const areas = zh ? '空天地一体化网络 · 边缘智能 · 智能体 AI' : 'Space-air-ground networks · Edge intelligence · Agentic AI';
+const inView = zh ? `颗卫星在视野内，模拟的 ${SHELL.altitude} km 低轨壳层` : `satellites in view, simulated ${SHELL.altitude} km LEO shell`;
+const count = SHELL.planes * SHELL.perPlane;
+const tip = zh
+  ? `一个 Walker-delta 星座：${count} 颗卫星，${SHELL.planes} 个轨道面，倾角 ${SHELL.inclination}°，从新加坡上空看，速度放大 ${SHELL.speedup} 倍。只有晒到太阳的卫星才亮。你的鼠标是地面上的一个终端，连向最近的一颗。`
+  : `A Walker-delta shell of ${count} satellites in ${SHELL.planes} planes at ${SHELL.inclination}°, seen from above Singapore and sped up ${SHELL.speedup} times. Only satellites in sunlight shine. Your pointer is a terminal on the ground, linked to the nearest one.`;
+const extra = [
+  { k: 'Google Scholar', v: profile.links.scholar },
+  { k: 'ORCID', v: profile.links.orcid },
+].filter((l) => l.v);
+const words = zh ? [[...profile.name.zh]] : [[...'Linghao'], [...'Zhang']];
+let n = 0;
+---
+<section id="hero" class="hero">
+  <canvas data-sky aria-hidden="true"></canvas>
+  <canvas data-orbits aria-hidden="true"></canvas>
+  <div class="frame inner">
+    <div class="top">
+      <p class="eyebrow">{areas}</p>
+      <p class="eyebrow readout" data-readout hidden tabindex="0" data-tip={tip}><span class="live" aria-hidden="true"></span><span data-sat-count></span> {inView}</p>
+    </div>
+    <h1 class:list={['name', { 'name-zh': zh }]} aria-label={profile.name[lang]}>
+      {words.map((w) => (
+        <span class="word" aria-hidden="true">{w.map((c) => <span class="ch" style={`--n:${n++}`}>{c}</span>)}</span>
+      ))}
+    </h1>
+    <div class="under">
+      <div class="says">
+        <p class="thesis">{profile.thesis[lang].map((t) => <span>{t} </span>)}</p>
+        <p class="role">{zh && <span class="latin">Linghao Zhang</span>}{profile.role[lang]}</p>
+      </div>
+      <ul class="links">
+        <li><a class="btn primary" href={href(lang, '/cv/')}>{s.cv}<Icon name="next" /></a></li>
+        <li><a class="btn glass" href={`mailto:${profile.email}`}><Icon name="mail" />{s.email}</a></li>
+        <li><a class="btn glass" href={profile.links.github}><Icon name="github" />{s.github}</a></li>
+        {extra.map((l) => <li><a class="btn glass" href={l.v}>{l.k}<Icon name="go" /></a></li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  try {
+    if (sessionStorage.getItem('hero-seen')) document.documentElement.classList.add('seen');
+    else sessionStorage.setItem('hero-seen', '1');
+  } catch (e) {}
+</script>
+<script>
+  import { startSky } from '~/scripts/hero-sky';
+  const hero = document.getElementById('hero');
+  if (hero) startSky(hero);
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    margin-top: calc(-1 * var(--bar));
+    padding-top: var(--bar);
+    min-height: clamp(440px, 60svh, 620px);
+    display: flex;
+    overflow: hidden;
+    color: var(--fg);
+    background: var(--bg) url('/media/sky-orbit.webp') center bottom / cover no-repeat;
+  }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
+  [data-sky] { z-index: -3; opacity: 0; transition: opacity 1.4s ease-out; }
+  :global(.sky-ready) [data-sky] { opacity: 1; }
+  [data-orbits] { z-index: -2; pointer-events: none; will-change: transform; }
+  /* The planet dissolves into the page, so there is no edge between the sky and the list. */
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    z-index: -1;
+    height: 34%;
+    background: linear-gradient(to top, var(--bg) 8%, rgba(7, 9, 13, 0.72) 42%, rgba(7, 9, 13, 0));
+    pointer-events: none;
+  }
+  .inner { position: relative; display: flex; flex-direction: column; padding-block: clamp(14px, 3vh, 34px) 96px; }
+  /* The name recedes as the list comes up. */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .inner { animation: hero-away linear both; animation-timeline: scroll(root); animation-range: 0 62vh; }
+    }
+  }
+  @keyframes hero-away { to { opacity: 0.12; transform: translateY(-56px); } }
+  .top { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; animation: fade-up 1s 0.5s var(--ease-out) both; }
+  .top .eyebrow { color: var(--fg-2); }
+  .readout { display: inline-flex; align-items: center; gap: 7px; font-variant-numeric: tabular-nums; }
+  .readout[hidden] { display: none; }
+  .live { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 rgba(95, 211, 166, 0.5); animation: live 2.4s ease-out infinite; }
+  @keyframes live { to { box-shadow: 0 0 0 7px rgba(95, 211, 166, 0); } }
+
+  .name {
+    display: flex;
+    gap: 0.33em;
+    margin-top: clamp(10px, 2.2vh, 22px);
+    margin-left: -0.05em;
+    font-family: var(--f-display);
+    font-stretch: 125%;
+    font-weight: 200;
+    text-transform: uppercase;
+    letter-spacing: 0.055em;
+    line-height: 1;
+    /* Set to fill the measure exactly: the line is about 11.1 em wide. */
+    font-size: calc(min(var(--page), 100vw - 2 * var(--gutter)) / 11.12);
+    white-space: nowrap;
+  }
+  .word { display: inline-flex; overflow: clip; overflow-clip-margin: 0.1em; padding-block: 0.06em; }
+  .ch { display: inline-block; animation: ch-in 1.1s calc(var(--n) * 32ms + 120ms) var(--ease-out) both; }
+  /* The full arrival plays once a session; coming back to the page is quick. */
+  :global(.seen) .ch { animation: none; }
+  :global(.seen) .top, :global(.seen) .under { animation-duration: 0.5s; animation-delay: 0s; }
+  @keyframes ch-in { from { transform: translateY(112%); opacity: 0.4; } }
+  .name-zh {
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    font-size: clamp(3.25rem, 2rem + 4.6vw, 5.25rem);
+    margin-left: 0;
+    line-height: 1;
+  }
+  .name-zh .word { padding-block: 0; }
+
+  .under {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 28px;
+    margin-top: clamp(12px, 2.4vh, 26px);
+    animation: fade-up 1s 0.7s var(--ease-out) both;
+  }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(12px); } }
+  .thesis { font-size: var(--t-lead); font-weight: 400; line-height: 1.36; letter-spacing: -0.012em; color: var(--fg); }
+  .thesis { max-width: 46em; }
+  .thesis span { display: block; text-wrap: balance; }
+  .thesis:lang(zh) { line-height: 1.5; letter-spacing: 0.01em; }
+  .role { margin-top: 8px; font-size: var(--t-small); line-height: 1.5; color: var(--fg-2); }
+  .latin { font-weight: 500; color: var(--fg); margin-right: 0.8em; }
+  .links { display: flex; flex: none; flex-wrap: wrap; gap: 8px; }
+  .btn.glass { background: rgba(14, 18, 24, 0.5); backdrop-filter: blur(8px); box-shadow: inset 0 0 0 1px var(--line-3); }
+  .btn.glass:hover { background: rgba(30, 36, 46, 0.7); }
+
+  @media (max-width: 1080px) {
+    .under { flex-direction: column; align-items: flex-start; gap: 16px; }
+  }
+  @media (max-width: 760px) {
+    .top { display: none; }
+    .name:not(.name-zh) {
+      flex-direction: column;
+      gap: 0;
+      white-space: normal;
+      font-size: calc((100vw - 2 * var(--gutter)) / 6.35);
+    }
+    .inner { padding-block: 10px 64px; }
+    .name { margin-top: 0; }
+    .thesis span { display: inline; }
+  }
+</style>

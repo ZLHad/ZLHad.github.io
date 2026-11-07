@@ -1,0 +1,9 @@
+- id: internet-plus-2024
+  title: { en: National Gold Medal, zh: 全国金奖 }
+  event:
+    en: China International College Students' Innovation Competition
+    zh: 中国国际大学生创新大赛
+  work:
+    en: High-reliability communications over high-throughput satellites in complex scenarios
+    zh: 复杂场景下基于高通量卫星的高可靠通信技术研究
+  year: 2024

@@ -1,0 +1,60 @@
+---
+// Tools built along the way: every project except the book, which has its own band.
+import { getCollection } from 'astro:content';
+import Icon from '~/components/chrome/Icon.astro';
+import { pick, ui, type Lang } from '~/lib/i18n';
+import metrics from '~/data/generated/metrics.json';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const s = ui(lang);
+const zh = lang === 'zh';
+const tools = (await getCollection('projects'))
+  .filter((p) => p.id !== 'wireless-theory-tutorials')
+  .sort((a, b) => a.data.order - b.data.order);
+const stars = metrics.stars as Record<string, number>;
+const starsOf = (repo?: string) => (repo && stars[repo] ? stars[repo] : 0);
+---
+<section>
+  <h2 class="section-title">{zh ? '工具' : 'Tools'}</h2>
+  <ul class="tools">
+    {tools.map((p, i) => (
+      <li id={p.id} class="o card spot" data-spot data-reveal style={`--i:${i}`}>
+        {p.data.cover ? (
+          <span class="o-cover"><img src={p.data.cover} alt="" width="800" height="450" loading="lazy" decoding="async" /></span>
+        ) : (
+          <span class="o-cover plate dark blank" aria-hidden="true"><span class="num"><i>ZLHad/</i>{p.data.repo?.split('/')[1]}</span></span>
+        )}
+        <div class="o-text">
+          <p class="meta"><b>{zh && p.data.nameZh ? p.data.nameZh : p.data.name}</b>{p.data.license && ` · ${p.data.license}`}{starsOf(p.data.repo) > 0 && <span class="st num"><Icon name="star" size={13} fill />{starsOf(p.data.repo)}</span>}</p>
+          <h3>{pick(p.data.tagline, lang)}</h3>
+          <p class="o-body">{pick(p.data.body, lang)}</p>
+          <p class="actions">
+            {p.data.url && <a class="btn small" href={p.data.url}><Icon name="github" size={14} />GitHub</a>}
+            {p.data.homepage && <a class="btn small" href={p.data.homepage}>{s.site}<Icon name="go" size={14} /></a>}
+          </p>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr)); gap: 14px; margin-top: 22px; }
+  .o { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); overflow: hidden; }
+  .o-cover { display: block; min-height: 220px; overflow: hidden; background: #000; box-shadow: 1px 0 0 var(--line-2); }
+  .o-cover img { width: 100%; height: 100%; object-fit: contain; transition: transform var(--d-4) var(--ease-out); }
+  .o:hover .o-cover img { transform: scale(1.03); }
+  .o-cover.blank { display: flex; border-radius: 0; font-size: var(--t-text); letter-spacing: -0.03em; color: var(--fg); }
+  .blank i { font-style: normal; color: var(--fg-3); }
+  .o-text { padding: 16px 18px 18px; }
+  .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 6px; font-size: var(--t-small); font-weight: 450; line-height: 1.4; color: var(--fg-3); }
+  .meta b { color: var(--fg); font-weight: 550; }
+  .st { display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; font-size: var(--t-label); }
+  .o h3 { margin-top: 8px; font-size: 1.0625rem; font-weight: 500; line-height: 1.3; letter-spacing: -0.012em; }
+  .o-body { margin-top: 7px; font-size: var(--t-small); line-height: 1.55; color: var(--fg-2); text-wrap: pretty; }
+  .actions { position: relative; z-index: 4; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  @media (max-width: 899px) {
+    .o { grid-template-columns: minmax(0, 1fr); }
+    .o-cover { min-height: 0; aspect-ratio: 16 / 9; box-shadow: 0 1px 0 var(--line-2); }
+  }
+</style>

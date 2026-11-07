@@ -1,0 +1,47 @@
+title: Joint Task Offloading and Trajectory Optimization for Cooperative Multi-Branch DNN Inference in CR-SAGIN-Enhanced IoV
+authors: [Bo Xu, Suyao Huang, Yukai Xu, Mengru Wu, Linghao Zhang, Jinlong Sun, Haitao Zhao]
+venue: IEEE Transactions on Vehicular Technology
+venueShort: IEEE TVT
+kind: journal
+status: early-access
+date: 2026-09-15
+year: 2026
+pages: 1-16
+doi: 10.1109/TVT.2026.3730653
+tiers: [space, air, ground]
+stratum: air
+mechanism: infer
+altitudes: UAV 100 m · LEO 800 km
+summary:
+  en: Vehicles and UAVs split multi-branch DNN inference across a cognitive-radio network, with graph attention and multi-agent learning choosing associations, resources and trajectories.
+  zh: 在认知无线电增强的空天地车联网中，无人机与车辆协同完成多分支 DNN 推理，用图注意力和多智能体强化学习联合优化关联、资源与轨迹。
+abstract:
+  en: "The Space-Air-Ground Integrated Network (SAGIN) has emerged as a pivotal architecture for sixth-generation (6G) mobile communication systems, offering extensive multi-domain and multi-dimensional coverage. To support intelligent services within SAGIN, deep neural network (DNN) inference tasks are often distributed across multiple devices due to the increasing scale of DNN parameters and constrained communication and computation resources. In this paper, to enhance intelligent services in the Internet of Vehicles (IoV), a cognitive-radio (CR)-enhanced SAGIN framework is proposed, where unmanned aerial vehicles (UAVs) are responsible for data collection and cooperate with vehicles to complete complex DNN inference tasks. A joint optimization problem that coordinates device association, model splitting with early exiting, resource allocation, and UAV trajectory planning is proposed to improve the average inference efficiency over a finite multi-round mission, defined as the average of the per-round ratios between aggregate inference accuracy and aggregate inference latency. Since the problem is highly coupled and non-convex, we decompose it into several subproblems and solve them iteratively. A quadratic unconstrained binary optimization (QUBO)-based graph attention network (GAT) approach with independent branch selection is proposed to solve the joint device association and model splitting problem, where a differentiable loss function is derived through Hamiltonian relaxation. In addition, we obtain a convex approximation of the transmit-power subproblem, while computation-resource allocation is solved as a convex optimization problem. For multi-round operations, we design a multi-agent reinforcement learning (MARL)-based trajectory optimization algorithm under a centralized training and decentralized execution paradigm. Simulation results on widely used DNN models, including AlexNet and VGG16, demonstrate that the proposed approach can improve the efficiency of collaborative DNN inference."
+firstPage: true
+figures:
+  - file: architecture.webp
+    width: 976
+    height: 582
+    caption:
+      en: "Architecture of CR-SAGIN-enhanced IoV for DNN inference tasks (Fig. 1)."
+      zh: "面向 DNN 推理任务的 CR-SAGIN 增强车联网架构（图 1）。"
+  - file: branches.webp
+    width: 982
+    height: 522
+    caption:
+      en: "The considered accuracy-aware multi-branch DNN model with early exiting (Fig. 2)."
+      zh: "考虑精度的多分支早退 DNN 模型（图 2）。"
+  - file: framework.webp
+    width: 967
+    height: 626
+    caption:
+      en: "A schematic illustration of the solution logic for the subproblems (Fig. 4)."
+      zh: "各子问题求解逻辑示意图（图 4）。"
+  - file: results.webp
+    width: 1983
+    height: 482
+    caption:
+      en: "Comparison of objective values for AlexNet under different parameter settings (Fig. 7)."
+      zh: "不同参数设置下 AlexNet 的目标值对比（图 7）。"
+dossier: true
+selected: 7

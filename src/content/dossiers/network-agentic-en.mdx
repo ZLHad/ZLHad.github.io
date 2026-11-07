@@ -1,0 +1,36 @@
+---
+paper: network-agentic
+lang: en
+headline: LLMs plan at the slow timescale. RL schedules at the fast timescale.
+dek: An agentic AI control plane for space-air-ground resource management, built on a Monitor-Analyze-Plan-Execute-Knowledge loop.
+---
+
+## What breaks
+
+Satellites, drones and ground stations share radio, compute and battery across layers that differ widely in delay and power. Classical optimization assumes a tidy static model. Deep reinforcement learning adapts, but it is a black box that cannot tell an intent for emergency reliability from one for best-effort capacity. Recent work with language models mostly asks for a one-off answer on a static snapshot, so nothing watches the result or corrects it.
+
+## The idea
+
+Divide the work by timescale. A language model reads the situation and rewrites the reward function of a fast reinforcement-learning agent. It does not make the fast decisions. LLM calls take a few seconds, well decoupled from an RL loop deciding at the millisecond level.
+
+<Plate lang="en" wide n="1" src="/figures/network-agentic/control-plane.webp" width={2000} height={1232} alt="Agentic AI control plane built on the MAPE-K framework" caption="The control plane on top of a SAGIN: semantic resource perceivers, intent-driven orchestrators and adaptive learners around a shared knowledge store, reaching tools through the Model Context Protocol. Fig. 2 of the paper." />
+
+## Walk the loop
+
+The stages below use the paper's own worked example, a UAV cluster running out of energy.
+
+<div class="full"><MapeLoop lang="en" /></div>
+
+## Inside the Plan phase
+
+Two mechanisms connect the orchestrator to the RL agent. Reward shaping turns a semantic condition into a modified reward: under energy constraints, penalize high-power transmissions and favor energy-efficient paths. Diffusion-based exploration uses historical trajectories in the knowledge base to guide what the agent tries.
+
+<Plate lang="en" n="2" src="/figures/network-agentic/reward-shaping.webp" width={1500} height={1090} alt="Hierarchical agent-RL collaboration in the Plan phase" caption="Hierarchical agent-RL collaboration. The orchestrator interprets intents and semantic states, then configures RL agents through reward shaping and diffusion-based exploration. Fig. 3 of the paper." />
+
+## Keeping it safe
+
+A language model in a control loop needs a guard. Every LLM output is checked against a JSON schema and parameter bounds, and the RL agents fall back to a safe default reward whenever the check fails. The learner updates prompts and rewards only when KPIs drift past a threshold or on a schedule, and each update carries a recorded reasoning trace.
+
+## How it was tested
+
+The paper validates the mechanism in a simulated UAV-assisted AIGC orchestration scenario under energy constraints: 3 LEO satellites, 5 UAVs, 2 ground base stations and 50 concurrent tasks, comparing six methods. The comparison is in the paper.
