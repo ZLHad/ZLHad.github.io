@@ -118,6 +118,11 @@ const copy = zh
   .bento > :global(.pcard) { grid-column: span 4; }
   .bento > :global(.pcard:nth-child(1)) { grid-column: span 7; }
   .bento > :global(.pcard:nth-child(2)) { grid-column: span 5; }
+  /* Rows of three below the first two cards; a short last row splits into halves. */
+  @media (min-width: 1000px) {
+    .bento > :global(.pcard:first-child:nth-last-child(3n + 1) ~ .pcard:nth-last-child(-n + 2)) { grid-column: span 6; }
+    .bento > :global(.pcard:first-child:nth-last-child(3n) ~ .pcard:nth-child(n + 3):nth-last-child(-n + 4)) { grid-column: span 6; }
+  }
   /* Frosted so the limb glows through the top of the first row. */
   .bento > :global(.pcard:nth-child(-n + 2)) { background-color: rgba(9, 12, 16, 0.72); backdrop-filter: blur(14px); }
 
@@ -195,6 +200,7 @@ const copy = zh
     .bento > :global(.pcard:nth-child(n)) { grid-column: span 6; }
     .bento > :global(.pcard:nth-child(1)) { grid-column: span 12; }
     .bento > :global(.pcard:nth-child(2)) { grid-column: span 12; }
+    .bento > :global(.pcard:nth-child(odd):last-child) { grid-column: span 12; }
     .two { grid-template-columns: minmax(0, 1fr); }
   }
   @media (max-width: 620px) {
